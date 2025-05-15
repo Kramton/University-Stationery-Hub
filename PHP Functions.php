@@ -8,6 +8,7 @@
 <body>
     <h1>test</h1>
     <p>this is a paragraph</p>
+    <p>this is another paragraph</p>
     <img src="./homerchu.png" alt="homerchu">
 </body>
 </html>
