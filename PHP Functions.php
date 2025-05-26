@@ -10,5 +10,30 @@
     <p>this is a paragraph</p>
     <p>this is another paragraph</p>
     <img src="./homerchu.png" alt="homerchu">
+
+    <?php
+    $conn = new mysqli('database-1.cbeu6c08gvb5.ap-southeast-2.rds.amazonaws.com', 'admin', 'UniversityProject+2114', 'test');
+
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+    
+    echo "Connected successfully<br><br>";
+    
+    $result = $conn->query("select id, name from test;");
+    
+    if (mysqli_num_rows($result) > 0) {
+    // output data of each row
+        while($row = mysqli_fetch_assoc($result)) {
+            echo "id: " . $row["id"]. " - Name: " . $row["name"];
+        }
+    } 
+    else {
+        echo "0 results";
+    }
+
+    mysqli_close($conn);
+
+    ?>
 </body>
 </html>
