@@ -8,9 +8,24 @@
 <body>
     <h1>Your Account</h1>
     
+    <?php
+    // Connect to the database
+    $conn = new mysqli(
+        'database-1.cbeu6c08gvb5.ap-southeast-2.rds.amazonaws.com',
+        'admin',
+        'UniversityProject+2114',
+        'test'
+    );
 
+    // Check connection
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
 
-    
+    echo "<p style='text-align: center; color: green;'>Connected successfully</p>";
+    ?>
+
+    <!-- Grid of account options -->
     <div class="account-grid">
         <a class="account-box" href="orders.php">
             <h2>Your Orders</h2>
@@ -37,14 +52,15 @@
             <p>Troubleshoot issues, manage or cancel digital subscriptions</p>
         </a>
 
-    
-
         <a class="account-box" href="support.php">
             <h2>Customer Service</h2>
             <p>Browse self service options, help articles or contact us</p>
         </a>
-
-        
     </div>
+
+    <?php
+
+    $conn->close();
+    ?>
 </body>
 </html>
