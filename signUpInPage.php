@@ -1,11 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    
-</body>
-</html>
+<?php
+
+include("dbconnection.php");
+
+$email = $_POST["email"];
+$psw = $_POST["psw"];
+
+$sql = "
+        insert into logintest (email, password)
+        values ('$email', '$psw');
+        ";
+
+if ($conn->query($sql) === TRUE) {
+    echo "Added " . $email;
+} else {
+    echo "Error: " . $sql . $conn->error;
+}
+
+$query = "select * from logintest";
+$result = mysqli_query($conn, $query);
+
+$conn->close();
+?>
