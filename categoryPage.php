@@ -5,9 +5,9 @@ $products = [
     ["name" => "Eco-Friendly Notebook", "price" => "8.99", "category" => "Notebooks", "image" => "notebook.png"],
     ["name" => "Pencil Case", "price" => "10.00", "category" => "Cases", "image" => "pencilcase1.png"],
     ["name" => "Pink Scissors", "price" => "15.00", "category" => "Office Product","subcategory" => "Scissors & Cutters", "image" => "pink scissors.png"],
-    ["name" => "Croxley Envelops C4 Peel & Seal Non Window White Pack 25", "price" => "12.49", "category" => "Envelopes & Packaging", "image" => "category/CroxleyC425.png"],
-    ["name" => "Kaskad Paper A4 80gsm Assorted Brights Pack 30", "price" => "7.79",  "category" => "Paper", "subcategory" => "Coloured Paper", "image" => "kaskadA430.png"],
-    ["name" => "Okin Thermal Roll BPA Free 80x80mm, Pack of 5", "price" => "20.99",  "category" => "Paper", "subcategory" => "Machine Rolls", "image" => "okin80.png"],
+    ["name" => "Croxley Envelops C4 Peel & Seal Non Window White Pack 25", "price" => "12.49", "category" => "Envelopes & Packaging", "image" => "category/envelop1.png"],
+    ["name" => "Kaskad Paper A4 80gsm Assorted Brights Pack 30", "price" => "7.79",  "category" => "Paper", "subcategory" => "Coloured Paper", "image" => "category/colourpaper1.png"],
+    ["name" => "Okin Thermal Roll BPA Free 80x80mm, Pack of 5", "price" => "20.99",  "category" => "Paper", "subcategory" => "Machine Rolls", "image" => "category/okin rolls.png"],
     ["name" => "Classic Notebook", "price" => "5.66", "category" => "Notebooks","image" => "Notebook.jpg"],
     ["name" => "Gel Pen Set", "price" => "2.00", "category" => "Writing","subcategory" => "Pens", "image" => "Gel pen set.jpg"],
     ["name" => "HB Pencil with Eraser Tip", "price" => "3.00", "category" => "Writing", "subcategory" => "Pencils","image" => "Pencil.jpg"],
@@ -27,21 +27,116 @@ $subcategory = $_GET['subcategory'] ?? 'All';
 <head>
     <title>Product Categories</title>
     <style>
-        body { font-family: Arial; margin: 20px; }
-        .menu a { margin: 10px; text-decoration: none; }
-       .product { display: inline-block; width: 200px; margin: 10px; border: 1px solid #ccc; padding: 10px; vertical-align: top; text-align: center;}
-       .product img { width: 180px; height: 180px;object-fit: cover; display: block; margin: 0 auto; border-radius: 8px; 
+ body {
+    font-family: Arial;
+    margin: 0;
+    background-color: #fdc298; 
+}
+
+header {
+    background: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 40px;
+    border-bottom: 1px solid #ccc;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.nav {
+    display: flex;
+    align-items: center;
+}
+
+.nav a {
+    margin: 0 10px;
+    text-decoration: none;
+    color: black;
+}
+
+.nav input {
+    margin-left: 15px;
+    padding: 5px;
+}
+
+.nav button {
+    margin-left: 10px;
+    padding: 6px 12px;
+    background-color: white;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+
+.menu {
+    background-color: white;
+    padding: 10px;
+    margin: 20px;
+    border-radius: 6px;
+}
+
+.menu a {
+    margin: 10px;
+    text-decoration: none;
+    color: #333;
+}
+
+.products {
+    background-color: white;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 6px;
+}
+
+.product {
+    display: inline-block;
+    width: 250px;
+    margin: 10px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    vertical-align: top;
+    text-align: center;
+    background-color: #fafafa;
+    border-radius: 8px;
+}
+
+.product img {
+    width: 180px;
+    height: 180px;
+    object-fit: cover;
+    display: block;
+    margin: 0 auto 10px;
+    border-radius: 8px;
+}
+
+button, .submit-button {
+    background-color: #ff6a00;
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
 }
 
 
-
-
     </style>
-</head>
-<body>
 
+ 
+ <header>
+    <div class="logo">University Stationary Hub</div>
+    <nav class="nav">
+        <a href="#">Home</a>
+        <a href="#">Products</a>
+        <a href="#">Contact Us</a>
+        <input type="text" placeholder="Search in site" />
+        <button><a href="signUpPage.html">Sign Up</a></button>
+    </nav>
+</header>
 
-<h2>University Stationary Hub</h2>
 
 <!-- Category -->
 <div class="menu">
