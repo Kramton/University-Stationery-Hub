@@ -1,10 +1,10 @@
 <?php
 
 $products = [
-    ["name" => "Pen Set", "price" => "29.99", "category" => "Writing","subcategory" => "Pens", "image" => "pen sets.png"],
-    ["name" => "Eco-Friendly Notebook", "price" => "8.99", "category" => "Notebooks", "image" => "notebook.png"],
-    ["name" => "Pencil Case", "price" => "10.00", "category" => "Cases", "image" => "pencilcase1.png"],
-    ["name" => "Pink Scissors", "price" => "15.00", "category" => "Office Product","subcategory" => "Scissors & Cutters", "image" => "pink scissors.png"],
+    ["name" => "Pen Set", "price" => "29.99", "category" => "Writing","subcategory" => "Pens", "image" => "category/pen sets.png"],
+    ["name" => "Eco-Friendly Notebook", "price" => "8.99", "category" => "Notebooks", "image" => "category/notebook.png"],
+    ["name" => "Pencil Case", "price" => "10.00", "category" => "Cases", "image" => "category/pencilcase1.png"],
+    ["name" => "Pink Scissors", "price" => "15.00", "category" => "Office Product","subcategory" => "Scissors & Cutters", "image" => "category/pink scissors.png"],
     ["name" => "Croxley Envelops C4 Peel & Seal Non Window White Pack 25", "price" => "12.49", "category" => "Envelopes & Packaging", "image" => "category/envelop1.png"],
     ["name" => "Kaskad Paper A4 80gsm Assorted Brights Pack 30", "price" => "7.79",  "category" => "Paper", "subcategory" => "Coloured Paper", "image" => "category/colourpaper1.png"],
     ["name" => "Okin Thermal Roll BPA Free 80x80mm, Pack of 5", "price" => "20.99",  "category" => "Paper", "subcategory" => "Machine Rolls", "image" => "category/okin rolls.png"],
