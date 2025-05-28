@@ -121,7 +121,13 @@ button, .submit-button {
     cursor: pointer;
     border-radius: 5px;
 }
-
+footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 14px;
+      background: white;
+      margin-top: 60px;
+    }
 
     </style>
 
@@ -193,6 +199,11 @@ foreach ($products as $p) {
 }
 ?>
 </div>
+<footer>
+  © 2023 AUT Stationery Hub. All Rights Reserved. |
+  <a href="#">Privacy Policy</a> |
+  <a href="#">Terms & Conditions</a>
+</footer>
 
 </body>
 </html>
