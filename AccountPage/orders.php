@@ -3,11 +3,32 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+
   <title>Your Orders</title>
 <link rel="stylesheet" href="style.css">
 
 </head>
 <body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <img src="Png/USHlogo.jpg" alt="Logo" class="logo">
+    <span class="brand-name">University Stationery Hub</span>
+  </div>
+
+<div class="topbar-right">
+<a href="index.html">Home</a>
+<a href="products.html">Product</a>
+ <a href="account.php">Account</a>
+<input type="text" placeholder="Search...">
+<button>Search</button>
+<img src="Png/user.jpg" alt="User" class="user-img">
+<span class="user-name">User1</span></div></div>
+
+
+
+
+
   <h1>Your Orders</h1>
 <h3><p style="text-align: center; color: black; font-size: 16px;">
   Here you can view, track, return, or reorder your past purchases.
@@ -30,7 +51,7 @@
     </div>
   </div>
 
-<a class="back-link" href="account.php">← Back to Account</a>
+<a class="back-link" href="account.php">« Back to Account</a>
 
 
 </body>
