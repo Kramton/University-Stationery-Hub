@@ -23,15 +23,15 @@ $subcategory = $_GET['subcategory'] ?? 'All';
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <title>Product Categories</title>
     <style>
- body {
-    font-family: Arial;
-    margin: 0;
-    background-color: #fdc298; 
-}
+   body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #ff6a00;
+    }
 
 header {
     background: white;
@@ -53,7 +53,7 @@ header {
 }
 
 .nav a {
-    margin: 0 10px;
+    margin: 0 15px;
     text-decoration: none;
     color: black;
 }
@@ -61,19 +61,32 @@ header {
 .nav input {
     margin-left: 15px;
     padding: 5px;
+    height: 16px;
+    font-size: 14px;
 }
 
 .nav button {
     margin-left: 10px;
-    padding: 6px 12px;
-    background-color: white;
-    border: 1px solid #ccc;
+    background-color: #f0f0f0; 
+    color: black;               
+    border: none;
+    font-size: 14px;
+    height: 30px;              
+    padding: 5px 15px;
     cursor: pointer;
+    margin-top: 0;
 }
 
+.nav button a {
+    text-decoration: none;
+    color: black;
+    display: block;
+    height: 100%;
+    width: 100%;
+}
 .menu {
     background-color: white;
-    padding: 10px;
+    padding: 10px 40px;
     margin: 20px;
     border-radius: 6px;
 }
@@ -128,7 +141,11 @@ footer {
       background: white;
       margin-top: 60px;
     }
-
+.subcategory-title {
+    margin-left: 40px;
+    font-size: 18px;
+    font-weight: bold;
+}
     </style>
 
  
@@ -139,7 +156,7 @@ footer {
         <a href="#">Products</a>
         <a href="#">Contact Us</a>
         <input type="text" placeholder="Search in site" />
-        <button><a href="signUpPage.html">Sign Up</a></button>
+        <button onclick="window.location.href='signUpPage.html'">Sign Up</button>
     </nav>
 </header>
 
@@ -157,14 +174,15 @@ footer {
 
 <hr>
 <?php if ($category == "Paper"): ?>
-    <h3>Subcategories for Paper</h3>
+    <h3 class="subcategory-title">Subcategories for Paper</h3>
+
     <div class="menu">
         <a href="?category=Paper&subcategory=All">All</a>
         <a href="?category=Paper&subcategory=Coloured+Paper">Coloured Paper</a>
         <a href="?category=Paper&subcategory=Machine+Rolls">Machine Rolls</a>
     </div>
 <?php elseif ($category == "Writing"): ?>
-    <h3>Subcategories for Writing</h3>
+    <h3 class="subcategory-title">Subcategories for Writing</h3>
     <div class="menu">
         <a href="?category=Writing&subcategory=All">All</a>
         <a href="?category=Writing&subcategory=Pens">Pens</a>
@@ -172,7 +190,7 @@ footer {
         <a href="?category=Writing&subcategory=Highlighters">Highlighters</a>
     </div>
 <?php elseif ($category == "Office Product"): ?>
-    <h3>Subcategories for Office Product</h3>
+    <h3 class="subcategory-title">Subcategories for Office Product</h3>
     <div class="menu">
         <a href="?category=Office+Product&subcategory=All">All</a>
         <a href="?category=Office+Product&subcategory=Scissors+%26+Cutters">Scissors & Cutters</a>
