@@ -171,7 +171,7 @@
 </section>
 
 <footer>
-  © 2023 AUT Stationery Hub. All Rights Reserved. |
+  © University Stationary Hub. All Rights Reserved. |
   <a href="#">Privacy Policy</a> |
   <a href="#">Terms & Conditions</a>
 </footer>
