@@ -14,11 +14,11 @@
         <h1 class="page-title">University Stationary Hub</h1>
         <nav class="main-nav">
             <div class="nav-links">
-                <a href="">Home</a>
-                <a href="">Products</a>
+                <a href="homePage.php">Home</a>
+                <a href="productPage.php">Products</a>
                 <a href="">Contact Us</a>
                 <a href="">Search</a>
-                <a href="">Log In</a>
+                <a href="signInFormPage.html">Log In</a>
             </div>
             <div class="cart">
                 <img src="" alt="shopping cart logo">
@@ -36,6 +36,15 @@
         </section> -->
 
         <h2>Checkout</h2>
+        <input type="submit" name="" id="checkout-button" value="checkout" style="background-color: #DB4444; font-size: 20px; color: #fff; padding: 15px 35px">
+        <h3 style="text-align: center;">Cart total</h4>
+        <h4 style="text-align: center;">Subtotal</h4>
+        <h4 style="text-align: center;">Promocode</h4>
+        <h4 style="text-align: center;">Total</h4>
+        <label for="">Promocode:   </label>
+        <input type="text" placeholder="" v><br>
+
+
     </main>
     <footer>
         <h2>Add to Cart</h2>
