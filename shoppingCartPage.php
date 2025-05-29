@@ -37,6 +37,17 @@
 
         <h2>Checkout</h2>
     </main>
-    <footer></footer>
+    <footer>
+        <h2>Add to Cart</h2>
+        <div class="footer-action">
+            <form action="">
+                <label for="">Quantity</label>
+                <p style="font-size: 10px">Max 5 per order</p>
+                <input type="text" placeholder="Enter quantity "><br>
+                <input type="submit" name="" id="" value="Continue Shopping">
+                <input type="submit" name="" id="" value="Add to Cart">
+            </form>
+        </div>
+    </footer>
 </body>
 </html>
