@@ -1,0 +1,98 @@
+/* topbar styles*/
+.topbar {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #F36639;
+  padding: 10px 20px;
+  color: white;
+  font-family: "Microsoft JhengHei", sans-serif;
+  flex-wrap: wrap;
+}
+
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+}
+
+.topbar-left .logo {
+  height: 40px;
+  margin-right: 10px;
+}
+
+.brand-name {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.topbar-right a {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  margin: 0 10px;
+  font-size: 16px;
+}
+
+.topbar-right a:hover {
+  text-decoration: underline;
+}
+
+
+
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 12px;
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.topbar-right input[type="text"] {
+  padding: 5px 10px;
+  border-radius: 4px;
+  border: none;
+  font-size: 14px;
+}
+
+.topbar-right button {
+  padding: 6px 12px;
+  background-color: white;
+  color: #F36639;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.topbar-right button:hover {
+  background-color: #ffd3b3;
+}
+
+.user-img {
+  height: 32px;
+  width: 32px;
+  border-radius: 50%;
+}
+
+.user-name {
+  font-size: 14px;
+  margin-left: 5px;
+  font-weight: 500;
+}
+.user-account-link {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    text-decoration: none;
+    color: white; 
+    font-weight: 500;
+}
+
+    .user-account-link:hover {
+        text-decoration: underline;
+    }
