@@ -6,7 +6,10 @@
 <head>
   <meta charset="UTF-8">
   <title>Account Page</title>
-  <link rel="stylesheet" href="style.css">
+  
+<link rel="stylesheet" href="css/topbar.css">
+<link rel="stylesheet" href="css/accountStyle.css">
+
   <style>
     .account-box img {
       width: 60px;
@@ -29,7 +32,7 @@
 <body>
 
 
-
+  <!-- topbar -->
 <div class="topbar">
   <div class="topbar-left">
     <img src="Png/USHlogo.jpg" alt="Logo" class="logo">
@@ -39,11 +42,16 @@
 <div class="topbar-right">
 <a href="index.html">Home</a>
 <a href="products.html">Product</a>
- <a href="account.php">Account</a>
+
 <input type="text" placeholder="Search...">
 <button>Search</button>
-<img src="Png/user.jpg" alt="User" class="user-img">
-<span class="user-name">User1</span></div></div>
+ <a href="account.php" class="user-account-link" style="display: flex; align-items: center; gap: 5px;">
+  <img src="Png/user.jpg" alt="User" class="user-img">
+  <span class="user-name">User1</span>
+</a>
+
+</div></div>
+
 
 
 
