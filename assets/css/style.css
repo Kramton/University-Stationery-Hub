@@ -249,3 +249,49 @@ hr {
 #banner button:hover {
     background-color: black;
 }
+
+footer {
+    background-color: rgb(52, 52, 52);
+}
+
+footer h5 {
+    color: white;
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+footer li {
+    padding-bottom: 4px;
+}
+
+footer li a {
+    font-size: 0.8rem;
+    color: grey;
+    text-decoration: none;
+}
+
+footer li a:hover {
+    color: white;
+}
+
+footer .copyright a {
+    color: black;
+    height: 40px;
+    width: 40px;
+    background-color: white;
+    display: inline-block;
+    text-align: center;
+    line-height: 38px;
+    border-radius: 50%;
+    transition: 0.3s ease;
+    margin: 0 5px;
+}
+
+footer .copyright a:hover {
+    color: white;
+    background-color: coral;
+}
+
+footer p {
+    color: white;
+}
