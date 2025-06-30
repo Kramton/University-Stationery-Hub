@@ -296,3 +296,7 @@ footer .copyright a:hover {
 footer p {
     color: white;
 }
+
+footer .copyright img {
+    width: 30%;
+}
