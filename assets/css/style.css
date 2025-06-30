@@ -193,3 +193,31 @@ button:hover {
 .product:hover img {
     opacity: 0.7;
 }
+
+.product .buy-btn {
+    background-color: coral;
+    transform: translateY(50px);
+    opacity: 0;
+    transition: 0.3s all;;
+}
+
+.product:hover .buy-btn {
+    transform: translateY(0px);
+    opacity: 1;
+}
+
+hr {
+    width: 30px;
+    height: 3px !important;
+    opacity: 1 !important;
+    background-color: coral;
+}
+
+.star {
+    padding: 10px 0;
+}
+
+.star i {
+    font-size: 0.9rem;
+    color: gold;
+}
