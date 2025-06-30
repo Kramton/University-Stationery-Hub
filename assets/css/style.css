@@ -221,3 +221,31 @@ hr {
     font-size: 0.9rem;
     color: gold;
 }
+
+#banner {
+    background-image: url(../imgs/background.png);
+    width: 100%;
+    height: 60vh;
+    background-size: cover;
+    /* adjust position if needed */
+    /* background-position-x: 90px; 
+    background-position-y: 80px; */
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+#banner h1 {
+    color: coral;
+}
+
+#banner button {
+    background-color: coral;
+}
+
+#banner button:hover {
+    background-color: black;
+}
