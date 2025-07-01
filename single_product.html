@@ -60,7 +60,7 @@
     <section class="container single-product my-5 pt-5">
       <div class="row mt-5">
         <div class="col-lg-5 col-md-6 col-sm-12">
-          <img class="img-fluid w-100 pb-1" src="assets/imgs/1.png" alt="" />
+          <img id="mainImg" class="img-fluid w-100 pb-1" src="assets/imgs/1.png" alt="" />
           <div class="small-img-group">
             <div class="small-img-col">
               <img
@@ -73,7 +73,7 @@
             <div class="small-img-col">
               <img
                 class="small-img"
-                src="assets/imgs/1.png"
+                src="assets/imgs/gridBox.png"
                 width="100%"
                 alt=""
               />
@@ -89,7 +89,7 @@
             <div class="small-img-col">
               <img
                 class="small-img"
-                src="assets/imgs/1.png"
+                src="assets/imgs/gridBox.png"
                 width="100%"
                 alt=""
               />
@@ -281,5 +281,17 @@
       integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
       crossorigin="anonymous"
     ></script>
+
+    <script>
+        var mainImg = document.getElementById("mainImg");
+        var smallImg = document.getElementsByClassName("small-img");
+
+        for(let i=0; i<4; i++) {
+            smallImg[i].onclick = function() {
+                mainImg.src = smallImg[i].src;
+            }
+        }
+
+    </script>
   </body>
 </html>
