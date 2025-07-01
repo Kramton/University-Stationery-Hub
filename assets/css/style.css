@@ -553,3 +553,8 @@ th:last-child {
     color: white;
     background-color: coral;
 }
+
+/* Contact */
+#contact span {
+    color: coral;
+}
