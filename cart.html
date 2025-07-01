@@ -57,44 +57,108 @@
     </nav>
 
     <!-- Cart -->
-     <section class="cart container my-5 py-5">
-        <div class="container mt-5">
-            <h2 class="font-weight-bold">Your Cart</h2>
-            <hr>
-        </div>
+    <section class="cart container my-5 py-5">
+      <div class="container mt-5">
+        <h2 class="font-weight-bold">Your Cart</h2>
+        <hr />
+      </div>
 
-        <table class="mt-5 pt-5">
+      <table class="mt-5 pt-5">
+        <tr>
+          <th>Product</th>
+          <th>Quantity</th>
+          <th>Subtotal</th>
+        </tr>
+
+        <tr>
+          <td>
+            <div class="product-info">
+              <img src="assets/imgs/1.png" alt="" />
+              <div>
+                <p>Stationary</p>
+                <small><span>$</span>21</small>
+                <br />
+                <a class="remove-btn" href="">Remove</a>
+              </div>
+            </div>
+          </td>
+
+          <td>
+            <input type="number" value="1" />
+            <a class="edit-btn" href="">Edit</a>
+          </td>
+
+          <td>
+            <span>$</span>
+            <span class="product-price">21</span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div class="product-info">
+              <img src="assets/imgs/1.png" alt="" />
+              <div>
+                <p>Stationary</p>
+                <small><span>$</span>21</small>
+                <br />
+                <a class="remove-btn" href="">Remove</a>
+              </div>
+            </div>
+          </td>
+
+          <td>
+            <input type="number" value="1" />
+            <a class="edit-btn" href="">Edit</a>
+          </td>
+
+          <td>
+            <span>$</span>
+            <span class="product-price">21</span>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div class="product-info">
+              <img src="assets/imgs/1.png" alt="" />
+              <div>
+                <p>Stationary</p>
+                <small><span>$</span>21</small>
+                <br />
+                <a class="remove-btn" href="">Remove</a>
+              </div>
+            </div>
+          </td>
+
+          <td>
+            <input type="number" value="1" />
+            <a class="edit-btn" href="">Edit</a>
+          </td>
+
+          <td>
+            <span>$</span>
+            <span class="product-price">21</span>
+          </td>
+        </tr>
+      </table>
+
+      <div class="cart-total">
+        <table>
             <tr>
-                <th>Product</th>
-                <th>Quantity</th>
-                <th>Subtotal</th>
+                <td>Subtotal</td>
+                <td>$14</td>
             </tr>
-
             <tr>
-                <td>
-                    <div class="product-info">
-                        <img src="assets/imgs/1.png" alt="">
-                        <div>
-                            <p>Stationary</p>
-                            <small><span>$</span>21</small>
-                            <br>
-                            <a class="remove-btn" href="">Remove</a>
-                        </div>
-                    </div>
-                </td>
-
-                <td>
-                    <input type="number" value="1">
-                    <a class="edit-btn" href="">Edit</a>
-                </td>
-
-                <td>
-                    <span>$</span>
-                    <span class="product-price">21</span>
-                </td>
+                <td>Total</td>
+                <td>$14</td>
             </tr>
         </table>
-     </section>
+      </div>
+
+      <div class="checkout-container">
+        <button class="btn checkout-btn">Checkout</button>
+      </div>
+
+    </section>
 
     <!-- Footer -->
     <footer class="mt-5 py-5">
