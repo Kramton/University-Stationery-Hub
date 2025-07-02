@@ -31,7 +31,7 @@
              }
             
             
-            // is this is the first product 
+            // if this is the first product 
           }else {
             
             $product_id = $_POST['product_id'];
@@ -51,11 +51,22 @@
              $_SESSION['cart'][$product_id] = $product_array;
              
           }
+            // calculate total
+            calculateTotalCart();
+       
+
+
+
     // remove prodect from the cart 
     }else if(isset($_POST['remove_product'])){
 
       $product_id = $_POST['product_id'];
         unset($_SESSION['cart'][$product_id]);
+
+         // calculate total 
+         calculateTotalCart();
+
+
 
     }else if ( isset($_POST['edit_quantity'])){
 
@@ -71,11 +82,39 @@
          $product_array['product_quantity'] = $product_quantity;
          //return array back its place
          $_SESSION['cart'][$product_id] = $product_array;
+
+
+         // calculate total
+         calculateTotalCart();
+
+
     }
     else{
      header('location: index.php');
 
     }
+
+      function calculateTotalCart(){
+         
+         $total = 0;
+
+          foreach($_SESSION['cart'] as $key => $value)
+          {
+          $product = $_SESSION['cart'][$key];
+          $price = $product['product_price'];
+          $quantity = $product['product_quantity'];
+          
+          $total = $total + ($price * $quantity);
+                 
+ 
+         }
+              
+         $_SESSION['total']= $total;
+      }
+
+
+
+
 
 ?>
 
@@ -182,13 +221,11 @@
 
             </form>
             
-            
-            <a class="edit-btn" href="">Edit</a>
           </td>
 
           <td>
             <span>$</span>
-            <span class="product-price">21</span>
+            <span class="product-price"><?php echo $value['product_quantity'] * $value ['product_price']; ?></span>
           </td>
         </tr>
        
@@ -201,13 +238,13 @@
 
       <div class="cart-total">
         <table>
-          <tr>
+       <!--   <tr>
             <td>Subtotal</td>
             <td>$14</td>
-          </tr>
+          </tr>-->
           <tr>
             <td>Total</td>
-            <td>$14</td>
+            <td>$ <?php echo $_SESSION['total']; ?></td>
           </tr>
         </table>
       </div>
