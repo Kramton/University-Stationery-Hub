@@ -7,8 +7,30 @@
          // if user already added a product to cart
           if(isset($_SESSION['cart']))
           {
+            $products_array_ids = array_column($_SESSION['cart'],"product_id");
+            
+            //if product has already been addedcto cart or not 
+            if( !in_array($_POST['product_id'],$products_array_ids)){
+                
 
-             // is this is the first product 
+             $product_array = array(
+                                'product_id' => $_POST['product_id'],
+                                'product_name' => $_POST['product_name'],
+                                'product_price' => $_POST['product_price'],
+                                'product_image' => $_POST['product_image'],
+                                'product_quantity' => $_POST['product_quantity']
+
+             );
+             $_SESSION['cart'][$product_id] = $product_array;
+              //product has already been added
+             } else {
+              
+                echo '<script>alert("Product was already to cart");</script>';
+               // echo '<script>window.location="index.php";</script>';
+             }
+            
+            
+            // is this is the first product 
           }else {
             
             $product_id = $_POST['product_id'];
@@ -110,13 +132,16 @@
           <th>Subtotal</th>
         </tr>
 
+         <?php foreach($_SESSION['cart'] as $key =>  $value){ ?>
+
         <tr>
           <td>
             <div class="product-info">
-              <img src="assets/imgs/1.png" alt="" />
+              <img src="assets/imgs/<?php echo $value['product_image']; ?>" />
+              
               <div>
-                <p>Stationary</p>
-                <small><span>$</span>21</small>
+                <p><?php echo $value['product_name']; ?></p>
+                <small><span>$</span><?php echo $value['product_price']; ?></small>
                 <br />
                 <a class="remove-btn" href="">Remove</a>
               </div>
@@ -124,7 +149,7 @@
           </td>
 
           <td>
-            <input type="number" value="1" />
+            <input type="number" value="<?php echo $value['product_quantity']; ?>" />
             <a class="edit-btn" href="">Edit</a>
           </td>
 
@@ -133,53 +158,13 @@
             <span class="product-price">21</span>
           </td>
         </tr>
-        <tr>
-          <td>
-            <div class="product-info">
-              <img src="assets/imgs/1.png" alt="" />
-              <div>
-                <p>Stationary</p>
-                <small><span>$</span>21</small>
-                <br />
-                <a class="remove-btn" href="">Remove</a>
-              </div>
-            </div>
-          </td>
+       
+         <?php } ?>
 
-          <td>
-            <input type="number" value="1" />
-            <a class="edit-btn" href="">Edit</a>
-          </td>
-
-          <td>
-            <span>$</span>
-            <span class="product-price">21</span>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <div class="product-info">
-              <img src="assets/imgs/1.png" alt="" />
-              <div>
-                <p>Stationary</p>
-                <small><span>$</span>21</small>
-                <br />
-                <a class="remove-btn" href="">Remove</a>
-              </div>
-            </div>
-          </td>
-
-          <td>
-            <input type="number" value="1" />
-            <a class="edit-btn" href="">Edit</a>
-          </td>
-
-          <td>
-            <span>$</span>
-            <span class="product-price">21</span>
-          </td>
-        </tr>
+      
       </table>
+
+
 
       <div class="cart-total">
         <table>
