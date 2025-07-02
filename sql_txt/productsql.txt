@@ -10,4 +10,9 @@ INSERT INTO `products`(`product_name`,`product_category`,`product_description`,
   INSERT INTO `products`(`product_name`,`product_category`,`product_description`, 
   `product_image`,`product_image2`, `product_image3`, `product_image4`,`product_price`,
   `product_special_offer`, `product_color`)VALUES ('Note Book', 'note','Note book 64 page',
-   'featured1.jpg','featured1.jpg','featured1.jpg','featured1.jpg', 155,0,'white');
+   'featured1.jpg','featured1.jpg','featured1.jpg','featured1.jpg', 10,0,'white');
+
+   INSERT INTO `products`(`product_name`,`product_category`,`product_description`, 
+  `product_image`,`product_image2`, `product_image3`, `product_image4`,`product_price`,
+  `product_special_offer`, `product_color`)VALUES ('Pen', 'Stationery','Black Pen',
+   'penblack.jpg','penblack1.jpg','penblack.jpg','penblack.jpg', 3,0,'Black');
