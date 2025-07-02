@@ -400,7 +400,10 @@ footer .copyright img {
 .cart .edit-btn {
   color: coral;
   text-decoration: none;
-  font-size: 14px;
+  font-size: 15px;
+  background-color: white;
+  border: none;
+  width: 100%;
 }
 
 .cart .product-info p {

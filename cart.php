@@ -57,6 +57,20 @@
       $product_id = $_POST['product_id'];
         unset($_SESSION['cart'][$product_id]);
 
+    }else if ( isset($_POST['edit_quantity'])){
+
+      //got id and quantity from the form 
+           $product_id = $_POST['product_id'];
+           $product_quantity = $_POST['product_quantity'];
+           
+
+          //get the product array  from the session
+           $product_array = $_SESSION['cart'][$product_id];
+
+           //update product quantity
+         $product_array['product_quantity'] = $product_quantity;
+         //return array back its place
+         $_SESSION['cart'][$product_id] = $product_array;
     }
     else{
      header('location: index.php');
@@ -160,7 +174,15 @@
           </td>
 
           <td>
-            <input type="number" value="<?php echo $value['product_quantity']; ?>" />
+            <form method="POST" action="cart.php">
+              <input type="hidden" name="product_id" value="<?php echo $value['product_id']; ?>"/>
+              <input type="number" name="product_quantity" value="<?php echo $value['product_quantity']; ?>" />
+
+              <input type="submit" class="edit-btn" value="edit" name="edit_quantity"/>
+
+            </form>
+            
+            
             <a class="edit-btn" href="">Edit</a>
           </td>
 
