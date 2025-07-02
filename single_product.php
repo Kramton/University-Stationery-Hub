@@ -1,3 +1,33 @@
+
+<?php 
+include('server/connection.php');
+
+if(isset($_GET['product_id'])){
+
+  $product_id = $_GET['product_id'];
+$stmt = $conn->prepare("SELECT * FROM products WHERE product_id = ?");
+$stmt-> bind_param("i", $product_id);
+
+
+$stmt->execute();
+
+
+$product = $stmt->get_result();  
+
+
+//no product id was given
+}else{
+        
+  header('location: index.php');
+
+}
+
+
+?>
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -59,13 +89,16 @@
     <!-- Single Product -->
     <section class="container single-product my-5 pt-5">
       <div class="row mt-5">
+        
+      <?php while($row = $product->fetch_assoc()){ ?>
+       
         <div class="col-lg-5 col-md-6 col-sm-12">
-          <img id="mainImg" class="img-fluid w-100 pb-1" src="assets/imgs/1.png" alt="" />
+          <img id="mainImg" class="img-fluid w-100 pb-1" src="assets/imgs/<?php echo $row['product_image']; ?>" alt="" />
           <div class="small-img-group">
             <div class="small-img-col">
               <img
                 class="small-img"
-                src="assets/imgs/1.png"
+                src="assets/imgs/<?php echo $row['product_image']; ?>"
                 width="100%"
                 alt=""
               />
@@ -73,7 +106,7 @@
             <div class="small-img-col">
               <img
                 class="small-img"
-                src="assets/imgs/gridBox.png"
+                src="assets/imgs/<?php echo $row['product_image2']; ?>"
                 width="100%"
                 alt=""
               />
@@ -81,7 +114,7 @@
             <div class="small-img-col">
               <img
                 class="small-img"
-                src="assets/imgs/1.png"
+                src="assets/imgs/<?php echo $row['product_image3']; ?>"
                 width="100%"
                 alt=""
               />
@@ -89,7 +122,7 @@
             <div class="small-img-col">
               <img
                 class="small-img"
-                src="assets/imgs/gridBox.png"
+                src="assets/imgs/<?php echo $row['product_image4']; ?>"
                 width="100%"
                 alt=""
               />
@@ -97,20 +130,23 @@
           </div>
         </div>
 
+
+
+
         <div class="col-lg-6 col-md-12 col-12">
           <h6>Stationary</h6>
-          <h3 class="py-4">Product</h3>
-          <h2>$20</h2>
+          <h3 class="py-4"><?php echo $row['product_name']; ?></h3>
+          <h2>$<?php echo $row['product_price']; ?></h2>
           <input type="number" value="1" />
           <button class="buy-btn">Add To Cart</button>
           <h4 class="mt-5 mb-5">Product Details</h4>
           <span>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum itaque
-            libero, autem sapiente debitis placeat? Hic fuga commodi laudantium
-            necessitatibus quaerat accusantium totam libero maxime ipsam, natus
-            officiis incidunt pariatur?
+            <?php echo $row['product_description']; ?>
           </span>
         </div>
+
+        <?php } ?>
+
       </div>
     </section>
 
