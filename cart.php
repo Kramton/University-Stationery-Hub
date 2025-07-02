@@ -13,7 +13,7 @@
             if( !in_array($_POST['product_id'],$products_array_ids)){
                 
              $product_id = $_POST['product_id'];
-             
+
              $product_array = array(
                                 'product_id' => $_POST['product_id'],
                                 'product_name' => $_POST['product_name'],
@@ -52,7 +52,7 @@
              
           }
     // remove prodect from the cart 
-    }else if(isset($_POST['remove_prodect'])){
+    }else if(isset($_POST['remove_product'])){
 
       $product_id = $_POST['product_id'];
         unset($_SESSION['cart'][$product_id]);
