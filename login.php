@@ -1,3 +1,43 @@
+<?php
+
+  session_start();
+  
+  include('server/connection.php');
+
+  if(isset($_SESSION['logged_in'])) {
+    header('location: account.php');
+    exit;
+  }
+
+  if(isset($_POST['login_btn'])) {
+    $email = $_POST['email'];
+    $password = md5($_POST['password']);
+
+    $stmt = $conn->prepare("SELECT user_id, user_name, user_email, user_password FROM users WHERE user_email = ? AND user_password = ? LIMIT 1");
+    $stmt->bind_param('ss', $email, $password);
+
+    if($stmt->execute()) {
+      $stmt->bind_result($user_id, $user_name, $user_email, $user_password);
+      $stmt->store_result();
+
+      if($stmt->num_rows() == 1) {
+        $stmt->fetch();
+
+        $_SESSION['user_id'] = $user_id;
+        $_SESSION['user_name'] = $user_name;
+        $_SESSION['user_email'] = $user_email;
+        $_SESSION['logged_in'] = true;
+
+        header('location: account.php?message=Logged in successfully');
+      } else {
+        header('location: login.php?error=Account verification failed');
+      }
+    } else {
+      header('location: login.php?error=Something went wrong');
+    }
+  }
+?>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -39,7 +79,7 @@
         >
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-              <a class="nav-link" href="index.html">Home</a>
+              <a class="nav-link" href="index.php">Home</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="shop.html">Products</a>
@@ -48,8 +88,8 @@
               <a class="nav-link" href="contact.html">Contact Us</a>
             </li>
             <li class="nav-item">
-              <a href="cart.html"><i class="fa fa-shopping-cart" aria-hidden="true"></i></a>
-              <a href="account.html"><i class="fa fa-user" aria-hidden="true"></i></a>
+              <a href="cart.php"><i class="fa fa-shopping-cart" aria-hidden="true"></i></a>
+              <a href="account.php"><i class="fa fa-user" aria-hidden="true"></i></a>
             </li>
           </ul>
         </div>
@@ -63,7 +103,8 @@
         <hr class="mx-auto" />
       </div>
       <div class="mx-auto container">
-        <form id="login-form" action="">
+        <form id="login-form" method="POST" action="login.php">
+          <p style="color: red;" class="text-center"><?php if(isset($_GET['error'])) { echo $_GET['error']; } ?></p>
           <div class="form-group">
             <label for="">Email</label>
             <input
@@ -87,12 +128,10 @@
             />
           </div>
           <div class="form-group">
-            <input type="submit" class="btn" id="login-btn" value="Login" />
+            <input type="submit" class="btn" id="login-btn" name="login_btn" value="Login" />
           </div>
           <div class="form-group">
-            <a id="register-url" class="btn" href=""
-              >Don't have an account? Register</a
-            >
+            <a id="register-url" href="register.php" class="btn">Don't have an account? Register</a>
           </div>
         </form>
       </div>

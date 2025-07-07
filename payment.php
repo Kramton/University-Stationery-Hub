@@ -1,9 +1,13 @@
+<?php
+  session_start();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Register</title>
+    <title>Checkout</title>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -39,7 +43,7 @@
         >
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-              <a class="nav-link" href="index.html">Home</a>
+              <a class="nav-link" href="index.php">Home</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="shop.html">Products</a>
@@ -48,80 +52,24 @@
               <a class="nav-link" href="contact.html">Contact Us</a>
             </li>
             <li class="nav-item">
-              <a href="cart.html"><i class="fa fa-shopping-cart" aria-hidden="true"></i></a>
-              <a href="account.html"><i class="fa fa-user" aria-hidden="true"></i></a>
+              <a href="cart.php"><i class="fa fa-shopping-cart" aria-hidden="true"></i></a>
+              <a href="account.php"><i class="fa fa-user" aria-hidden="true"></i></a>
             </li>
           </ul>
         </div>
       </div>
     </nav>
 
-    <!-- Register -->
+    <!-- Payment -->
     <section class="my-5 py-5">
       <div class="container text-center mt-3 pt-5">
-        <h2 class="form-weight-bold">Register</h2>
+        <h2 class="form-weight-bold">Payment</h2>
         <hr class="mx-auto" />
       </div>
-      <div class="mx-auto container">
-        <form id="register-form" action="">
-          <div class="form-group">
-            <label for="">Name</label>
-            <input
-              type="text"
-              class="form-control"
-              id="register-name"
-              name="name"
-              placeholder="Name"
-              required
-            />
-          </div>
-          <div class="form-group">
-            <label for="">Email</label>
-            <input
-              type="text"
-              class="form-control"
-              id="register-email"
-              name="email"
-              placeholder="Email"
-              required
-            />
-          </div>
-          <div class="form-group">
-            <label for="">Password</label>
-            <input
-              type="text"
-              class="form-control"
-              id="register-password"
-              name="password"
-              placeholder="Password"
-              required
-            />
-          </div>
-          <div class="form-group">
-            <label for=""> Confirm Password</label>
-            <input
-              type="text"
-              class="form-control"
-              id="register-confirm-password"
-              name="confirmPassword"
-              placeholder="Confirm Password"
-              required
-            />
-          </div>
-          <div class="form-group">
-            <input
-              type="submit"
-              class="btn"
-              id="register-btn"
-              value="Register"
-            />
-          </div>
-          <div class="form-group">
-            <a id="login-url" class="btn" href=""
-              >Already have an account? Login</a
-            >
-          </div>
-        </form>
+      <div class="mx-auto container text-center">
+        <p><?php echo $_GET['order_status']; ?></p>
+        <p>Total payment: $<?php echo $_SESSION['total']; ?></p>
+        <input class="btn btn-primary" type="submit" value="Pay Now">
       </div>
     </section>
 

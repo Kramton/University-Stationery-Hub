@@ -90,8 +90,8 @@
 
     }
     else{
-     header('location: index.php');
-
+      // If the user shouldn't be able to access the cart page, uncomment this code
+     // header('location: index.php');
     }
 
       function calculateTotalCart(){
@@ -161,7 +161,7 @@
         >
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-              <a class="nav-link" href="index.html">Home</a>
+              <a class="nav-link" href="index.php">Home</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="shop.html">Products</a>
@@ -170,8 +170,8 @@
               <a class="nav-link" href="contact.html">Contact Us</a>
             </li>
             <li class="nav-item">
-              <a href="cart.html"><i class="fa fa-shopping-cart" aria-hidden="true"></i></a>
-              <a href="account.html"><i class="fa fa-user" aria-hidden="true"></i></a>
+              <a href="cart.php"><i class="fa fa-shopping-cart" aria-hidden="true"></i></a>
+              <a href="account.php"><i class="fa fa-user" aria-hidden="true"></i></a>
             </li>
           </ul>
         </div>
@@ -250,7 +250,9 @@
       </div>
 
       <div class="checkout-container">
-        <button class="btn checkout-btn">Checkout</button>
+        <form method="PHP" action="checkout.php">
+          <input type="submit" class="btn checkout-btn" value="Checkout" name="checkout">
+        </form>
       </div>
     </section>
 

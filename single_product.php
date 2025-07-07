@@ -66,7 +66,7 @@ $product = $stmt->get_result();
         >
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-              <a class="nav-link" href="index.html">Home</a>
+              <a class="nav-link" href="index.php">Home</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="shop.html">Products</a>
@@ -75,8 +75,8 @@ $product = $stmt->get_result();
               <a class="nav-link" href="contact.html">Contact Us</a>
             </li>
             <li class="nav-item">
-              <a href="cart.html"><i class="fa fa-shopping-cart" aria-hidden="true"></i></a>
-              <a href="account.html"><i class="fa fa-user" aria-hidden="true"></i></a>
+              <a href="cart.php"><i class="fa fa-shopping-cart" aria-hidden="true"></i></a>
+              <a href="account.php"><i class="fa fa-user" aria-hidden="true"></i></a>
             </li>
           </ul>
         </div>
