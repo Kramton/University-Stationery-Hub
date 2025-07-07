@@ -28,7 +28,7 @@
         $_SESSION['user_email'] = $user_email;
         $_SESSION['logged_in'] = true;
 
-        header('location: account.php?message=Logged in successfully');
+        header('location: account.php?login_success=Logged in successfully');
       } else {
         header('location: login.php?error=Account verification failed');
       }
