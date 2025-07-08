@@ -1,3 +1,24 @@
+<?php
+
+include('server/connection.php');
+
+if(isset($_GET['order_details_btn']) && isset($_GET['order_id'])){
+    $order_id = $_GET['order_id'];
+
+    $stmt = $conn->prepare("SELECT * FROM order_items WHERE order_id = ?");
+
+    $stmt->bind_param('1', $order_id);
+
+    $stmt->execute();
+
+    $order_details = $stmt->get_result();
+} else{
+    
+}
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -59,7 +80,62 @@
     </nav>
 
 
-        <!-- Footer -->
+    <!-- Order details-->
+    <section id="orders" class="orders container my-5 py-3">
+      <div class="container mt-5">
+        <h2 class="font-weight-bold text-center">Order Details</h2>
+        <hr class="mx-auto" />
+      </div>
+
+      <table class="mt-5 pt-5">
+        <tr>
+          <th>Product Name</th>
+          <th>Price</th>
+          <th>Quantity</th>
+        </tr>
+
+
+          <tr>
+            <td>
+              <div class="product-info">
+                <img src="assets/imgs/1.png" alt="" />
+                <div>
+                  <p class="mt-3"></p>
+                </div>
+              </div>
+              
+            </td>
+
+            <td>
+              <span></span>
+            </td>
+
+            <td>
+              <span></span>
+            </td>
+
+         
+            <td>
+              <form>
+                <input class="btn order-details-btn" type="submit" value="details">
+              </form>
+            </td>
+
+
+            <td>
+              <span>01-01-2025</span>
+            </td>
+          </tr>
+
+         
+
+      </table>
+    </section>
+
+
+
+
+    <!-- Footer -->
     <footer class="mt-5 py-5">
       <div class="row container mx-auto pt-5">
         <div class="footer-one col-lg-3 col-md-6 col-sm-12">
@@ -145,7 +221,6 @@
 
 
     
-
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
