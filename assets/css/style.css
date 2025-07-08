@@ -200,6 +200,14 @@ button:hover {
   transform: translateY(50px);
   opacity: 0;
   transition: 0.3s all;
+  color: #fff;
+}
+
+.shop-buy-btn {
+  background-color: coral;
+  opacity: 1;
+  color: #fff;
+  text-decoration: none;
 }
 
 .product:hover .buy-btn {
