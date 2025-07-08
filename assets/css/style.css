@@ -394,7 +394,6 @@ footer .copyright img {
   background-color: white;
   border: none;
   width: 100%;
-
 }
 
 .cart .edit-btn {
@@ -441,127 +440,133 @@ th:last-child {
 
 /* Login */
 #login-form {
-    width: 50%;
-    margin: 5px auto;
-    text-align: center;
-    padding: 20px;
-    border-top: 1px solid coral;
+  width: 50%;
+  margin: 5px auto;
+  text-align: center;
+  padding: 20px;
+  border-top: 1px solid coral;
 }
 
 #login-form input {
-    width: 50%;
-    margin: 5px auto;
+  width: 50%;
+  margin: 5px auto;
 }
 
 #login-form #login-btn {
-    background-color: coral;
-    color: white;
+  background-color: coral;
+  color: white;
 }
 
 #login-form #register-url {
-    color: coral;
+  color: coral;
 }
 
 /* Register */
 #register-form {
-    width: 50%;
-    margin: 5px auto;
-    text-align: center;
-    padding: 20px;
-    border-top: 1px solid coral;
+  width: 50%;
+  margin: 5px auto;
+  text-align: center;
+  padding: 20px;
+  border-top: 1px solid coral;
 }
 
 #register-form input {
-    width: 50%;
-    margin: 5px auto;
+  width: 50%;
+  margin: 5px auto;
 }
 
 #register-form #register-btn {
-    background-color: coral;
-    color: white;
+  background-color: coral;
+  color: white;
 }
 
 #register-form #login-url {
-    color: coral;
+  color: coral;
 }
 
 /* Account */
 #account-form {
-    width: 50%;
-    margin: 35px auto;
-    text-align: center;
-    padding: 20px;
+  width: 50%;
+  margin: 35px auto;
+  text-align: center;
+  padding: 20px;
 }
 
 #account-form input {
-    margin: 5px auto;
+  margin: 5px auto;
 }
 
 #account-form #change-pass-btn {
-    color: white;
-    background-color: coral;
+  color: white;
+  background-color: coral;
 }
 
-.account-info #orders-btn, #logout-btn {
-    color: coral;
-    text-decoration: none;
+.account-info #orders-btn,
+#logout-btn {
+  color: coral;
+  text-decoration: none;
 }
 
 /* Orders */
 .orders table {
-    width: 100%;
-    border-collapse: collapse;
+  width: 100%;
+  border-collapse: collapse;
 }
 
 .orders .product-info {
-    display: flex;
-    flex-wrap: wrap;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .orders th {
-    text-align: left;
-    padding: 5px 10px;
-    color: white;
-    background-color: coral;
+  /* text-align: left; */
+  padding: 5px 10px;
+  color: white;
+  background-color: coral;
 }
 
 .orders th:nth-child(2) {
-    text-align: right;
+  /* text-align: right; */
 }
 
 .orders td {
-    padding: 10px 20px;
+  padding: 10px 20px;
 }
 
 .orders td img {
-    width: 80px;
-    height: 80px;
-    margin-right: 10px;
+  width: 80px;
+  height: 80px;
+  margin-right: 10px;
+}
+
+.orders .order-details-btn {
+  color: #fff;
+  background-color: coral;
 }
 
 /* Checkout */
 #checkout-form .checkout-small-element {
-    display: inline-block;
-    width: 48%;
-    margin: 10px auto;
+  display: inline-block;
+  width: 48%;
+  margin: 10px auto;
 }
 
 #checkout-form .checkout-large-element {
-    width: 96.4%;
+  width: 96.4%;
 }
 
 #checkout-form .checkout-btn-container {
-    margin: 10px;
-    text-align: right;
-    margin-right: 40px;
+  margin: 10px;
+  text-align: right;
+  margin-right: 40px;
 }
 
 #checkout-form #checkout-btn {
-    color: white;
-    background-color: coral;
+  color: white;
+  background-color: coral;
 }
 
 /* Contact */
 #contact span {
-    color: coral;
+  color: coral;
 }
