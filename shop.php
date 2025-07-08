@@ -32,84 +32,7 @@ if(isset($_POST['search'])){
 
 ?>
 
-
-
-
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Shop</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT"
-      crossorigin="anonymous"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
-    />
-    <link rel="stylesheet" href="assets/css/style.css" />
-
-    <style>
-      .product img {
-        width: 100%;
-        height: auto;
-        box-sizing: border-box;
-        object-fit: cover;
-      }
-
-      .pagination a {
-        color: coral;
-      }
-
-      .pagination li:hover a {
-        color: white;
-        background-color: coral;
-      }
-    </style>
-  </head>
-  <body>
-    <!-- Navbar: py-3 is equal to padding: 3, fixed-top makes the navbar fixed -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white py-3 fixed-top">
-      <div class="container">
-        <img class="logo" src="assets/imgs/1.png" alt="" />
-        <h2 class="brand">University Stationary Hub</h2>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarSupportedContent"
-          aria-controls="navbarSupportedContent"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div
-          class="collapse navbar-collapse nav-buttons"
-          id="navbarSupportedContent"
-        >
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item">
-              <a class="nav-link" href="index.php">Home</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="shop.html">Products</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="contact.html">Contact Us</a>
-            </li>
-            <li class="nav-item">
-              <a href="cart.php"><i class="fa fa-shopping-cart" aria-hidden="true"></i></a>
-              <a href="account.php"><i class="fa fa-user" aria-hidden="true"></i></a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
+<?php include('layouts/header.php') ?>
 
     <!-- Search -->
     <!-- Featured -->
@@ -188,7 +111,7 @@ if(isset($_POST['search'])){
 
 
       <div class="row mx-auto container">
-        <div class="product text-center col-lg-3 col-md-4 col-sm-12" onclick="window.location.href='single_product.html'">
+        <div class="product text-center col-lg-3 col-md-4 col-sm-12" onclick="window.location.href='single_product.php'">
           <img class="img-fluid mb-3" src="assets/imgs/<?php echo $row['product_image']; ?>" alt="" />
 
           <div class="star">
@@ -202,7 +125,7 @@ if(isset($_POST['search'])){
 
           <h5 class="p-name"><?php echo $row['product_name']; ?></h5>
           <h4 class="p-price">$<?php echo $row['product_price']; ?></h4>
-          <a class="btn shop-buy-btn" href="<?php echo "singe_product.php?product_id=".$row['product_id']; ?>">Buy Now</a>
+          <a class="btn shop-buy-btn" href="<?php echo "single_product.php?product_id=".$row['product_id']; ?>">Buy Now</a>
         </div>
       </div>
 
