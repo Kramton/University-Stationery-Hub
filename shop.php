@@ -2,11 +2,33 @@
 
 include('server/connection.php');
 
-$stmt = $conn->prepare("SELECT * FROM products");
+//use search section
+if(isset($_POST['search'])){
 
-$stmt->execute();
+  $category = $_POST['category'];
+  $price = $_POST['price'];
 
-$products = $stmt->get_result(); 
+  $stmt = $conn->prepare("SELECT * FROM products WHERE product_category=? AND product_price<=?");
+  
+  $stmt->bind_param("si",$category,$price);
+
+  $stmt->execute();
+
+  $products = $stmt->get_result(); 
+
+
+
+  //return all products
+}else{
+
+  $stmt = $conn->prepare("SELECT * FROM products");
+
+  $stmt->execute();
+
+  $products = $stmt->get_result(); 
+
+}
+
 
 ?>
 
@@ -97,37 +119,37 @@ $products = $stmt->get_result();
         <hr>
       </div>
 
-      <form>
+      <form action="shop.php" method="POST">
         <div class="row mx-auto container">
           <div class="col-lg-12 col-md-12 col-sm-12">
 
 
             <p>Category</p>
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="category" id="category_one">
+                <input class="form-check-input" value="shoes" type="radio" name="category" id="category_one">
                 <label class="form-check-label" for="flexRadioDefault1">
-                  Test
+                  shoes
                 </label> 
               </div>
 
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="category" id="category_two">
+                <input class="form-check-input" value="coats" type="radio" name="category" id="category_two">
                 <label class="form-check-label" for="flexRadioDefault2">
-                  Test2
+                  coats
                 </label> 
               </div>
 
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="category" id="category_two">
+                <input class="form-check-input" value="watches" type="radio" name="category" id="category_two">
                 <label class="form-check-label" for="flexRadioDefault2">
-                  Test3
+                  watches
                 </label> 
               </div>
 
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="category" id="category_two">
+                <input class="form-check-input" value="bags" type="radio" name="category" id="category_two">
                 <label class="form-check-label" for="flexRadioDefault2">
-                  Test4
+                  bags
                 </label> 
               </div>
           </div>
@@ -135,8 +157,9 @@ $products = $stmt->get_result();
 
         <div class="row mx-auto container mt-5">
            <div class="col-lg-12 col-md-12 col-sm-12">
+
             <p>Price</p>
-            <input type="range" class="form-range w-50" min="1" max="1000" id="customRange2">
+            <input type="range" class="form-range w-50" name="price" value="100" min="1" max="1000" id="customRange2">
             <div class="w-50">
               <span style="float:left;">1</span>
               <span style="float:right;">1000</span>
