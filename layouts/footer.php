@@ -11,9 +11,9 @@
         <div class="footer-one col-lg-3 col-md-6 col-sm-12">
           <h5 class="pb-2">Featured</h5>
           <ul class="text-uppercase">
-            <li><a href="">men</a></li>
-            <li><a href="">women</a></li>
-            <li><a href="">new arrivals</a></li>
+            <li><a href="">product</a></li>
+            <li><a href="">product</a></li>
+            <li><a href="">product</a></li>
           </ul>
         </div>
 
@@ -33,7 +33,8 @@
           </div>
         </div>
 
-        <div class="footer-one col-lg-3 col-md-6 col-sm-12">
+        <!-- TODO: Maybe remove this section? -->
+        <!-- <div class="footer-one col-lg-3 col-md-6 col-sm-12">
           <h5 class="pb-2">Instagram</h5>
           <div class="row">
             <img
@@ -61,7 +62,7 @@
               class="img-fluid w-25 h-100 m-2"
               alt=""
             />
-          </div>
+          </div> -->
         </div>
       </div>
 
