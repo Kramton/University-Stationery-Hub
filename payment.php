@@ -13,10 +13,11 @@
       <div class="mx-auto container text-center">
         <p><?php if(isset($_GET['order_status'])) {echo $_GET['order_status'];} ?></p>
         <p>Total payment: $<?php if(isset($_SESSION['total'])){ echo $_SESSION['total'];} ?></p>
-        <?php if(isset($_SESSION['total'])){ ?>
+        <?php if(isset($_SESSION['total']) && $_SESSION['total'] != 0){ ?>
         <input class="btn btn-primary" type="submit" value="Pay Now">
+        <?php } else { ?>
+          <p>Your cart is empty!</p>
         <?php } ?>
-
         <?php if(isset($_GET['order_status']) && $_GET['order_status'] == "not paid") { ?>
         <input class="btn btn-primary" type="submit" value="Pay Now">
         <?php } ?>

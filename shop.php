@@ -56,21 +56,21 @@ if(isset($_POST['search'])){
               </div>
 
               <div class="form-check">
-                <input class="form-check-input" value="coats" type="radio" name="category" id="category_two">
+                <input class="form-check-input" value="coats" type="radio" name="category" id="category_two" checked>
                 <label class="form-check-label" for="flexRadioDefault2">
                   coats
                 </label> 
               </div>
 
               <div class="form-check">
-                <input class="form-check-input" value="watches" type="radio" name="category" id="category_two">
+                <input class="form-check-input" value="watches" type="radio" name="category" id="category_two" checked>
                 <label class="form-check-label" for="flexRadioDefault2">
                   watches
                 </label> 
               </div>
 
               <div class="form-check">
-                <input class="form-check-input" value="bags" type="radio" name="category" id="category_two">
+                <input class="form-check-input" value="bags" type="radio" name="category" id="category_two" checked>
                 <label class="form-check-label" for="flexRadioDefault2">
                   bags
                 </label> 
