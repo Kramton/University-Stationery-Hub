@@ -133,11 +133,11 @@ if(isset($_SESSION['logged_in'])){
 
       <table class="mt-5 pt-5">
         <tr>
-          <th>Order id</th>
-          <th>Order cost</th>
-          <th>Order status</th>
+          <th>Order ID</th>
+          <th>Order Cost</th>
+          <th>Order Status</th>
           <th>Order Date</th>
-          <th>Order details</th>
+          <th>Order Details</th>
         </tr>
 
         <?php while($row = $orders->fetch_assoc() ){ ?>
@@ -169,13 +169,8 @@ if(isset($_SESSION['logged_in'])){
               <form method="POST" action="order_details.php">
                 <input type="hidden" value="<?php echo $row['order_status']; ?>" name="order_status"> 
                 <input type="hidden" value="<?php echo $row['order_id']; ?>" name="order_id"/>
-                <input class="btn order-details-btn" name="order_details_btn" type="submit" value="details">
+                <input class="btn order-details-btn" name="order_details_btn" type="submit" value="Details">
               </form>
-            </td>
-
-
-            <td>
-              <span>01-01-2025</span>
             </td>
           </tr>
 
