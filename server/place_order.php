@@ -57,6 +57,8 @@ else {
     
             $stmt1->execute();
         }
+
+        $_SESSION['order_id'] = $order_id;
     
         header('location: ../payment.php?order_status=Order placed successfully');
     }
