@@ -24,6 +24,7 @@ if (isset($_POST['order_pay_btn'])) {
 
     <?php if (isset($_POST['order_status']) && $_POST['order_status'] == "not paid") { ?>
       <?php $amount = strval($_POST['order_total_price']); ?>
+      <?php $order_id = $_POST['order_id']; ?>
       <p>Total Payment: $<?php echo $_POST['order_total_price']; ?></p>
       <!-- <input class="btn btn-primary" type="submit" value="Pay Now"> -->
       <!-- Set up container element for the button -->
@@ -35,7 +36,7 @@ if (isset($_POST['order_pay_btn'])) {
     <?php } else if (isset($_SESSION['total']) && $_SESSION['total'] != 0) { ?>
 
       <?php $amount = strval($_SESSION['total']); ?>
-
+      <?php $order_id = $_SESSION['order_id']; ?>
         <p>Total payment: $<?php echo $_SESSION['total']; ?></p>
         <!-- <input class="btn btn-primary" type="submit" value="Pay Now"> -->
         <!-- Set up container element for the button -->
@@ -52,12 +53,11 @@ if (isset($_POST['order_pay_btn'])) {
 </section>
 
 
-<script
-  src="https://www.paypal.com/sdk/js?client-id=AYVYkWacTQ3tL6cxbCL_dadNr50VG2t0_Lhc3zKvlOA-h_tmHoAgQ7a7CdpkKcutRDig3PTuwYMrJP8c&currency=NZD"></script>
+<script src="https://www.paypal.com/sdk/js?client-id=AYVYkWacTQ3tL6cxbCL_dadNr50VG2t0_Lhc3zKvlOA-h_tmHoAgQ7a7CdpkKcutRDig3PTuwYMrJP8c&currency=NZD"></script>
 
 <script>
   paypal.Buttons({
-    createOrder: function (data, actions) {
+    createOrder: function(data, actions) {
       return actions.order.create({
         purchase_units: [{
           amount: {
@@ -66,22 +66,15 @@ if (isset($_POST['order_pay_btn'])) {
         }]
       });
     },
-    onApprove: function (data, actions) {
-      return actions.order.capture().then(function (details) {
-        
-        alert('Transaction completed by ' + details.payer.name.given_name);
 
-        // Optional: Send details to PHP server for verification or database logging
-        fetch('payment_success.php', {
-          method: 'post',
-          headers: {
-            'content-type': 'application/json'
-          },
-          body: JSON.stringify({
-            orderID: data.orderID,
-            payerID: data.payerID
-          })
-        });
+    onApprove: function(data, actions) {
+      return actions.order.capture().then(function(orderData) {
+        console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
+        var transaction = orderData.purchase_units[0].payments.captures[0];
+        alert('Transaction ' + transaction.status + ': ' + transaction.id + '\n\n See console for all available details');
+
+        window.location.href = "server/complete_payment.php?transaction_id=" + transaction.id + "&order_id=" + <?php echo $order_id; ?>;
+
       });
     }
   }).render('#paypal-button-container');
