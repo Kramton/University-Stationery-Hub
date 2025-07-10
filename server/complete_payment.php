@@ -1,6 +1,7 @@
 <?php
 
 session_start();
+date_default_timezone_set('Pacific/Auckland');
 
 include('connection.php');
 
@@ -10,6 +11,7 @@ if (isset($_GET['transaction_id']) && isset($_GET['order_id'])) {
     $order_status = "paid";
     $transaction_id = $_GET['transaction_id'];
     $user_id = $_SESSION['user_id'];
+    $payment_date = date('Y-m-d H:i:s');
 
     // change order_status to paid
     $stmt = $conn->prepare("UPDATE orders SET order_status=? WHERE order_id=?");
@@ -18,14 +20,14 @@ if (isset($_GET['transaction_id']) && isset($_GET['order_id'])) {
     $stmt->execute();
 
     // store payment info
-    $stmt1 = $conn->prepare("INSERT INTO payments (order_id, user_id, transaction_id)
-                        VALUES (?,?,?);");
-    $stmt1->bind_param('iii', $order_id, $user_id, $transaction_id);
+    $stmt1 = $conn->prepare("INSERT INTO payments (order_id, user_id, transaction_id, payment_date)
+                        VALUES (?,?,?,?);");
+    $stmt1->bind_param('iiss', $order_id, $user_id, $transaction_id, $payment_date);
 
     $stmt1->execute();
 
     // go to user account
-    header("location: account.php?payment_message=payment successful! Thank you for shopping at University Stationary Hub.");
+    header("location: ../account.php?payment_message=Payment successful! Thank you for shopping at University Stationary Hub.");
 } else {
     header("location: index.php");
     exit;
