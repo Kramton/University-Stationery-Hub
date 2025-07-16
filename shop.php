@@ -5,27 +5,82 @@ include('server/connection.php');
 //use search section
 if (isset($_POST['search'])) {
 
-  $category = $_POST['category'];
-  $price = $_POST['price'];
-
-  $stmt = $conn->prepare("SELECT * FROM products WHERE product_category=? AND product_price<=?");
-
-  $stmt->bind_param("si", $category, $price);
-
-  $stmt->execute();
-
-  $products = $stmt->get_result();
+  if (isset($_GET['page_no']) && $_GET['page_no'] != "") {
+    // If user has already entered page then page number is the one that they selected
+    $page_no = $_GET['page_no'];
+} else {
+    // If user just entered the page then default page is 1
+    $page_no = 1;
+}
 
 
 
-  //return all products
+$category = $_POST['category'];
+$price = $_POST['price'];
+
+// Return number of products
+$stmt1 = $conn->prepare("SELECT COUNT(*) AS total_records FROM products WHERE product_category=? AND product_price<=?");
+$stmt1->bind_param("si", $category, $price);
+$stmt1->execute();
+$stmt1->bind_result($total_records);
+$stmt1->store_result();
+$stmt1->fetch();
+
+
+$total_records_per_page = 8; 
+
+$offset = ($page_no - 1) * $total_records_per_page;
+
+$previous_page = $page_no - 1;
+$next_page = $page_no + 1;
+
+$adjacents = 2; // Number of adjacent pages on either side of the current page
+
+$total_no_of_pages = ceil($total_records / $total_records_per_page);
+
+$stmt2 = $conn->prepare("SELECT * FROM products WHERE product_category=? AND product_price<=? LIMIT $offset, $total_records_per_page");
+$stmt2->bind_param("si", $category, $price);
+$stmt2->execute();
+$products = $stmt2->get_result();//[]
+
+
+  
+
+
+
+  //return all products 
 } else {
 
-  $stmt = $conn->prepare("SELECT * FROM products");
+  if (isset($_GET['page_no']) && $_GET['page_no'] != "") {
+    // If user has already entered page then page number is the one that they selected
+    $page_no = $_GET['page_no'];
+} else {
+    // If user just entered the page then default page is 1
+    $page_no = 1;
+}
 
-  $stmt->execute();
+// Return number of products
+$stmt1 = $conn->prepare("SELECT COUNT(*) AS total_records FROM products");
+$stmt1->execute();
+$stmt1->bind_result($total_records);
+$stmt1->store_result();
+$stmt1->fetch();
 
-  $products = $stmt->get_result();
+
+$total_records_per_page = 8; 
+
+$offset = ($page_no - 1) * $total_records_per_page;
+
+$previous_page = $page_no - 1;
+$next_page = $page_no + 1;
+
+$adjacents = 2; // Number of adjacent pages on either side of the current page
+
+$total_no_of_pages = ceil($total_records / $total_records_per_page);
+
+$stmt2 = $conn->prepare("SELECT * FROM products LIMIT $offset, $total_records_per_page");
+$stmt2->execute();
+$products = $stmt2->get_result();
 
 }
 
@@ -49,28 +104,28 @@ if (isset($_POST['search'])) {
 
           <p>Category</p>
           <div class="form-check">
-            <input class="form-check-input" value="shoes" type="radio" name="category" id="category_one">
+            <input class="form-check-input" value="shoes" type="radio" name="category" id="category_one" <?php if(isset($category) && $category == 'shoes'){echo 'checked';}?> >
             <label class="form-check-label" for="flexRadioDefault1">
               shoes
             </label>
           </div>
 
           <div class="form-check">
-            <input class="form-check-input" value="coats" type="radio" name="category" id="category_two" checked>
+            <input class="form-check-input" value="coats" type="radio" name="category" id="category_two" <?php if(isset($category) && $category == 'coats'){echo 'checked';}?>>
             <label class="form-check-label" for="flexRadioDefault2">
               coats
             </label>
           </div>
 
           <div class="form-check">
-            <input class="form-check-input" value="watches" type="radio" name="category" id="category_two" checked>
+            <input class="form-check-input" value="watches" type="radio" name="category" id="category_two" <?php if(isset($category) && $category == 'watches'){echo 'checked';}?>>
             <label class="form-check-label" for="flexRadioDefault2">
               watches
             </label>
           </div>
 
           <div class="form-check">
-            <input class="form-check-input" value="bags" type="radio" name="category" id="category_two" checked>
+            <input class="form-check-input" value="bags" type="radio" name="category" id="category_two" <?php if(isset($category) && $category == 'bags'){echo 'checked';}?>>
             <label class="form-check-label" for="flexRadioDefault2">
               bags
             </label>
@@ -82,7 +137,7 @@ if (isset($_POST['search'])) {
         <div class="col-lg-12 col-md-12 col-sm-12">
 
           <p>Price</p>
-          <input type="range" class="form-range w-50" name="price" value="100" min="1" max="1000" id="customRange2">
+          <input type="range" class="form-range w-50" name="price" value="<?php if(isset($price)) echo $price; ?>" min="1" max="1000" id="customRange2">
           <div class="w-50">
             <span style="float:left;">1</span>
             <span style="float:right;">1000</span>
@@ -106,7 +161,7 @@ if (isset($_POST['search'])) {
     <hr class="mx-auto" />
     <p>Here you can check out our products</p>
   </div>
-
+  
   <?php while ($row = $products->fetch_assoc()) { ?>
 
 
@@ -134,17 +189,31 @@ if (isset($_POST['search'])) {
 
 
 
-  <nav aria-label="Page navigation example">
-    <ul class="pagination mt-5 justify-content-center">
-      <li class="page-item">
-        <a class="page-link" href="#">Previous</a>
-      </li>
-      <li class="page-item"><a class="page-link" href="#">1</a></li>
-      <li class="page-item"><a class="page-link" href="#">2</a></li>
-      <li class="page-item"><a class="page-link" href="#">3</a></li>
-      <li class="page-item"><a class="page-link" href="#">Next</a></li>
+  <nav aria-label="Page navigation example" class="mx-auto">
+    <ul class="pagination mt-5 mx-auto">
+
+        <!-- Previous Button -->
+        <li class="page-item <?php if ($page_no <= 1) echo 'disabled'; ?>">
+            <a class="page-link" href="<?php if ($page_no <= 1) { echo '#'; } else { echo "?page_no=" . ($page_no - 1); } ?>">Previous</a>
+        </li>
+
+        <!-- Page Numbers -->
+        <li class="page-item"><a class="page-link" href="?page_no=1">1</a></li>
+        <li class="page-item"><a class="page-link" href="?page_no=2">2</a></li>
+
+        <?php if ($page_no >= 3) { ?>
+            <li class="page-item"><a class="page-link" href="#">...</a></li>
+            <li class="page-item"><a class="page-link" href="<?php echo "?page_no=" . $page_no; ?>"><?php echo $page_no; ?></a></li>
+        <?php } ?>
+
+        <!-- Next Button -->
+        <li class="page-item <?php if ($page_no >= $total_no_of_pages) echo 'disabled'; ?>">
+            <a class="page-link" href="<?php if ($page_no >= $total_no_of_pages) { echo '#'; } else { echo "?page_no=" . ($page_no + 1); } ?>">Next</a>
+        </li>
+
     </ul>
-  </nav>
+</nav>
+
   </div>
 </section>
 

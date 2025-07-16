@@ -578,3 +578,12 @@ th:last-child {
 #contact span {
   color: coral;
 }
+
+.cart-quantity {
+    background-color: #fb774b;
+    color: #fff;
+    padding: 2px 5px;
+    border-radius: 50%;
+    margin: -px;
+    font-size: 1rem;
+}
