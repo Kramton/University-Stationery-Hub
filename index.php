@@ -205,7 +205,7 @@
       <div class="row mx-auto container-fluid">
 
       <?php include('server/get_shoes.php') ?>
-      <?php while($row=$watches->fetch_assoc()){ ?> 
+      <?php while($row=$shoes->fetch_assoc()){ ?> 
 
 
         <div class="product text-center col-lg-3 col-md-4 col-sm-12">
