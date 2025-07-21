@@ -4,7 +4,7 @@
 <?php
 
 
-    if($_GET['product_id']){
+    if(isset($_GET['product_id'])){
 
         $product_id = $_GET['product_id'];
     $stmt = $conn->prepare("SELECT * FROM products WHERE product_id=");
@@ -13,8 +13,9 @@
 
     $products = $stmt->get_result();//[]
 
-    }else if($_POST['edit_btn']){
+    }else if(isset($_POST['edit_btn'])){
 
+        $product_id = $_POST['product_id'];
         $title = $_POST['title'];
         $description = $_POST['description'];
         $price = $_POST['price'];
@@ -23,12 +24,15 @@
         $category = $_POST['category'];
 
          $stmt = $conn->prepare("UPDATE products SET product_name=?, product_description=?, product_price=?,
-                             product_offer=?, product_color=?, product_category=?,WHERE product_id=?");
+                             product_special_offer=?, product_color=?, product_category=?,WHERE product_id=?");
          $stmt->bind_param('ssssssi', $title,$description,$price,$offer,$category,$product_id);
 
-         $stmt->execute();
-
-         header('location: products.php?')
+         if$stmt->execute()){
+            header('location: products.php?edit_success_message=Product has been updated successfully');
+         }else{
+            header('location: products.php?edit_failure_message=Error occured, try again');
+         }
+     
 
 
      
@@ -70,6 +74,8 @@
                     <div class="form-group mt-2">
 
                     <?php foreach($products as $product){?>
+
+                    <input type="hidden" name="product_id" value="<?php echo $product['product_id'];"/>
                         <label>Title</label>
                         <input type="text" class="form-control" id="product-name" value="<?php echo $product['product_name']?>" name="title" placeholder="Title" required/>
                     </div>
