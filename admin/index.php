@@ -69,6 +69,15 @@ $orders = $stmt2->get_result();
     <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
       <hr class="mx-auto" />
       <h2>Orders</h2>
+
+       <?phpif(isset($_GET['order_updated'])){?>
+        <p class="text-center" style=:color: green;><?php echo $_GET['order_updated'];?></p>
+      <?php}?>
+
+      <?phpif(isset($_GET['order_failed'])){?>
+        <p class="text-center" style=:color: red;><?php echo $_GET['order_failed'];?></p>
+      <?php}?>
+
       <div class="table-responsive">
         <table class="table table-striped table-sm">
           <thead>
@@ -94,7 +103,7 @@ $orders = $stmt2->get_result();
               <td><?php echo $order['user_phone']; ?></td>
               <td><?php echo $order['user_address']; ?></td>
 
-              <td><a class="btn btn-primary" href="">Edit</a></td>
+              <td><a class="btn btn-primary" href="edit_order.php?order_id=<?php echo $order['order_id'];?>">Edit</a></td>
               <td><a class="btn btn-danger" href="">Delete</a></td>
             </tr>
 
