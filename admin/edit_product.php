@@ -13,7 +13,26 @@
 
     $products = $stmt->get_result();//[]
 
-    }else{
+    }else if($_POST['edit_btn']){
+
+        $title = $_POST['title'];
+        $description = $_POST['description'];
+        $price = $_POST['price'];
+        $offer = $_POST['offer'];
+        $color = $_POST['color'];
+        $category = $_POST['category'];
+
+         $stmt = $conn->prepare("UPDATE products SET product_name=?, product_description=?, product_price=?,
+                             product_offer=?, product_color=?, product_category=?,WHERE product_id=?");
+         $stmt->bind_param('ssssssi', $title,$description,$price,$offer,$category,$product_id);
+
+         $stmt->execute();
+
+         header('location: products.php?')
+
+
+     
+}else{
         header('products.php');
         exit;
     }
@@ -46,7 +65,7 @@
 
 
             <div class="mx-auto_container">
-                <form id="edit-form" enctype="multipart/form-data">
+                <form id="edit-form" method="POST" action="edit_product.php">
                     <p style="color: red;"><?php if(isset($_GET['error'])){echo $_GET['error'];}?></p>
                     <div class="form-group mt-2">
 
@@ -85,7 +104,7 @@
 
 
                  <div class="form-group mt-3">
-                        <input type="submit" class="btn btn-primary" name="edit_product" value"Edit"/>
+                        <input type="submit" class="btn btn-primary" name="edit_btn" value"Edit"/>
                  </div>
 
                  <?php} ?

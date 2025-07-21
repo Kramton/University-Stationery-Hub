@@ -69,6 +69,7 @@ $products = $stmt2->get_result();
     <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
       <hr class="mx-auto" />
       <h2>Products</h2>
+      <p>test</p>
       <div class="table-responsive">
         <table class="table table-striped table-sm">
           <thead>
@@ -91,12 +92,12 @@ $products = $stmt2->get_result();
               <td><?php echo $product['product_id']; ?></td>
               <td><img src"=<?php echo "../assets/imgs/". $product['product_image']; ?>" style="width: 70px;heights: 70px/></td>
               <td><?php echo $product['product_name']; ?></td>
-              <td><?php echo $product['product_price']; ?></td>
-              <td><?php echo $product['product_special_offer']; ?></td>
+              <td><?php echo "$".$product['product_price']; ?></td>
+              <td><?php echo $product['product_special_offer']."%"; ?></td>
               <td><?php echo $product['product_category']; ?></td>
               <td><?php echo $product['product_color']; ?></td>
 
-              <td><a class="btn btn-primary" href="">Edit</a></td>
+              <td><a class="btn btn-primary" href="edit_product.php?product_id=<?php echo $product['procuct_id'];?>">Edit</a></td>
               <td><a class="btn btn-danger" href="">Delete</a></td>
             </tr>
 
