@@ -32,14 +32,14 @@ $stmt1->store_result();
 $stmt1->fetch();
 
 // display number of records (orders) per page
-$total_records_per_page = 10;
+$total_records_per_page = 5;
 
 $offset = ($page_no - 1) * $total_records_per_page;
 
 $previous_page = $page_no - 1;
 $next_page = $page_no + 1;
 
-$adjacents = 2; // Number of adjacent pages on either side of the current page
+$adjacents = "2"; // Number of adjacent pages on either side of the current page
 
 $total_no_of_pages = ceil($total_records / $total_records_per_page);
 
@@ -54,20 +54,24 @@ $products = $stmt2->get_result();
 
 
 <div class="container-fluid">
-  <div class="row">
+  <div class="row" style="min-height: 1000px">
 
     <?php include('sidemenu.php'); ?>
 
     <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
       <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
         <h1>Dashboard</h1>
-        
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <div class="btn-group mc-2">
+
       </div>
       
-    </main>
+    </div>
+</div>
+      
+
     
-    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-      <hr class="mx-auto" />
+   
 
       <h2>Products</h2>
       <?phpif(isset($_GET['edit_success_message'])){?>
@@ -78,6 +82,13 @@ $products = $stmt2->get_result();
         <p class="text-center" style=:color: red;><?php echo $_GET['edit_failure_message'];?></p>
       <?php}?>
 
+       <?phpif(isset($_GET['deleted_successfully'])){?>
+        <p class="text-center" style=:color: green;><?php echo $_GET['deleted_successfully'];?></p>
+      <?php}?>
+
+      <?phpif(isset($_GET['deleted_failure'])){?>
+        <p class="text-center" style=:color: red;><?php echo $_GET['deleted_failure'];?></p>
+      <?php}?>
 
       <p class="text-center"></p>
       <div class="table-responsive">
@@ -108,7 +119,7 @@ $products = $stmt2->get_result();
               <td><?php echo $product['product_color']; ?></td>
 
               <td><a class="btn btn-primary" href="edit_product.php?product_id=<?php echo $product['procuct_id'];?>">Edit</a></td>
-              <td><a class="btn btn-danger" href="">Delete</a></td>
+              <td><a class="btn btn-danger" href="delete_product.php?product_id=<?php echo $product['product_id'];?>">Delete</a></td>
             </tr>
 
             <?php } ?>
