@@ -1,16 +1,5 @@
 <?php include('header.php'); ?>
 
-
-<?php
-
-if (!isset($_SESSION['admin_logged_in'])) {
-  header('location: login.php');
-  exit();
-}
-
-?>
-
-
 <?php
 
 include('../server/connection.php');
@@ -29,7 +18,6 @@ if(isset($_POST['create_product'])) {
     $image2 = $_FILES['image2']['tmp_name'];
     $image3 = $_FILES['image3']['tmp_name'];
     $image4 = $_FILES['image4']['tmp_name'];
-    // $file_name = $_FILES['image1']['name'];
 
     // This is the image names
     $image_name1 = $product_name."1.jpeg";
