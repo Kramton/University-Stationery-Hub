@@ -1,4 +1,7 @@
 
+<?php include('layouts/header.php') ?>
+
+
 <?php 
 include('server/connection.php');
 
@@ -25,7 +28,6 @@ $product = $stmt->get_result();
 
 ?>
 
-<?php include('layouts/header.php') ?>
 
 
     <!-- Single Product -->

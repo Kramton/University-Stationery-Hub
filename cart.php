@@ -1,3 +1,7 @@
+<?php include('layouts/header.php') ?>
+
+
+
 <?php
 
   
@@ -122,7 +126,6 @@ function calculateTotalCart(){
 
 
 
-  <?php include('layouts/header.php') ?>
 
 
     <!-- Cart -->

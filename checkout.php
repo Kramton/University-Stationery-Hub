@@ -1,5 +1,8 @@
+<?php include('layouts/header.php') ?>
+
+
 <?php
-  session_start();
+ 
 
   if(!empty($_SESSION['cart'])) {
 
@@ -8,7 +11,6 @@
   }
 ?>
 
-<?php include('layouts/header.php') ?>
 
 
     <!-- Checkout -->

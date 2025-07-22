@@ -1,3 +1,5 @@
+<?php include('layouts/header.php') ?>
+
 <?php
 
 // not paid
@@ -26,7 +28,6 @@ if(isset($_POST['order_details_btn']) && isset($_POST['order_id'])){
 ?>
 
 
-<?php include('layouts/header.php') ?>
 
 
 

@@ -1,3 +1,6 @@
+<?php include('layouts/header.php') ?>
+
+
 <?php
 
 /*
@@ -53,7 +56,6 @@ function calculateTotalOrderPrice($order_details)
 ?>
 
 
-<?php include('layouts/header.php') ?>
 
 
 <!-- Order details -->

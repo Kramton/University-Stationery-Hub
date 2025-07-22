@@ -1,3 +1,5 @@
+<?php include('layouts/header.php') ?>
+
 <?php
 
 include('server/connection.php');
@@ -87,7 +89,6 @@ if (isset($_POST['search'])) {
 
 ?>
 
-<?php include('layouts/header.php') ?>
 
 <!-- Search -->
 <!-- Featured -->
