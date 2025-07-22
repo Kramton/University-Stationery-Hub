@@ -67,22 +67,22 @@ if (!isset($_SESSION['admin_logged_in'])) {
 
                 <div class="form-group mt-2">
                     <label for="">Image 1</label>
-                    <input type="file" class="form-control" id="image1" name="image1" placeholder="Image 1" required>
+                    <input type="file" class="form-control" id="image1" name="image1" placeholder="Image 1" >
                 </div>
 
                 <div class="form-group mt-2">
                     <label for="">Image 2</label>
-                    <input type="file" class="form-control" id="image2" name="image2" placeholder="Image 2" required>
+                    <input type="file" class="form-control" id="image2" name="image2" placeholder="Image 2" >
                 </div>
 
                 <div class="form-group mt-2">
                     <label for="">Image 3</label>
-                    <input type="file" class="form-control" id="image3" name="image3" placeholder="Image 3" required>
+                    <input type="file" class="form-control" id="image3" name="image3" placeholder="Image 3" >
                 </div>
 
                 <div class="form-group mt-2">
                     <label for="">Image 4</label>
-                    <input type="file" class="form-control" id="image4" name="image4" placeholder="Image 4" required>
+                    <input type="file" class="form-control" id="image4" name="image4" placeholder="Image 4" >
                 </div>
 
                 <div class="form-group mt-3">
