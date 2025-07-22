@@ -1,7 +1,7 @@
 <?php include('header.php'); ?>
 
 <?php 
-if($_GET['product_id']) {
+if(isset($_GET['product_id'])) {
 
     $product_id = $_GET['product_id'];
     $stmt = $conn->prepare("SELECT * FROM products WHERE product_id=?");
@@ -9,6 +9,25 @@ if($_GET['product_id']) {
     $stmt->execute();
     
     $products = $stmt->get_result(); // return an array[]
+
+} else if(isset($_POST['edit_btn'])) {
+    $product_id = $_POST['product_id'];
+    $title = $_POST['title'];
+    $description = $_POST['description'];
+    $price = $_POST['price'];
+    $offer = $_POST['offer'];
+    $color = $_POST['color'];
+    $category = $_POST['category'];
+
+    $stmt = $conn->prepare("UPDATE products SET product_name=?, product_description=?, product_price=?,
+                                   product_special_offer=?, product_color=?, product_category=? WHERE product_id=?");
+    $stmt->bind_param('ssssssi',$title, $description, $price, $offer, $color, $category, $product_id);
+
+    if($stmt->execute()) {
+        header('location: products.php?edit_success_message=Product updated successfully.');
+    } else {
+        header('location: products.php?edit_failure_message=Error occured, please try again.');
+    }
 
 } else {
     header('products.php');
@@ -35,12 +54,14 @@ if($_GET['product_id']) {
             <h2>Edit Product</h2>
             <div class="table-responsive">
                 <div class="mx-auto container">
-                    <form action="" id="edit-form" enctype="multipart/form-data">
+                    <form action="edit_product.php" method="POST" id="edit-form" >
                         <p style="color: red;"> <?php if(isset($_GET['error'])){ echo $_GET['error']; } ?> </p>
                         
                         <div class="form-group mt-2">
                         
                         <?php foreach($products as $product) { ?>
+                            <input type="hidden" name="product_id" value="<?php echo $product['product_id']; ?>">
+
                             <label for="">Title</label>
                             <input type="text" class="form-control" id="product-name" value="<?php echo $product['product_name']; ?>" name="title" placeholder="Title" required>
                         </div>
@@ -50,7 +71,7 @@ if($_GET['product_id']) {
                         </div>
                         <div class="form-group mt-2">
                             <label for="">Price</label>
-                            <input type="number" class="form-control" id="product-price" value="<?php echo $product['product_price']; ?>" name="price" placeholder="Price" required>
+                            <input type="text" class="form-control" id="product-price" value="<?php echo $product['product_price']; ?>" name="price" placeholder="Price" required>
                         </div>
                         <div class="form-group mt-2">
                             <label for="">Category</label>
@@ -63,7 +84,7 @@ if($_GET['product_id']) {
                         </div>
                         <div class="form-group mt-2">
                             <label for="">Color</label>
-                            <input type="number" class="form-control" value="<?php echo $product['product_color']; ?>" id="product-color" name="color" placeholder="Color" required>
+                            <input type="text" class="form-control" value="<?php echo $product['product_color']; ?>" id="product-color" name="color" placeholder="Color" required>
                         </div>
                         <div class="form-group mt-2">
                             <label for="">Special Offer/Sale</label>
@@ -71,7 +92,7 @@ if($_GET['product_id']) {
                         </div>
                         
                         <div class="form-group mt-3">
-                            <input type="submit" class="btn btn-primary" name="edit_product" value="Edit">
+                            <input type="submit" class="btn btn-primary" name="edit_btn" value="Edit">
                         </div>
 
                         <?php } ?>
