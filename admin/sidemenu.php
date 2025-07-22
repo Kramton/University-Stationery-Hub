@@ -32,7 +32,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a class="nav-link" href="help.php">
                     <span data-feather="layers"></span>
                     Help
                 </a>
