@@ -70,6 +70,7 @@ $products = $stmt2->get_result();
       <hr class="mx-auto" />
       <h2>Products</h2>
 
+      <!-- Edit product messages -->
       <?php if(isset($_GET['edit_success_message'])) { ?>
         <p class="text-center" style="color: green;"><?php echo $_GET['edit_success_message']; ?></p>
       <?php } ?>
@@ -77,6 +78,22 @@ $products = $stmt2->get_result();
       <?php if(isset($_GET['edit_failure_message'])) { ?>
         <p class="text-center" style="color: red;"><?php echo $_GET['edit_failure_message']; ?></p>
       <?php } ?>
+
+
+
+      <!-- Delete product message -->
+      <?php if(isset($_GET['deleted_successfully'])) { ?>
+        <p class="text-center" style="color: green;"><?php echo $_GET['deleted_successfully']; ?></p>
+      <?php } ?>
+
+      <?php if(isset($_GET['deleted_failure'])) { ?>
+        <p class="text-center" style="color: red;"><?php echo $_GET['deleted_failure']; ?></p>
+      <?php } ?>
+
+
+
+
+
 
       <div class="table-responsive">
         <table class="table table-striped table-sm">
@@ -106,7 +123,7 @@ $products = $stmt2->get_result();
               <td><?php echo $product['product_color']; ?></td>
 
               <td><a class="btn btn-primary" href="edit_product.php?product_id=<?php echo $product['product_id']; ?>">Edit</a></td>
-              <td><a class="btn btn-danger" href="">Delete</a></td>
+              <td><a class="btn btn-danger" href="delete_product.php?product_id=<?php echo $product['product_id'] ?>">Delete</a></td>
             </tr>
 
             <?php } ?>
