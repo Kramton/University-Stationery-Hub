@@ -90,8 +90,23 @@ $products = $stmt2->get_result();
         <p class="text-center" style="color: red;"><?php echo $_GET['deleted_failure']; ?></p>
       <?php } ?>
 
+      <!-- Create product -->
+      <?php if(isset($_GET['product_created'])) { ?>
+        <p class="text-center" style="color: green;"><?php echo $_GET['product_created']; ?></p>
+      <?php } ?>
 
+      <?php if(isset($_GET['product_failed'])) { ?>
+        <p class="text-center" style="color: red;"><?php echo $_GET['product_failed']; ?></p>
+      <?php } ?>
 
+      <!-- Update images -->
+      <?php if(isset($_GET['images_updated'])) { ?>
+        <p class="text-center" style="color: green;"><?php echo $_GET['images_updated']; ?></p>
+      <?php } ?>
+
+      <?php if(isset($_GET['images_failed'])) { ?>
+        <p class="text-center" style="color: red;"><?php echo $_GET['images_failed']; ?></p>
+      <?php } ?>      
 
 
 

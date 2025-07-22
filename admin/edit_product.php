@@ -75,7 +75,7 @@ if(isset($_GET['product_id'])) {
                         </div>
                         <div class="form-group mt-2">
                             <label for="">Category</label>
-                            <select class="form-select" required name="category" id="">
+                            <select class="form-select" required name="category">
                                 <option value="bags">Bags</option>
                                 <option value="shoes">Shoes</option>
                                 <option value="watches">Watches</option>
