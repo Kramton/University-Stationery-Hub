@@ -74,20 +74,20 @@ $products = $stmt2->get_result();
    
 
       <h2>Products</h2>
-      <?phpif(isset($_GET['edit_success_message'])){?>
-        <p class="text-center" style=:color: green;><?php echo $_GET['edit_success_message'];?></p>
+      <?phpif(isset($_GET['product_created'])){?>
+        <p class="text-center" style=:color: green;><?php echo $_GET['product_created'];?></p>
       <?php}?>
 
-      <?phpif(isset($_GET['edit_failure_message'])){?>
-        <p class="text-center" style=:color: red;><?php echo $_GET['edit_failure_message'];?></p>
+      <?phpif(isset($_GET['product_failed'])){?>
+        <p class="text-center" style=:color: red;><?php echo $_GET['product_failed'];?></p>
       <?php}?>
 
-       <?phpif(isset($_GET['deleted_successfully'])){?>
-        <p class="text-center" style=:color: green;><?php echo $_GET['deleted_successfully'];?></p>
+       <?phpif(isset($_GET['Images_updated'])){?>
+        <p class="text-center" style=:color: green;><?php echo $_GET['Images_updated'];?></p>
       <?php}?>
 
-      <?phpif(isset($_GET['deleted_failure'])){?>
-        <p class="text-center" style=:color: red;><?php echo $_GET['deleted_failure'];?></p>
+      <?phpif(isset($_GET['Images_failed'])){?>
+        <p class="text-center" style=:color: red;><?php echo $_GET['Images_failed'];?></p>
       <?php}?>
 
       <p class="text-center"></p>
@@ -102,6 +102,7 @@ $products = $stmt2->get_result();
               <th scope="col">Product Offer</th>
               <th scope="col">Product Category</th>
               <th scope="col">Product Color</th>
+              <th scope="col">Edit Images</th>
               <th scope="col">Edit</th>
               <th scope="col">Delete</th>
             </tr>
@@ -118,6 +119,7 @@ $products = $stmt2->get_result();
               <td><?php echo $product['product_category']; ?></td>
               <td><?php echo $product['product_color']; ?></td>
 
+              <td><a class="btn btn-warning" href="<?php echo "edit_images.php?product_id=".$product['procuct_id']."&product_name=".$product['product_name'];?>">Edit Images</a></td>
               <td><a class="btn btn-primary" href="edit_product.php?product_id=<?php echo $product['procuct_id'];?>">Edit</a></td>
               <td><a class="btn btn-danger" href="delete_product.php?product_id=<?php echo $product['product_id'];?>">Delete</a></td>
             </tr>
