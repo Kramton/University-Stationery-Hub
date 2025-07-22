@@ -1,5 +1,22 @@
 <?php include('header.php'); ?>
 
+<?php 
+if($_GET['product_id']) {
+
+    $product_id = $_GET['product_id'];
+    $stmt = $conn->prepare("SELECT * FROM products WHERE product_id=?");
+    $stmt->bind_param('i', $product_id);
+    $stmt->execute();
+    
+    $products = $stmt->get_result(); // return an array[]
+
+} else {
+    header('products.php');
+    exit;
+}
+
+?>
+
 <div class="container-fluid">
     <div class="row" style="min-height: 1000px">
         <?php include('sidemenu.php'); ?>
@@ -22,16 +39,18 @@
                         <p style="color: red;"> <?php if(isset($_GET['error'])){ echo $_GET['error']; } ?> </p>
                         
                         <div class="form-group mt-2">
+                        
+                        <?php foreach($products as $product) { ?>
                             <label for="">Title</label>
-                            <input type="text" class="form-control" id="product-name" name="title" placeholder="Title">
+                            <input type="text" class="form-control" id="product-name" value="<?php echo $product['product_name']; ?>" name="title" placeholder="Title" required>
                         </div>
                         <div class="form-group mt-2">
                             <label for="">Description</label>
-                            <input type="text" class="form-control" id="product-desc" name="description" placeholder="Description">
+                            <input type="text" class="form-control" id="product-desc" value="<?php echo $product['product_description']; ?>" name="description" placeholder="Description" required>
                         </div>
                         <div class="form-group mt-2">
                             <label for="">Price</label>
-                            <input type="number" class="form-control" id="product-price" name="price" placeholder="Product Price">
+                            <input type="number" class="form-control" id="product-price" value="<?php echo $product['product_price']; ?>" name="price" placeholder="Price" required>
                         </div>
                         <div class="form-group mt-2">
                             <label for="">Category</label>
@@ -44,16 +63,19 @@
                         </div>
                         <div class="form-group mt-2">
                             <label for="">Color</label>
-                            <input type="number" class="form-control" id="product-price" name="color" placeholder="Color">
+                            <input type="number" class="form-control" value="<?php echo $product['product_color']; ?>" id="product-color" name="color" placeholder="Color" required>
                         </div>
                         <div class="form-group mt-2">
                             <label for="">Special Offer/Sale</label>
-                            <input type="number" class="form-control" id="product-price" name="sale" placeholder="Sale %">
+                            <input type="number" class="form-control" value="<?php echo $product['product_special_offer']; ?>" id="product-offer" name="offer" placeholder="Sale %" required>
+                        </div>
+                        
+                        <div class="form-group mt-3">
+                            <input type="submit" class="btn btn-primary" name="edit_product" value="Edit">
                         </div>
 
-                        <div class="form-group mt-2">
-                            <a class="btn btn-primary" href="edit_product.php?product_id=<?php echo $product['product_id']; ?>">Edit</a>
-                        </div>
+                        <?php } ?>
+
                     </form>
 
                 </div>
