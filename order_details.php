@@ -1,14 +1,6 @@
+<?php include('layouts/header.php') ?>
+
 <?php
-
-/*
-    not paid
-    shipped
-    delivered
-
-    in our case it would probably just be:
-        paid
-        not paid
-*/
 
 include('server/connection.php');
 
@@ -51,9 +43,6 @@ function calculateTotalOrderPrice($order_details)
 
 
 ?>
-
-
-<?php include('layouts/header.php') ?>
 
 
 <!-- Order details -->

@@ -1,5 +1,6 @@
+<?php include('layouts/header.php') ?>
+
 <?php
-  session_start();
 
   if(!empty($_SESSION['cart'])) {
 
@@ -7,9 +8,6 @@
     header('location: index.php');
   }
 ?>
-
-<?php include('layouts/header.php') ?>
-
 
     <!-- Checkout -->
     <section class="my-5 py-5">

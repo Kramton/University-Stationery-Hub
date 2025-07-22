@@ -1,6 +1,6 @@
-<?php
+<?php include('layouts/header.php') ?>
 
-session_start();
+<?php
 
 include('server/connection.php');
 
@@ -57,9 +57,6 @@ if(isset($_POST['register'])) {
 }
 
 ?>
-
-<?php include('layouts/header.php') ?>
-
 
     <!-- Register -->
     <section class="my-5 py-5">

@@ -1,6 +1,6 @@
-<?php
+<?php include('layouts/header.php') ?>
 
-  session_start();
+<?php
   
   include('server/connection.php');
 
@@ -37,8 +37,6 @@
     }
   }
 ?>
-
-<?php include('layouts/header.php') ?>
 
     <!-- Login -->
     <section class="my-5 py-5">
