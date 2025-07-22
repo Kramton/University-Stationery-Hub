@@ -96,7 +96,7 @@ $products = $stmt2->get_result();
               <td><?php echo $product['product_category']; ?></td>
               <td><?php echo $product['product_color']; ?></td>
 
-              <td><a class="btn btn-primary" href="">Edit</a></td>
+              <td><a class="btn btn-primary" href="edit_product.php?product_id=<?php echo $product['product_id']; ?>">Edit</a></td>
               <td><a class="btn btn-danger" href="">Delete</a></td>
             </tr>
 
@@ -160,6 +160,3 @@ $products = $stmt2->get_result();
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"
   integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha" crossorigin="anonymous"></script>
 <script src="dashboard.js"></script>
-</body>
-
-</html>
