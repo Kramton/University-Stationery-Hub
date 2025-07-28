@@ -1,8 +1,6 @@
 <?php include('layouts/header.php') ?>
 
-
 <?php
-
 
 if (isset($_POST['order_pay_btn'])) {
   $order_status = $_POST['order_status'];
@@ -11,7 +9,6 @@ if (isset($_POST['order_pay_btn'])) {
 
 
 ?>
-
 
 <!-- Payment -->
 <section class="my-5 py-5">

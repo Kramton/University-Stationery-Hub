@@ -1,6 +1,4 @@
-
 <?php include('layouts/header.php') ?>
-
 
 <?php 
 include('server/connection.php');
@@ -27,8 +25,6 @@ $product = $stmt->get_result();
 
 
 ?>
-
-
 
     <!-- Single Product -->
     <section class="container single-product my-5 pt-5">

@@ -89,7 +89,6 @@ if (isset($_POST['search'])) {
 
 ?>
 
-
 <!-- Search -->
 <!-- Featured -->
 <section id="search" class="my-5 py-5 ms-2">

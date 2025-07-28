@@ -1,8 +1,6 @@
 <?php include('layouts/header.php') ?>
 
 <?php
-
-
   
   include('server/connection.php');
 
@@ -39,7 +37,6 @@
     }
   }
 ?>
-
 
     <!-- Login -->
     <section class="my-5 py-5">

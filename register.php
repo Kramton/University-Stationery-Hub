@@ -2,8 +2,6 @@
 
 <?php
 
-
-
 include('server/connection.php');
 
 if(isset($_SESSION['logged_in'])) {
@@ -59,8 +57,6 @@ if(isset($_POST['register'])) {
 }
 
 ?>
-
-
 
     <!-- Register -->
     <section class="my-5 py-5">
