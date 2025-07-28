@@ -32,14 +32,14 @@ $stmt1->store_result();
 $stmt1->fetch();
 
 // display number of records (orders) per page
-$total_records_per_page = 5;
+$total_records_per_page = 10;
 
 $offset = ($page_no - 1) * $total_records_per_page;
 
 $previous_page = $page_no - 1;
 $next_page = $page_no + 1;
 
-$adjacents = "2"; // Number of adjacent pages on either side of the current page
+$adjacents = 2; // Number of adjacent pages on either side of the current page
 
 $total_no_of_pages = ceil($total_records / $total_records_per_page);
 
@@ -54,48 +54,67 @@ $products = $stmt2->get_result();
 
 
 <div class="container-fluid">
-  <div class="row" style="min-height: 1000px">
+  <div class="row">
 
     <?php include('sidemenu.php'); ?>
 
     <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
       <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
         <h1>Dashboard</h1>
-        <div class="btn-toolbar mb-2 mb-md-0">
-            <div class="btn-group mc-2">
-
+        
       </div>
       
-    </div>
-</div>
-      
-
+    </main>
     
-   
-
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+      <hr class="mx-auto" />
       <h2>Products</h2>
-      <?phpif(isset($_GET['product_created'])){?>
-        <p class="text-center" style=:color: green;><?php echo $_GET['product_created'];?></p>
-      <?php}?>
 
-      <?phpif(isset($_GET['product_failed'])){?>
-        <p class="text-center" style=:color: red;><?php echo $_GET['product_failed'];?></p>
-      <?php}?>
+      <!-- Edit product messages -->
+      <?php if(isset($_GET['edit_success_message'])) { ?>
+        <p class="text-center" style="color: green;"><?php echo $_GET['edit_success_message']; ?></p>
+      <?php } ?>
 
-       <?phpif(isset($_GET['Images_updated'])){?>
-        <p class="text-center" style=:color: green;><?php echo $_GET['Images_updated'];?></p>
-      <?php}?>
+      <?php if(isset($_GET['edit_failure_message'])) { ?>
+        <p class="text-center" style="color: red;"><?php echo $_GET['edit_failure_message']; ?></p>
+      <?php } ?>
 
-      <?phpif(isset($_GET['Images_failed'])){?>
-        <p class="text-center" style=:color: red;><?php echo $_GET['Images_failed'];?></p>
-      <?php}?>
 
-      <p class="text-center"></p>
+
+      <!-- Delete product message -->
+      <?php if(isset($_GET['deleted_successfully'])) { ?>
+        <p class="text-center" style="color: green;"><?php echo $_GET['deleted_successfully']; ?></p>
+      <?php } ?>
+
+      <?php if(isset($_GET['deleted_failure'])) { ?>
+        <p class="text-center" style="color: red;"><?php echo $_GET['deleted_failure']; ?></p>
+      <?php } ?>
+
+      <!-- Create product -->
+      <?php if(isset($_GET['product_created'])) { ?>
+        <p class="text-center" style="color: green;"><?php echo $_GET['product_created']; ?></p>
+      <?php } ?>
+
+      <?php if(isset($_GET['product_failed'])) { ?>
+        <p class="text-center" style="color: red;"><?php echo $_GET['product_failed']; ?></p>
+      <?php } ?>
+
+      <!-- Update images -->
+      <?php if(isset($_GET['images_updated'])) { ?>
+        <p class="text-center" style="color: green;"><?php echo $_GET['images_updated']; ?></p>
+      <?php } ?>
+
+      <?php if(isset($_GET['images_failed'])) { ?>
+        <p class="text-center" style="color: red;"><?php echo $_GET['images_failed']; ?></p>
+      <?php } ?>      
+
+
+
       <div class="table-responsive">
         <table class="table table-striped table-sm">
           <thead>
             <tr>
-              <th scope="col">Product Id</th>
+              <th scope="col">Product ID</th>
               <th scope="col">Product Image</th>
               <th scope="col">Product Name</th>
               <th scope="col">Product Price</th>
@@ -112,16 +131,16 @@ $products = $stmt2->get_result();
             <?php foreach($products as $product) { ?>
             <tr>
               <td><?php echo $product['product_id']; ?></td>
-              <td><img src"=<?php echo "../assets/imgs/". $product['product_image']; ?>" style="width: 70px;heights: 70px/></td>
+              <td><img src="<?php echo "../assets/imgs/". $product['product_image']; ?>" style="width: 70px; height: 70px;"></td>
               <td><?php echo $product['product_name']; ?></td>
-              <td><?php echo "$".$product['product_price']; ?></td>
-              <td><?php echo $product['product_special_offer']."%"; ?></td>
+              <td><?php echo "$" . $product['product_price']; ?></td>
+              <td><?php echo $product['product_special_offer'] . "%"; ?></td>
               <td><?php echo $product['product_category']; ?></td>
               <td><?php echo $product['product_color']; ?></td>
 
-              <td><a class="btn btn-warning" href="<?php echo "edit_images.php?product_id=".$product['procuct_id']."&product_name=".$product['product_name'];?>">Edit Images</a></td>
-              <td><a class="btn btn-primary" href="edit_product.php?product_id=<?php echo $product['procuct_id'];?>">Edit</a></td>
-              <td><a class="btn btn-danger" href="delete_product.php?product_id=<?php echo $product['product_id'];?>">Delete</a></td>
+              <td><a class="btn btn-warning" href="<?php echo "edit_images.php?product_id=" . $product['product_id'] . "&product_name=" . $product['product_name']; ?>">Edit Images</a></td>
+              <td><a class="btn btn-primary" href="edit_product.php?product_id=<?php echo $product['product_id']; ?>">Edit</a></td>
+              <td><a class="btn btn-danger" href="delete_product.php?product_id=<?php echo $product['product_id'] ?>">Delete</a></td>
             </tr>
 
             <?php } ?>
@@ -184,6 +203,3 @@ $products = $stmt2->get_result();
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"
   integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha" crossorigin="anonymous"></script>
 <script src="dashboard.js"></script>
-</body>
-
-</html>

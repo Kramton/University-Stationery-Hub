@@ -3,9 +3,12 @@
 
 <?php
 
-if (!isset($_SESSION['admin_logged_in'])) {
-  header('location: login.php');
-  exit();
+if (isset($_GET['product_id'])) {
+    $product_id = $_GET['product_id'];
+    $product_name = $_GET['product_name'];
+
+} else {
+    header('location: products.php');
 }
 
 
@@ -27,43 +30,14 @@ if (!isset($_SESSION['admin_logged_in'])) {
         </div>
       </div>
     
-      <h2>Create Product</h2>
+      <h2>Update Product Images</h2>
       <div class="table-responsive">
         <div class="mx-auto-container">
-            <form id="create-form" enctype="multipart/form-data" method="POST" action="create_product.php">
+            <form id="edit-image-form" enctype="multipart/form-data" method="POST" action="update_images.php">
                 <p style="color: red;"><?php if(isset($_GET['error'])) { echo $_GET['error']; } ?></p>
 
-                <div class="form-group mt-2">
-                    <label for="">Title</label>
-                    <input type="text" class="form-control" id="product-name" name="name" placeholder="Title" required>
-                </div>
-                <div class="form-group mt-2">
-                    <label for="">Description</label>
-                    <input type="text" class="form-control" id="product-desc" name="description" placeholder="Description" required>
-                </div>
-                <div class="form-group mt-2">
-                    <label for="">Price</label>
-                    <input type="text" class="form-control" id="product-price" name="price" placeholder="Price" required>
-                </div>
-                <div class="form-group mt-2">
-                    <label for="">Special Offer/Sale</label>
-                    <input type="text" class="form-control" id="product-offer" name="offer" placeholder="Offer" required>
-                </div>
-
-                <div class="form-group mt-2">
-                    <label for="">Category</label>
-                    <select class="form-select" required name="category">
-                        <option value="bags">Bags</option>
-                        <option value="shoes">Shoes</option>
-                        <option value="watches">Watches</option>
-                        <option value="clothes">Clothes</option>
-                    </select>
-                </div>
-
-                <div class="form-group mt-2">
-                    <label for="">Color</label>
-                    <input type="text" class="form-control" id="product-color" name="color" placeholder="Color" required>
-                </div>
+                <input type="hidden" name="product_id" value="<?php echo $product_id; ?>">
+                <input type="hidden" name="product_name" value="<?php echo $product_name; ?>">
 
                 <div class="form-group mt-2">
                     <label for="">Image 1</label>
@@ -86,7 +60,7 @@ if (!isset($_SESSION['admin_logged_in'])) {
                 </div>
 
                 <div class="form-group mt-3">
-                    <input type="submit" class="btn btn-primary" name="create_product" value="Create">
+                    <input type="submit" class="btn btn-primary" name="update_images" value="Update">
                 </div>
 
             </form>
