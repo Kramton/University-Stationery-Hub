@@ -74,3 +74,27 @@ CREATE TABLE `php_project`.`admins` (`admin_id` INT NOT NULL
 AUTO_INCREMENT , `admin_name` VARCHAR(250) NOT NULL , 
 `admin_email` TEXT NOT NULL , `admin_password` TEXT NOT NULL , 
 PRIMARY KEY (`admin_id`)) ENGINE = InnoDB;
+
+
+
+
+-- Test products
+INSERT INTO `products`(`product_name`,`product_category`,`product_description`,
+ `product_image`,`product_image2`, `product_image3`, `product_image4`,`product_price`,
+ `product_special_offer`, `product_color`)VALUES ('white shoes', 'shoes','awesome white shoes',
+  'vest1.jpg','vest1.jpg','vest1.jpg','vest1.jpg', 155,0,'white');
+
+
+
+INSERT INTO `products`(`product_name`,`product_category`,`product_description`, 
+  `product_image`,`product_image2`, `product_image3`, `product_image4`,`product_price`,
+  `product_special_offer`, `product_color`)VALUES ('Note Book', 'note','Note book 64 page',
+   'featured1.jpg','featured1.jpg','featured1.jpg','featured1.jpg', 10,0,'white');
+
+INSERT INTO `products`(`product_name`,`product_category`,`product_description`, 
+  `product_image`,`product_image2`, `product_image3`, `product_image4`,`product_price`,
+  `product_special_offer`, `product_color`)VALUES ('Pen', 'Stationery','Black Pen',
+   'penblack.jpg','penblack1.jpg','penblack.jpg','penblack.jpg', 3,0,'Black');
+
+-- Admin login
+INSERT INTO `admins` (`admin_id`, `admin_name`, `admin_email`, `admin_password`) VALUES (NULL, 'admin', 'admin@email.com', MD5('12345'));
