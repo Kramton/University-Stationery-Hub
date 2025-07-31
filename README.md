@@ -10,3 +10,6 @@ https://fontawesome.com/v4/icons/
 
 Google Fonts:
 https://fonts.google.com/
+
+PHPMailer:
+https://github.com/PHPMailer/PHPMailer
