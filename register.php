@@ -39,7 +39,9 @@ if(isset($_POST['register'])) {
       $stmt = $conn->prepare("INSERT INTO users (user_name, user_email, user_password)
                               VALUES (?,?,?)");
 
-      $stmt->bind_param('sss', $name, $email, md5($password));
+      $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+      $stmt->bind_param('sss', $name, $email, $hashed_password);
+
 
 
       if($stmt->execute()) {
@@ -62,7 +64,6 @@ if(isset($_POST['register'])) {
     <section class="my-5 py-5">
       <div class="container text-center mt-3 pt-5">
         <h2 class="form-weight-bold">Register</h2>
-        <hr class="mx-auto" />
       </div>
       <div class="mx-auto container">
         <form id="register-form" method="POST" action="register.php">
@@ -103,7 +104,7 @@ if(isset($_POST['register'])) {
           <div class="form-group">
             <label for=""> Confirm Password</label>
             <input
-              type="text"
+              type="password"
               class="form-control"
               id="register-confirm-password"
               name="confirmPassword"

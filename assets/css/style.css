@@ -2,7 +2,7 @@
 
 .nav-buttons {
   /* TODO: decrease this if navbar icons are not aligned correctly */
-  margin-left: 45%;
+  margin-left: 40%;
 }
 
 * {
@@ -466,6 +466,18 @@ th:last-child {
 }
 
 #login-form #register-url {
+  color: black;
+}
+
+#login-form #register-url:hover {
+  color: coral;
+}
+
+#login-form #password-reset-url {
+  color: black;
+}
+
+#login-form #password-reset-url:hover {
   color: coral;
 }
 

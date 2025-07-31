@@ -32,7 +32,7 @@ session_start();
     <nav class="navbar navbar-expand-lg navbar-light bg-white py-3 fixed-top">
       <div class="container">
         <img class="logo" src="assets/imgs/1.png" alt="" />
-        <h2 class="brand">University Stationary Hub</h2>
+        <h2 class="brand">University Stationery Hub</h2>
         <button
           class="navbar-toggler"
           type="button"

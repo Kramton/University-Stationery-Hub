@@ -1,4 +1,6 @@
+-- 
 -- Run this command first in phpMyAdmin: 
+-- 
 CREATE DATABASE IF NOT EXISTS php_project;
 
 
@@ -75,10 +77,14 @@ AUTO_INCREMENT , `admin_name` VARCHAR(250) NOT NULL ,
 `admin_email` TEXT NOT NULL , `admin_password` TEXT NOT NULL , 
 PRIMARY KEY (`admin_id`)) ENGINE = InnoDB;
 
+ALTER TABLE users
+  ADD `reset_token_hash` VARCHAR(64) NULL DEFAULT NULL,
+  ADD `reset_token_expires_at` DATETIME NULL DEFAULT NULL,
+  ADD UNIQUE (`reset_token_hash`);
 
-
-
+-- 
 -- Test products
+-- 
 INSERT INTO `products`(`product_name`,`product_category`,`product_description`,
  `product_image`,`product_image2`, `product_image3`, `product_image4`,`product_price`,
  `product_special_offer`, `product_color`)VALUES ('white shoes', 'shoes','awesome white shoes',

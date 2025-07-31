@@ -35,7 +35,10 @@ if(isset($_POST['change_password'])){
   // no errors
   }else{
     $stmt = $conn->prepare("UPDATE users SET user_password=? WHERE user_email=?");
-    $stmt->bind_param('ss', md5($password), $user_email);
+    
+    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+    $stmt->bind_param('ss', $hashed_password, $user_email);
+
 
     if($stmt->execute()){
       header('location: account.php?message=password has been updated successfully');
