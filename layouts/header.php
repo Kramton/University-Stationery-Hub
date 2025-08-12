@@ -1,13 +1,7 @@
 <?php
-
 session_start();
-
 // include('../server/connection.php');
-
 ?>
-
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -28,7 +22,7 @@ session_start();
     <link rel="stylesheet" href="assets/css/style.css" />
   </head>
   <body>
-    <!-- Navbar: py-3 is equal to padding: 3, fixed-top makes the navbar fixed -->
+    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white py-3 fixed-top">
       <div class="container">
         <img class="logo" src="assets/imgs/1.png" alt="" />
@@ -44,10 +38,8 @@ session_start();
         >
           <span class="navbar-toggler-icon"></span>
         </button>
-        <div
-          class="collapse navbar-collapse nav-buttons"
-          id="navbarSupportedContent"
-        >
+
+        <div class="collapse navbar-collapse nav-buttons" id="navbarSupportedContent">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
               <a class="nav-link" href="index.php">Home</a>
@@ -60,13 +52,16 @@ session_start();
             </li>
             <li class="nav-item">
               <a href="cart.php">
-                <i class="fa fa-shopping-cart" aria-hidden="true"> 
+                <i class="fa fa-shopping-cart" aria-hidden="true">
                   <?php if (isset($_SESSION['quantity']) && $_SESSION['quantity'] != 0) { ?>
-                        <span class="cart-quantity"><?php echo $_SESSION['quantity']; ?></span>
+                    <span class="cart-quantity"><?php echo $_SESSION['quantity']; ?></span>
                   <?php } ?>
-              </i>
-            </a>
-              <a href="account.php"><i class="fa fa-user" aria-hidden="true"></i></a>
+                </i>
+              </a>
+              <!-- Updated: Person icon now links to My Profile -->
+              <a href="my_profile.php" title="My Profile">
+                <i class="fa fa-user" aria-hidden="true"></i>
+              </a>
             </li>
           </ul>
         </div>
