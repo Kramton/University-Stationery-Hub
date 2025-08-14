@@ -7,6 +7,17 @@ if (!isset($_SESSION['logged_in'])) {
     exit;
 }
 
+// Handle logout
+if (isset($_GET['logout'])) {
+    if (isset($_SESSION['logged_in'])) {
+        unset($_SESSION['logged_in']);
+        unset($_SESSION['user_email']);
+        unset($_SESSION['user_name']);
+        header('location: login.php');
+        exit;
+    }
+}
+
 // Handle profile update
 if (isset($_POST['save_changes'])) {
     $first_name = $_POST['first_name'];
@@ -64,68 +75,81 @@ if (isset($_POST['change_password'])) {
 ?>
 
 <style>
-body {
-    padding-top: 110px; /* Increased so heading is fully visible */
-    font-family: 'Poppins', sans-serif;
-}
-.account-container {
-    max-width: 1200px;
-    margin: auto;
-}
-.account-title {
-    font-size: 40px;
-    font-weight: 600;
-    text-align: center;
-    margin-bottom: 40px;
-}
-.sidebar {
-    padding-right: 20px;
-}
-.sidebar h5 {
-    margin-bottom: 20px;
-    font-weight: 500;
-}
-.sidebar a {
-    display: block;
-    padding: 8px 0;
-    color: #000;
-    text-decoration: none;
-}
-.sidebar a.active {
-    color: #F15A29;
-    font-weight: 600;
-}
-.content-box {
-    background: #fff;
-    padding: 30px;
-    border-radius: 6px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-}
-.content-box h5 {
-    color: #F15A29;
-    font-weight: 500;
-    margin-bottom: 20px;
-}
-.content-box label {
-    margin-top: 10px;
-    font-weight: 400;
-}
-.btn-orange {
-    background-color: #F15A29;
-    color: #fff;
-    border: none;
-    padding: 8px 18px;
-}
-.btn-orange:hover {
-    background-color: #d94d20;
-}
-hr {
-    border: 0;
-    height: 2px;
-    background-color: #F15A29;
-    width: 40px;
-    margin: 20px 0;
-}
+    body {
+        padding-top: 110px;
+        /* Increased so heading is fully visible */
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .account-container {
+        max-width: 1200px;
+        margin: auto;
+    }
+
+    .account-title {
+        font-size: 40px;
+        font-weight: 600;
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .sidebar {
+        padding-right: 20px;
+    }
+
+    .sidebar h5 {
+        margin-bottom: 20px;
+        font-weight: 500;
+    }
+
+    .sidebar a {
+        display: block;
+        padding: 8px 0;
+        color: #000;
+        text-decoration: none;
+    }
+
+    .sidebar a.active {
+        color: #F15A29;
+        font-weight: 600;
+    }
+
+    .content-box {
+        background: #fff;
+        padding: 30px;
+        border-radius: 6px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .content-box h5 {
+        color: #F15A29;
+        font-weight: 500;
+        margin-bottom: 20px;
+    }
+
+    .content-box label {
+        margin-top: 10px;
+        font-weight: 400;
+    }
+
+    .btn-orange {
+        background-color: #F15A29;
+        color: #fff;
+        border: none;
+        padding: 8px 18px;
+    }
+
+    .btn-orange:hover {
+        background-color: #d94d20;
+    }
+
+    hr {
+        border: 0;
+        height: 2px;
+        background-color: #F15A29;
+        width: 40px;
+        margin: 20px 0;
+    }
 </style>
 
 <section class="account-container">
@@ -151,11 +175,11 @@ hr {
                 <h5>Edit Your Profile</h5>
                 <form method="POST" action="my_profile.php">
                     <label>First Name</label>
-                    <input type="text" name="first_name" class="form-control" 
+                    <input type="text" name="first_name" class="form-control"
                         value="<?php echo explode(' ', $_SESSION['user_name'])[0]; ?>" required>
 
                     <label>Last Name</label>
-                    <input type="text" name="last_name" class="form-control" 
+                    <input type="text" name="last_name" class="form-control"
                         value="<?php echo explode(' ', $_SESSION['user_name'])[1] ?? ''; ?>" required>
 
                     <label>Email</label>
@@ -181,6 +205,20 @@ hr {
                     <br>
                     <button type="submit" name="change_password" class="btn btn-orange">Change Password</button>
                 </form>
+
+
+
+
+
+                <div class="text-center mt-3 pt-5 col-lg-6 col-md-12 col-sm-12">
+                    <p><a href="my_profile.php?logout=1" id="logout-btn">Logout</a></p>
+                </div>
+
+
+
+
+
+
             </div>
         </div>
     </div>

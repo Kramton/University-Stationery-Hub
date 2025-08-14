@@ -5,7 +5,7 @@
 include('server/connection.php');
 
 if(isset($_SESSION['logged_in'])) {
-  header('location: account.php');
+  header('location: my_profile.php');
   exit;
 }
 
@@ -50,7 +50,7 @@ if(isset($_POST['register'])) {
         $_SESSION['user_email'] = $email;
         $_SESSION['user_name'] = $name;
         $_SESSION['logged_in'] = true;
-        header('location: account.php?register_success=You registered successfully');
+        header('location: my_profile.php?register_success=You registered successfully');
       } else {
         header('location: register.php?register=Account creation failed');
       }

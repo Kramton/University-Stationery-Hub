@@ -1,5 +1,3 @@
-<!-- https://youtu.be/R9bfts9ZFjs?si=_4Gu_A2MJBd-ZBfz -->
-
 <?php
 
 $token = $_GET["token"];

@@ -5,7 +5,7 @@
 include('server/connection.php');
 
 if (isset($_SESSION['logged_in'])) {
-  header('location: account.php');
+  header('location: my_profile.php');
   exit;
 }
 
@@ -29,7 +29,7 @@ if (isset($_POST['login_btn'])) {
       $_SESSION['user_email'] = $user['user_email'];
       $_SESSION['logged_in'] = true;
 
-      header('location: account.php?login_success=Logged in successfully');
+      header('location: my_profile.php?login_success=Logged in successfully');
       exit;
     } else {
       header('location: login.php?error=Invalid credentials');

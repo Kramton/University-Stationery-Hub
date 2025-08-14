@@ -27,7 +27,7 @@ if (isset($_GET['transaction_id']) && isset($_GET['order_id'])) {
     $stmt1->execute();
 
     // go to user account
-    header("location: ../account.php?payment_message=Payment successful! Thank you for shopping at University Stationary Hub.");
+    header("location: ../my_profile.php?payment_message=Payment successful! Thank you for shopping at University Stationary Hub.");
 } else {
     header("location: index.php");
     exit;
