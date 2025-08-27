@@ -104,11 +104,11 @@ if (isset($_POST['search'])) {
 
         <p>Category</p>
         <div class="form-check">
-          <input class="form-check-input" value="shoes" type="radio" name="category" id="category_one" <?php if (isset($category) && $category == 'shoes') {
+          <input class="form-check-input" value="writing essentials" type="radio" name="category" id="category_one" <?php if (isset($category) && $category == 'writing essentials') {
             echo 'checked';
           } ?>>
           <label class="form-check-label" for="flexRadioDefault1">
-            shoes
+            writing essentials
           </label>
         </div>
 
