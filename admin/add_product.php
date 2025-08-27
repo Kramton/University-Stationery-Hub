@@ -53,10 +53,11 @@ if (!isset($_SESSION['admin_logged_in'])) {
                 <div class="form-group mt-2">
                     <label for="">Category</label>
                     <select class="form-select" required name="category">
-                        <option value="bags">Bags</option>
-                        <option value="shoes">Shoes</option>
-                        <option value="watches">Watches</option>
-                        <option value="clothes">Clothes</option>
+                        <option value="bags">Writing Essentials</option>
+                        <option value="shoes">Notebooks & Paper</option>
+                        <option value="watches">Desk Accessories</option>
+                        <option value="clothes">Creative Supplies</option>
+                        <option value="clothes">Study Tools</option>
                     </select>
                 </div>
 
