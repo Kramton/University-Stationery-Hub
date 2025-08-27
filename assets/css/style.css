@@ -114,6 +114,9 @@ button:hover {
   width: 100%;
   height: 100vh;
   background-size: cover;
+  /* adjust position if needed */
+  /* background-position-x: 90px; 
+    background-position-y: 80px; */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -153,8 +156,22 @@ button:hover {
   background-color: rgb(199, 199, 199);
 }
 
-#new .one:nth-child(1) .details,
-#new .one:nth-child(2) .details,
+#new .one:nth-child(1) .details {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+#new .one:nth-child(2) .details {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
 #new .one:nth-child(3) .details {
   display: flex;
   justify-content: center;
@@ -164,6 +181,7 @@ button:hover {
 }
 
 /* Product */
+
 .product {
   cursor: pointer;
   margin-bottom: 2rem;
@@ -214,10 +232,14 @@ hr {
 }
 
 #banner {
+  /* TODO: replace background image */
   background-image: url(../imgs/gridBox.png);
   width: 100%;
   height: 60vh;
   background-size: cover;
+  /* adjust position if needed */
+  /* background-position-x: 90px; 
+    background-position-y: 80px; */
   background-repeat: no-repeat;
   background-attachment: fixed;
   display: flex;
@@ -373,8 +395,7 @@ footer .copyright img {
   color: coral;
 }
 
-.cart .remove-btn,
-.cart .edit-btn {
+.cart .remove-btn {
   color: coral;
   text-decoration: none;
   font-size: 14px;
@@ -384,7 +405,12 @@ footer .copyright img {
 }
 
 .cart .edit-btn {
+  color: coral;
+  text-decoration: none;
   font-size: 15px;
+  background-color: white;
+  border: none;
+  width: 100%;
 }
 
 .cart .product-info p {
@@ -513,9 +539,14 @@ th:last-child {
 }
 
 .orders th {
+  /* text-align: left; */
   padding: 5px 10px;
   color: white;
   background-color: coral;
+}
+
+.orders th:nth-child(2) {
+  /* text-align: right; */
 }
 
 .orders td {
@@ -561,40 +592,10 @@ th:last-child {
 }
 
 .cart-quantity {
-  background-color: #fb774b;
-  color: #fff;
-  padding: 2px 5px;
-  border-radius: 50%;
-  margin: -2px;
-  font-size: 1rem;
-}
-
-/* Sticky footer fix */
-html, body {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-main {
-  flex: 1;
-}
-
-footer {
-  margin-top: auto;
-}
-
-/* Orders table clean look */
-.orders th, .orders td {
-  border-bottom: 1px solid #ddd;
-}
-
-.view-order-link {
-  color: coral;
-  font-weight: bold;
-  text-decoration: none;
-}
-
-.view-order-link:hover {
-  text-decoration: underline;
+    background-color: #fb774b;
+    color: #fff;
+    padding: 2px 5px;
+    border-radius: 50%;
+    margin: -2px;
+    font-size: 1rem;
 }
