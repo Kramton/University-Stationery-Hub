@@ -104,38 +104,47 @@ if (isset($_POST['search'])) {
 
         <p>Category</p>
         <div class="form-check">
-          <input class="form-check-input" value="writing essentials" type="radio" name="category" id="category_one" <?php if (isset($category) && $category == 'writing essentials') {
+          <input class="form-check-input" value="Writing Essentials" type="radio" name="category" id="category_one" <?php if (isset($category) && $category == 'Writing Essentials') {
             echo 'checked';
           } ?>>
           <label class="form-check-label" for="flexRadioDefault1">
-            writing essentials
+            Writing Essentials
           </label>
         </div>
 
         <div class="form-check">
-          <input class="form-check-input" value="coats" type="radio" name="category" id="category_two" <?php if (isset($category) && $category == 'coats') {
+          <input class="form-check-input" value="Notebooks & Paper" type="radio" name="category" id="category_two" <?php if (isset($category) && $category == 'Notebooks & Paper') {
             echo 'checked';
           } ?>>
           <label class="form-check-label" for="flexRadioDefault2">
-            coats
+            Notebooks & Paper
           </label>
         </div>
 
         <div class="form-check">
-          <input class="form-check-input" value="watches" type="radio" name="category" id="category_two" <?php if (isset($category) && $category == 'watches') {
+          <input class="form-check-input" value="Desk Accessories" type="radio" name="category" id="category_two" <?php if (isset($category) && $category == 'Desk Accessories') {
             echo 'checked';
           } ?>>
           <label class="form-check-label" for="flexRadioDefault2">
-            watches
+            Desk Accessories
           </label>
         </div>
 
         <div class="form-check">
-          <input class="form-check-input" value="bags" type="radio" name="category" id="category_two" <?php if (isset($category) && $category == 'bags') {
+          <input class="form-check-input" value="Creative Supplies" type="radio" name="category" id="category_two" <?php if (isset($category) && $category == 'Creative Supplies') {
             echo 'checked';
           } ?>>
           <label class="form-check-label" for="flexRadioDefault2">
-            bags
+            Creative Supplies
+          </label>
+        </div>
+
+        <div class="form-check">
+          <input class="form-check-input" value="Study Tools" type="radio" name="category" id="category_two" <?php if (isset($category) && $category == 'Study Tools') {
+            echo 'checked';
+          } ?>>
+          <label class="form-check-label" for="flexRadioDefault2">
+            Study Tools
           </label>
         </div>
       </div>
