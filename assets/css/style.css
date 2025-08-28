@@ -356,6 +356,97 @@ footer .copyright img {
 .single-product .buy-btn:hover {
   background-color: black;
 }
+/* Ribbon (new arrival) */
+.single-product .ribbon {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: black;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 9999px;
+  opacity: 0.9;
+  z-index: 2;
+}
+
+/* Promo price line */
+.single-product .promo-line {
+  color: #ef4444; /* red */
+  font-weight: 800;
+  font-size: 1.25rem;
+  margin: 1rem 0 0.25rem;
+}
+.single-product .promo-line .code {
+  color: #ef4444;
+}
+
+/* main price */
+.single-product .price-main {
+  font-size: 2.2rem;
+  font-weight: 900;
+  margin: 0.25rem 0;
+}
+
+/* Save pill */
+.single-product .save-pill {
+  display: inline-block;
+  background: #0ea5e9; /* blue */
+  color: #fff;
+  font-weight: 700;
+  border-radius: 9999px;
+  padding: 0.25rem 0.75rem;
+  margin: 0.5rem 0 1rem;
+}
+
+/* Stock note */
+.single-product .stock-note {
+  color: #f97316; /* orange */
+  font-weight: 700;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+/* Adjust product title size */
+.single-product .product-title {
+  font-size: 2rem;
+  font-weight: 800;
+  margin: 0.25rem 0 1rem;
+}
+/* Stock levels */
+.single-product .stock-note {
+  font-weight: 700;
+  text-align: center;
+  margin-top: 1rem;
+  border-radius: 10px;
+  padding: .5rem .75rem;
+  display: inline-block;
+}
+
+/* Colors */
+.single-product .stock-low    { color:#b91c1c; background:#fee2e2; } /* 0–5 */
+.single-product .stock-medium { color:#92400e; background:#fef3c7; } /* 6–20 */
+.single-product .stock-high   { color:#065f46; background:#d1fae5; } /* 21+ */
+.single-product .stock-out    { color:#374151; background:#e5e7eb; } /* 0 */
+
+/* Out-of-stock button + message */
+.single-product .buy-btn.out-of-stock {
+  background: #9ca3af;     /* grey */
+  color: #fff;
+  cursor: not-allowed;
+}
+.single-product .buy-btn.out-of-stock:hover {
+  background: #9ca3af;     /* stay grey on hover */
+}
+
+.single-product .stock-msg {
+  margin-top: .5rem;
+  font-weight: 700;
+  color: #b91c1c;          /* red text */
+  display: none;
+}
+.single-product .stock-msg.show { display: block; }
 
 /* Cart */
 .cart table {

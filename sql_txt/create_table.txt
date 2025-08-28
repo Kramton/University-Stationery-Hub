@@ -104,3 +104,14 @@ INSERT INTO `products`(`product_name`,`product_category`,`product_description`,
 
 -- Admin login
 INSERT INTO `admins` (`admin_id`, `admin_name`, `admin_email`, `admin_password`) VALUES (NULL, 'admin', 'admin@email.com', MD5('12345'));
+
+
+--stock level 
+ALTER TABLE products
+  ADD COLUMN product_stock INT NOT NULL DEFAULT 0
+  AFTER product_special_offer;
+
+-- give your sample products some stock
+UPDATE products SET product_stock = 12 WHERE product_name='white shoes';
+UPDATE products SET product_stock = 40 WHERE product_name='Note Book';
+UPDATE products SET product_stock = 5  WHERE product_name='Pen';

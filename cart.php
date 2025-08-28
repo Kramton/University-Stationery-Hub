@@ -1,125 +1,129 @@
-<?php include('layouts/header.php') ?>
-
+<?php include('layouts/header.php'); ?>
 <?php
+include('server/connection.php');
 
-if (isset($_POST['add_to_cart'])) {
-
-  // if user already added a product to cart
-  if (isset($_SESSION['cart'])) {
-    $products_array_ids = array_column($_SESSION['cart'], "product_id");
-
-    //if product has already been addedcto cart or not 
-    if (!in_array($_POST['product_id'], $products_array_ids)) {
-
-      $product_id = $_POST['product_id'];
-
-      $product_array = array(
-        'product_id' => $_POST['product_id'],
-        'product_name' => $_POST['product_name'],
-        'product_price' => $_POST['product_price'],
-        'product_image' => $_POST['product_image'],
-        'product_quantity' => $_POST['product_quantity']
-
-      );
-      $_SESSION['cart'][$product_id] = $product_array;
-      //product has already been added
-    } else {
-
-      echo '<script>alert("Product was already to cart");</script>';
-      // echo '<script>window.location="index.php";</script>';
-    }
-
-
-    // if this is the first product 
-  } else {
-
-    $product_id = $_POST['product_id'];
-    $product_name = $_POST['product_name'];
-    $product_price = $_POST['product_price'];
-    $product_image = $_POST['product_image'];
-    $product_quantity = $_POST['product_quantity'];
-
-    $product_array = array(
-      'product_id' => $product_id,
-      'product_name' => $product_name,
-      'product_price' => $product_price,
-      'product_image' => $product_image,
-      'product_quantity' => $product_quantity
-
-    );
-    $_SESSION['cart'][$product_id] = $product_array;
-
-  }
-  // calculate total
-  calculateTotalCart();
-
-
-
-
-  // remove prodect from the cart 
-} else if (isset($_POST['remove_product'])) {
-
-  $product_id = $_POST['product_id'];
-  unset($_SESSION['cart'][$product_id]);
-
-  // calculate total 
-  calculateTotalCart();
-
-
-
-} else if (isset($_POST['edit_quantity'])) {
-
-  //got id and quantity from the form 
-  $product_id = $_POST['product_id'];
-  $product_quantity = $_POST['product_quantity'];
-
-
-  //get the product array  from the session
-  $product_array = $_SESSION['cart'][$product_id];
-
-  //update product quantity
-  $product_array['product_quantity'] = $product_quantity;
-  //return array back its place
-  $_SESSION['cart'][$product_id] = $product_array;
-
-
-  // calculate total
-  calculateTotalCart();
-
-
-} else {
-  // If the user shouldn't be able to access the cart page, uncomment this code
-  // header('location: index.php');
+// Helper: fetch product safely
+function getProductById(mysqli $conn, int $id) {
+  $stmt = $conn->prepare("SELECT product_id, product_name, product_image, product_price, product_stock FROM products WHERE product_id = ?");
+  $stmt->bind_param("i", $id);
+  $stmt->execute();
+  $res = $stmt->get_result();
+  $row = $res->fetch_assoc();
+  $stmt->close();
+  return $row ?: null;
 }
 
-function calculateTotalCart()
-{
+// Ensure cart array exists
+if (!isset($_SESSION['cart'])) {
+  $_SESSION['cart'] = [];
+}
 
-  $total_price = 0;
+// ========== Add to cart ==========
+if (isset($_POST['add_to_cart'])) {
+  $product_id    = (int)$_POST['product_id'];
+  $requested_qty = max(1, (int)$_POST['product_quantity']);
+
+  $product = getProductById($conn, $product_id);
+  if (!$product) {
+    echo "<script>alert('Product not found.'); window.location='index.php';</script>";
+    exit;
+  }
+
+  $available_stock = (int)$product['product_stock'];
+  if ($available_stock <= 0) {
+    echo "<script>alert('Sorry, this product is out of stock'); window.location='single-product.php?product_id=$product_id';</script>";
+    exit;
+  }
+
+  if ($requested_qty > $available_stock) {
+    $requested_qty = $available_stock;
+    echo "<script>alert('Quantity adjusted to available stock ($available_stock)');</script>";
+  }
+
+  // If already in cart, merge quantities
+  if (isset($_SESSION['cart'][$product_id])) {
+    $existing_qty = (int)$_SESSION['cart'][$product_id]['product_quantity'];
+    $new_qty = min($existing_qty + $requested_qty, $available_stock);
+    $_SESSION['cart'][$product_id]['product_quantity'] = $new_qty;
+  } else {
+    // Build cart line from DB, not from POST
+    $_SESSION['cart'][$product_id] = [
+      'product_id'       => $product['product_id'],
+      'product_name'     => $product['product_name'],
+      'product_price'    => (float)$product['product_price'],
+      'product_image'    => $product['product_image'],
+      'product_quantity' => $requested_qty
+    ];
+  }
+
+  calculateTotalCart();
+
+// ========== Remove from cart ==========
+} else if (isset($_POST['remove_product'])) {
+  $product_id = (int)$_POST['product_id'];
+  unset($_SESSION['cart'][$product_id]);
+  calculateTotalCart();
+
+// ========== Edit quantity ==========
+} else if (isset($_POST['edit_quantity'])) {
+  $product_id   = (int)$_POST['product_id'];
+  $new_quantity = (int)$_POST['product_quantity'];
+
+  $product = getProductById($conn, $product_id);
+  if (!$product) {
+    echo "<script>alert('Product not found.');</script>";
+  } else {
+    $available_stock = (int)$product['product_stock'];
+
+    if ($new_quantity <= 0) {
+      // treat 0 or negatives as remove
+      unset($_SESSION['cart'][$product_id]);
+    } else {
+      if ($available_stock <= 0) {
+        unset($_SESSION['cart'][$product_id]);
+        echo "<script>alert('Sorry, this product is now out of stock and was removed from your cart.');</script>";
+      } else {
+        if ($new_quantity > $available_stock) {
+          $new_quantity = $available_stock;
+          echo "<script>alert('Quantity adjusted to available stock ($available_stock)');</script>";
+        }
+        if (isset($_SESSION['cart'][$product_id])) {
+          $_SESSION['cart'][$product_id]['product_quantity'] = $new_quantity;
+        } else {
+          // if somehow editing a product not in cart, add it
+          $_SESSION['cart'][$product_id] = [
+            'product_id'       => $product['product_id'],
+            'product_name'     => $product['product_name'],
+            'product_price'    => (float)$product['product_price'],
+            'product_image'    => $product['product_image'],
+            'product_quantity' => $new_quantity
+          ];
+        }
+      }
+    }
+  }
+
+  calculateTotalCart();
+}
+
+// Recalculate totals
+function calculateTotalCart() {
+  $total_price = 0.0;
   $total_quantity = 0;
 
-  foreach ($_SESSION['cart'] as $key => $value) {
-    $product = $_SESSION['cart'][$key];
-
-    $price = $product['product_price'];
-    $quantity = $product['product_quantity'];
-
-    $total_price = $total_price + ($price * $quantity);
-    $total_quantity = $total_quantity + $quantity;
+  if (!empty($_SESSION['cart'])) {
+    foreach ($_SESSION['cart'] as $line) {
+      $price    = (float)$line['product_price'];
+      $quantity = (int)$line['product_quantity'];
+      $total_price    += ($price * $quantity);
+      $total_quantity += $quantity;
+    }
   }
 
-  $_SESSION['total'] = $total_price;
+  $_SESSION['total']    = $total_price;
   $_SESSION['quantity'] = $total_quantity;
 }
-
-
-
-
-
-
 ?>
-
-
 
 <!-- Cart -->
 <section class="cart container my-5 py-5">
@@ -135,76 +139,70 @@ function calculateTotalCart()
       <th>Subtotal</th>
     </tr>
 
-    <?php if (isset($_SESSION['cart'])) { ?>
-
-      <?php foreach ($_SESSION['cart'] as $key => $value) { ?>
-
+    <?php if (!empty($_SESSION['cart'])): ?>
+      <?php foreach ($_SESSION['cart'] as $value): ?>
+        <?php
+          // Fetch live stock to set max attribute (optional but nice)
+          $stock_row = getProductById($conn, (int)$value['product_id']);
+          $live_stock = $stock_row ? (int)$stock_row['product_stock'] : 0;
+          $live_stock_max = max(1, $live_stock);
+        ?>
         <tr>
           <td>
             <div class="product-info">
-              <img src="assets/imgs/<?php echo $value['product_image']; ?>" />
-
+              <img src="assets/imgs/<?php echo htmlspecialchars($value['product_image']); ?>" alt="" />
               <div>
-                <p><?php echo $value['product_name']; ?></p>
-                <small><span>$</span><?php echo $value['product_price']; ?></small>
+                <p><?php echo htmlspecialchars($value['product_name']); ?></p>
+                <small><span>$</span><?php echo number_format((float)$value['product_price'], 2); ?></small>
                 <br>
                 <form method="POST" action="cart.php">
-                  <input type="hidden" name="product_id" value="<?php echo $value['product_id']; ?>" />
+                  <input type="hidden" name="product_id" value="<?php echo (int)$value['product_id']; ?>" />
                   <input type="submit" name="remove_product" class="remove-btn" value="remove" />
                 </form>
-
               </div>
             </div>
           </td>
 
           <td>
             <form method="POST" action="cart.php">
-              <input type="hidden" name="product_id" value="<?php echo $value['product_id']; ?>" />
-              <input type="number" name="product_quantity" value="<?php echo $value['product_quantity']; ?>" />
-
+              <input type="hidden" name="product_id" value="<?php echo (int)$value['product_id']; ?>" />
+              <input type="number" name="product_quantity"
+                     value="<?php echo (int)$value['product_quantity']; ?>"
+                     min="1" max="<?php echo $live_stock_max; ?>" />
               <input type="submit" class="edit-btn" value="edit" name="edit_quantity" />
-
             </form>
-
+            <?php if ($live_stock <= 0): ?>
+              <div class="text-danger" style="font-size: .9rem;">Currently out of stock</div>
+            <?php elseif ($live_stock < (int)$value['product_quantity']): ?>
+              <div class="text-warning" style="font-size: .9rem;">Reduced to max available: <?php echo $live_stock; ?></div>
+            <?php endif; ?>
           </td>
 
           <td>
             <span>$</span>
-            <span class="product-price"><?php echo $value['product_quantity'] * $value['product_price']; ?></span>
+            <span class="product-price">
+              <?php echo number_format(((float)$value['product_price'] * (int)$value['product_quantity']), 2); ?>
+            </span>
           </td>
         </tr>
-
-      <?php } ?>
-    <?php } ?>
-
+      <?php endforeach; ?>
+    <?php endif; ?>
   </table>
-
-
 
   <div class="cart-total">
     <table>
-      <!--   <tr>
-            <td>Subtotal</td>
-            <td>$14</td>
-          </tr>-->
       <tr>
         <td>Total</td>
-
-        <?php if (isset($_SESSION['cart'])) { ?>
-
-          <td>$ <?php echo $_SESSION['total']; ?></td>
-
-        <?php } ?>
-
+        <td>$ <?php echo isset($_SESSION['total']) ? number_format((float)$_SESSION['total'], 2) : '0.00'; ?></td>
       </tr>
     </table>
   </div>
 
   <div class="checkout-container">
-    <form method="PHP" action="checkout.php">
+    <form method="POST" action="checkout.php">
       <input type="submit" class="btn checkout-btn" value="Checkout" name="checkout">
     </form>
   </div>
 </section>
 
-<?php include('layouts/footer.php') ?>
+<?php include('layouts/footer.php'); ?>
