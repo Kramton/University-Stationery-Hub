@@ -2,9 +2,46 @@
 <?php
 include('server/connection.php');
 
-// Helper: fetch product safely
+/*
+// Normalize legacy cart keys to product_id (run once per request)
+function normalizeCartKeys() {
+  if (empty($_SESSION['cart'])) return;
+
+  $normalized = [];
+  foreach ($_SESSION['cart'] as $k => $line) {
+    if (!is_array($line) || !isset($line['product_id'])) continue;
+    $pid = (int)$line['product_id'];
+    if ($pid <= 0) {
+      // fallback to old key if it was a valid int-like key
+      $pid = is_numeric($k) ? (int)$k : 0;
+    }
+    if ($pid <= 0) continue; // skip malformed entries
+
+    if (isset($normalized[$pid])) {
+      // merge quantities if duplicated under different keys
+      $normalized[$pid]['product_quantity'] += (int)($line['product_quantity'] ?? 0);
+    } else {
+      $line['product_id'] = $pid; // ensure int
+      $line['product_quantity'] = max(1, (int)($line['product_quantity'] ?? 1));
+      $normalized[$pid] = $line;
+    }
+  }
+  $_SESSION['cart'] = $normalized;
+}
+
+// Ensure cart array exists, then normalize
+if (!isset($_SESSION['cart'])) {
+  $_SESSION['cart'] = [];
+}
+normalizeCartKeys();*/
+
+// Fetch a product by id with safe fields.
+ 
 function getProductById(mysqli $conn, int $id) {
-  $stmt = $conn->prepare("SELECT product_id, product_name, product_image, product_price, product_stock FROM products WHERE product_id = ?");
+  $stmt = $conn->prepare(
+    "SELECT product_id, product_name, product_image, product_price, product_stock
+     FROM products WHERE product_id = ?"
+  );
   $stmt->bind_param("i", $id);
   $stmt->execute();
   $res = $stmt->get_result();
@@ -13,100 +50,8 @@ function getProductById(mysqli $conn, int $id) {
   return $row ?: null;
 }
 
-// Ensure cart array exists
-if (!isset($_SESSION['cart'])) {
-  $_SESSION['cart'] = [];
-}
+// calculate cart totals (price & quantity).
 
-// ========== Add to cart ==========
-if (isset($_POST['add_to_cart'])) {
-  $product_id    = (int)$_POST['product_id'];
-  $requested_qty = max(1, (int)$_POST['product_quantity']);
-
-  $product = getProductById($conn, $product_id);
-  if (!$product) {
-    echo "<script>alert('Product not found.'); window.location='index.php';</script>";
-    exit;
-  }
-
-  $available_stock = (int)$product['product_stock'];
-  if ($available_stock <= 0) {
-    echo "<script>alert('Sorry, this product is out of stock'); window.location='single-product.php?product_id=$product_id';</script>";
-    exit;
-  }
-
-  if ($requested_qty > $available_stock) {
-    $requested_qty = $available_stock;
-    echo "<script>alert('Quantity adjusted to available stock ($available_stock)');</script>";
-  }
-
-  // If already in cart, merge quantities
-  if (isset($_SESSION['cart'][$product_id])) {
-    $existing_qty = (int)$_SESSION['cart'][$product_id]['product_quantity'];
-    $new_qty = min($existing_qty + $requested_qty, $available_stock);
-    $_SESSION['cart'][$product_id]['product_quantity'] = $new_qty;
-  } else {
-    // Build cart line from DB, not from POST
-    $_SESSION['cart'][$product_id] = [
-      'product_id'       => $product['product_id'],
-      'product_name'     => $product['product_name'],
-      'product_price'    => (float)$product['product_price'],
-      'product_image'    => $product['product_image'],
-      'product_quantity' => $requested_qty
-    ];
-  }
-
-  calculateTotalCart();
-
-// ========== Remove from cart ==========
-} else if (isset($_POST['remove_product'])) {
-  $product_id = (int)$_POST['product_id'];
-  unset($_SESSION['cart'][$product_id]);
-  calculateTotalCart();
-
-// ========== Edit quantity ==========
-} else if (isset($_POST['edit_quantity'])) {
-  $product_id   = (int)$_POST['product_id'];
-  $new_quantity = (int)$_POST['product_quantity'];
-
-  $product = getProductById($conn, $product_id);
-  if (!$product) {
-    echo "<script>alert('Product not found.');</script>";
-  } else {
-    $available_stock = (int)$product['product_stock'];
-
-    if ($new_quantity <= 0) {
-      // treat 0 or negatives as remove
-      unset($_SESSION['cart'][$product_id]);
-    } else {
-      if ($available_stock <= 0) {
-        unset($_SESSION['cart'][$product_id]);
-        echo "<script>alert('Sorry, this product is now out of stock and was removed from your cart.');</script>";
-      } else {
-        if ($new_quantity > $available_stock) {
-          $new_quantity = $available_stock;
-          echo "<script>alert('Quantity adjusted to available stock ($available_stock)');</script>";
-        }
-        if (isset($_SESSION['cart'][$product_id])) {
-          $_SESSION['cart'][$product_id]['product_quantity'] = $new_quantity;
-        } else {
-          // if somehow editing a product not in cart, add it
-          $_SESSION['cart'][$product_id] = [
-            'product_id'       => $product['product_id'],
-            'product_name'     => $product['product_name'],
-            'product_price'    => (float)$product['product_price'],
-            'product_image'    => $product['product_image'],
-            'product_quantity' => $new_quantity
-          ];
-        }
-      }
-    }
-  }
-
-  calculateTotalCart();
-}
-
-// Recalculate totals
 function calculateTotalCart() {
   $total_price = 0.0;
   $total_quantity = 0;
@@ -122,6 +67,109 @@ function calculateTotalCart() {
 
   $_SESSION['total']    = $total_price;
   $_SESSION['quantity'] = $total_quantity;
+}
+
+// Ensure cart array exists
+if (!isset($_SESSION['cart'])) {
+  $_SESSION['cart'] = [];
+}
+
+
+
+// back URL (referrer or index)
+$backUrl = (!empty($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER'] : 'index.php';
+
+// ======================== Add to cart =========================
+if (isset($_POST['add_to_cart'])) {
+  $product_id    = (int)$_POST['product_id'];
+  $requested_qty = max(1, (int)$_POST['product_quantity']);
+
+  $product = getProductById($conn, $product_id);
+  if (!$product) {
+    echo "<script>alert('Product not found.'); window.location=" . json_encode($backUrl) . ";</script>";
+    exit;
+  }
+
+  $available_stock = (int)$product['product_stock'];
+  if ($available_stock <= 0) {
+    echo "<script>alert('Sorry, this product is out of stock'); window.location=" . json_encode($backUrl) . ";</script>";
+    exit;
+  }
+
+  if ($requested_qty > $available_stock) {
+    $requested_qty = $available_stock; // clamp
+    echo "<script>alert('Quantity adjusted to available stock ($available_stock)');</script>";
+  }
+
+  // Merge with existing cart line if present
+  if (isset($_SESSION['cart'][$product_id])) {
+    $existing_qty = (int)$_SESSION['cart'][$product_id]['product_quantity'];
+    $new_qty = min($existing_qty + $requested_qty, $available_stock);
+    $_SESSION['cart'][$product_id]['product_quantity'] = $new_qty;
+  } else {
+    // Build cart line from DB values (don’t trust POST)
+    $_SESSION['cart'][$product_id] = [
+      'product_id'       => $product['product_id'],
+      'product_name'     => $product['product_name'],
+      'product_price'    => (float)$product['product_price'],
+      'product_image'    => $product['product_image'],
+      'product_quantity' => $requested_qty
+    ];
+  }
+
+  calculateTotalCart();
+
+
+
+
+// Remove from cart 
+} else if (isset($_POST['remove_product'])) {
+  $product_id = (int)$_POST['product_id'];
+  unset($_SESSION['cart'][$product_id]);
+  calculateTotalCart();
+
+
+
+
+
+// Edit quantity
+} else if (isset($_POST['edit_quantity'])) {
+  $product_id   = (int)$_POST['product_id'];
+  $new_quantity = (int)$_POST['product_quantity'];
+
+  $product = getProductById($conn, $product_id);
+  if (!$product) {
+    echo "<script>alert('Product not found.');</script>";
+  } else {
+    $available_stock = (int)$product['product_stock'];
+
+    if ($new_quantity <= 0) {
+      // 0 or negative means remove the item
+      unset($_SESSION['cart'][$product_id]);
+    } else if ($available_stock <= 0) {
+      unset($_SESSION['cart'][$product_id]);
+      echo "<script>alert('Sorry, this product is now out of stock and was removed from your cart.');</script>";
+    } else {
+      if ($new_quantity > $available_stock) {
+        $new_quantity = $available_stock;
+        echo "<script>alert('Quantity adjusted to available stock ($available_stock)');</script>";
+      }
+      if (isset($_SESSION['cart'][$product_id])) {
+        $_SESSION['cart'][$product_id]['product_quantity'] = $new_quantity;
+      } else {
+        // If editing a product not yet in cart, add it
+        $_SESSION['cart'][$product_id] = [
+          'product_id'       => $product['product_id'],
+          'product_name'     => $product['product_name'],
+          'product_price'    => (float)$product['product_price'],
+          'product_image'    => $product['product_image'],
+          'product_quantity' => $new_quantity
+        ];
+      }
+    }
+  }
+
+  calculateTotalCart();
 }
 ?>
 
@@ -142,7 +190,7 @@ function calculateTotalCart() {
     <?php if (!empty($_SESSION['cart'])): ?>
       <?php foreach ($_SESSION['cart'] as $value): ?>
         <?php
-          // Fetch live stock to set max attribute (optional but nice)
+          // Get live stock to cap the input (nice UX; server still enforces)
           $stock_row = getProductById($conn, (int)$value['product_id']);
           $live_stock = $stock_row ? (int)$stock_row['product_stock'] : 0;
           $live_stock_max = max(1, $live_stock);
