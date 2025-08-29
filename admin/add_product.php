@@ -49,17 +49,33 @@ if (!isset($_SESSION['admin_logged_in'])) {
                     <label for="">Special Offer/Sale</label>
                     <input type="text" class="form-control" id="product-offer" name="offer" placeholder="Offer" required>
                 </div>
+           
+             <div class="form-group mt-2">
+              <label for="product-stock">Stock</label>
+               <input type="number"
+                  class="form-control"
+                  id="product-stock"
+                  name="stock"
+                  placeholder="e.g. 25"
+                  min="0"
+                  step="1"
+                  required>
+             <small class="text-muted">How many units are available.</small></div>
 
+
+
+                
                 <div class="form-group mt-2">
-                    <label for="">Category</label>
-                    <select class="form-select" required name="category">
-                        <option value="bags">Writing Essentials</option>
-                        <option value="shoes">Notebooks & Paper</option>
-                        <option value="watches">Desk Accessories</option>
-                        <option value="clothes">Creative Supplies</option>
-                        <option value="clothes">Study Tools</option>
-                    </select>
+                <label for="">Category</label>
+                <select class="form-select" required name="category">
+                <option value="Writing Essentials">Writing Essentials</option>
+                <option value="Notebooks & Paper">Notebooks & Paper</option>
+                <option value="Desk Accessories">Desk Accessories</option>
+                <option value="Creative Supplies">Creative Supplies</option>
+                <option value="Study Tools">Study Tools</option>
+                </select>
                 </div>
+
 
                 <div class="form-group mt-2">
                     <label for="">Color</label>

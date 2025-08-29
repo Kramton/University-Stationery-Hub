@@ -98,3 +98,8 @@ body {
   border-color: transparent;
   box-shadow: 0 0 0 3px rgba(255, 255, 255, .25);
 }
+
+
+/* admin: inline stock input sizing */
+.table td form .form-control-sm { max-width: 100px; }
+.table td form .btn { white-space: nowrap; }

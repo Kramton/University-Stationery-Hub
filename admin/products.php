@@ -14,6 +14,35 @@ if (!isset($_SESSION['admin_logged_in'])) {
 
 
 <?php
+// stock update 
+if (isset($_POST['update_stock'])) {
+  $page_keep   = isset($_POST['page_no']) ? (int)$_POST['page_no'] : 1;
+  $product_id  = (int)$_POST['product_id'];
+  $new_stock   = max(0, (int)$_POST['product_stock']); // never negative
+
+  $stmt = $conn->prepare("UPDATE products SET product_stock = ? WHERE product_id = ?");
+  $stmt->bind_param("ii", $new_stock, $product_id);
+  $ok = $stmt->execute();
+  $stmt->close();
+
+  if ($ok) {
+  header("Location: products.php?page_no={$page_keep}&stock_success_message=" . urlencode('Stock updated.'));
+} else {
+  header("Location: products.php?page_no={$page_keep}&stock_failure_message=" . urlencode('Failed to update stock.'));
+}
+exit();
+
+}
+?>
+
+
+
+
+
+
+
+
+<?php
 
 // get orders
 if (isset($_GET['page_no']) && $_GET['page_no'] != "") {
@@ -78,6 +107,15 @@ $products = $stmt2->get_result();
       <?php if(isset($_GET['edit_failure_message'])) { ?>
         <p class="text-center" style="color: red;"><?php echo $_GET['edit_failure_message']; ?></p>
       <?php } ?>
+      
+        <?php if(isset($_GET['stock_success_message'])) { ?>
+               <p class="text-center" style="color: green;"><?php echo htmlspecialchars($_GET['stock_success_message']); ?></p>
+             <?php } ?>
+
+       <?php if(isset($_GET['stock_failure_message'])) { ?>
+             <p class="text-center" style="color: red;"><?php echo htmlspecialchars($_GET['stock_failure_message']); ?></p>
+             <?php } ?>
+
 
 
 
@@ -118,12 +156,15 @@ $products = $stmt2->get_result();
               <th scope="col">Product Image</th>
               <th scope="col">Product Name</th>
               <th scope="col">Product Price</th>
+               <th scope="col">Stock</th>
               <th scope="col">Product Offer</th>
               <th scope="col">Product Category</th>
               <th scope="col">Product Color</th>
               <th scope="col">Edit Images</th>
               <th scope="col">Edit</th>
               <th scope="col">Delete</th>
+
+
             </tr>
           </thead>
           <tbody>
@@ -134,6 +175,20 @@ $products = $stmt2->get_result();
               <td><img src="<?php echo "../assets/imgs/". $product['product_image']; ?>" style="width: 70px; height: 70px;"></td>
               <td><?php echo $product['product_name']; ?></td>
               <td><?php echo "$" . $product['product_price']; ?></td>
+              
+              <td>
+    <form method="POST" action="products.php" class="d-flex align-items-center gap-2">
+      <input type="hidden" name="product_id" value="<?php echo (int)$product['product_id']; ?>">
+      <input type="hidden" name="page_no"   value="<?php echo (int)$page_no; ?>">
+      <input type="number" min="0" step="1" name="product_stock"
+             value="<?php echo isset($product['product_stock']) ? (int)$product['product_stock'] : 0; ?>"
+             class="form-control form-control-sm" style="width:90px;">
+      <button type="submit" name="update_stock" class="btn btn-sm btn-outline-secondary">Save</button>
+    </form>
+  </td>
+              
+              
+              
               <td><?php echo $product['product_special_offer'] . "%"; ?></td>
               <td><?php echo $product['product_category']; ?></td>
               <td><?php echo $product['product_color']; ?></td>
@@ -141,6 +196,7 @@ $products = $stmt2->get_result();
               <td><a class="btn btn-warning" href="<?php echo "edit_images.php?product_id=" . $product['product_id'] . "&product_name=" . $product['product_name']; ?>">Edit Images</a></td>
               <td><a class="btn btn-primary" href="edit_product.php?product_id=<?php echo $product['product_id']; ?>">Edit</a></td>
               <td><a class="btn btn-danger" href="delete_product.php?product_id=<?php echo $product['product_id'] ?>">Delete</a></td>
+           
             </tr>
 
             <?php } ?>

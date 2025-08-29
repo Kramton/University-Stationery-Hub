@@ -10,6 +10,7 @@ if(isset($_POST['create_product'])) {
     $product_description = $_POST['description'];
     $product_price = $_POST['price'];
     $product_special_offer = $_POST['offer'];
+    $product_stock = isset($_POST['stock']) ? max(0, (int)$_POST['stock']) : 0;
     $product_category = $_POST['category'];
     $product_color = $_POST['color'];
 
@@ -18,7 +19,12 @@ if(isset($_POST['create_product'])) {
     $image2 = $_FILES['image2']['tmp_name'];
     $image3 = $_FILES['image3']['tmp_name'];
     $image4 = $_FILES['image4']['tmp_name'];
-
+  
+    // Make a safe base for filenames (avoid spaces/specials)
+    $safe_base = preg_replace('/[^A-Za-z0-9_\-]/', '_', strtolower($product_name));
+    if ($safe_base === '') { $safe_base = 'product'; }
+    
+    
     // This is the image names
     $image_name1 = $product_name."1.jpeg";
     $image_name2 = $product_name."2.jpeg";
