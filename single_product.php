@@ -15,7 +15,7 @@ if(isset($_GET['product_id'])){
 ?>
 
 <style>
-  /* ====== Single Product Styles (match reference layout) ====== */
+  /*  Single product styles */
   .single-product .ribbon {
     position:absolute; top:12px; left:12px; z-index:3;
     background:#000; color:#fff; font-size:.72rem; letter-spacing:.04em;
@@ -49,8 +49,6 @@ if(isset($_GET['product_id'])){
   .stock-note {
     color:#f97316; font-weight:700; text-align:center; margin-top:1rem;
   }
-
-  /* Related products quick polish */
   #featured .product { border:1px solid #f3f4f6; border-radius:14px; padding:1rem; box-shadow:0 2px 10px rgba(0,0,0,.03); }
 </style>
 
@@ -64,7 +62,8 @@ if(isset($_GET['product_id'])){
       $stock       = isset($row['product_stock']) && $row['product_stock'] !== '' ? (int)$row['product_stock'] : 5; // fallback 5
       $savings     = $promoPrice ? max(0, $price - $promoPrice) : 0;
     ?>
-    <!-- LEFT: Gallery -->
+    
+    <!-- left gallery -->
     <div class="col-lg-5 col-md-6 col-sm-12">
       <div class="img-wrap">
         <?php if ($isNew): ?>
@@ -98,7 +97,7 @@ if(isset($_GET['product_id'])){
 <?php endif; ?>
     </div>
 
-    <!-- RIGHT: Info -->
+    <!-- right Info -->
     <div class="col-lg-6 col-md-12 col-12 offset-lg-1">
       <div class="pill-cat">Stationery</div>
       <h1 class="product-title"><?php echo htmlspecialchars($row['product_name']); ?></h1>
@@ -140,7 +139,7 @@ if(isset($_GET['product_id'])){
   </div>
 </section>
 
-<!-- Related Products (kept your block; lightly styled above) -->
+<!-- related products -->
 <section id="featured" class="my-5 pb-5">
   <div class="container text-center mt-5 py-5">
     <h3>Related Products</h3>
@@ -176,7 +175,7 @@ if(isset($_GET['product_id'])){
 </section>
 
 <script>
-  // image swap (works with any number of thumbs)
+  // image swap 
   const mainImg = document.getElementById("mainImg");
   const smallImgs = document.getElementsByClassName("small-img");
   for (let i = 0; i < smallImgs.length; i++) {

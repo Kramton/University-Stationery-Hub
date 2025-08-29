@@ -3,7 +3,7 @@
 include('server/connection.php');
 
 /*
-// Normalize legacy cart keys to product_id (run once per request)
+// debug
 function normalizeCartKeys() {
   if (empty($_SESSION['cart'])) return;
 
@@ -79,7 +79,7 @@ if (!isset($_SESSION['cart'])) {
 // back URL (referrer or index)
 $backUrl = (!empty($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER'] : 'index.php';
 
-// ======================== Add to cart =========================
+// Add to cart
 if (isset($_POST['add_to_cart'])) {
   $product_id    = (int)$_POST['product_id'];
   $requested_qty = max(1, (int)$_POST['product_quantity']);
