@@ -39,7 +39,8 @@ if (!isset($_SESSION['admin_logged_in'])) {
                 </div>
                 <div class="form-group mt-2">
                     <label for="">Description</label>
-                    <input type="text" class="form-control" id="product-desc" name="description" placeholder="Description" required>
+                    <textarea class="form-control" id="product-desc" name="description" placeholder="Description"rows="5" style="resize: vertical;" required></textarea>
+                  
                 </div>
                 <div class="form-group mt-2">
                     <label for="">Price</label>

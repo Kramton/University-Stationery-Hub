@@ -1,4 +1,5 @@
 <?php include('layouts/header.php'); ?>
+
 <?php 
 include('server/connection.php');
 
@@ -49,6 +50,7 @@ if(isset($_GET['product_id'])){
   .stock-note {
     color:#f97316; font-weight:700; text-align:center; margin-top:1rem;
   }
+
   #featured .product { border:1px solid #f3f4f6; border-radius:14px; padding:1rem; box-shadow:0 2px 10px rgba(0,0,0,.03); }
 </style>
 
@@ -56,14 +58,22 @@ if(isset($_GET['product_id'])){
 <section class="container single-product my-5 pt-5">
   <div class="row mt-5">
     <?php while($row = $product->fetch_assoc()): 
-      $price       = (float)$row['product_price'];
-      $promoPrice  = isset($row['product_promo_price']) && $row['product_promo_price'] !== '' ? (float)$row['product_promo_price'] : null;
-      $isNew       = isset($row['product_is_new']) ? (int)$row['product_is_new'] : 0;
-      $stock       = isset($row['product_stock']) && $row['product_stock'] !== '' ? (int)$row['product_stock'] : 5; // fallback 5
-      $savings     = $promoPrice ? max(0, $price - $promoPrice) : 0;
+      $price = (float)$row['product_price'];
+     // $promoPrice  = isset($row['product_special_offer']) && $row['product_special_offer'] !== '' ? (float)$row['product_promo_price'] : null;
+      $isNew = isset($row['product_is_new']) ? (int)$row['product_is_new'] : 0;
+      $stock = isset($row['product_stock']) && $row['product_stock'] !== '' ? (int)$row['product_stock'] : 5; // fallback 5
+      $discountPercent = isset($row['product_special_offer']) ? (int)$row['product_special_offer'] : 0;
+      // compute promo price from % 
+        $promoPrice = ($discountPercent > 0)
+                  ? round($price * (100 - $discountPercent) / 100, 2)
+                  : null;
+
+  // how much save
+  $savings = ($promoPrice !== null) ? max(0, round($price - $promoPrice, 2)) : 0;
     ?>
+
     
-    <!-- left gallery -->
+    <!-- lleft  gallery -->
     <div class="col-lg-5 col-md-6 col-sm-12">
       <div class="img-wrap">
         <?php if ($isNew): ?>
@@ -89,7 +99,7 @@ if(isset($_GET['product_id'])){
           </div>
         <?php endforeach; ?>
       </div>
-
+    
       <?php if ($stock > 0): ?>
   <div class="stock-note">Only <?php echo $stock; ?> left remaining!</div>
 <?php else: ?>
@@ -97,23 +107,30 @@ if(isset($_GET['product_id'])){
 <?php endif; ?>
     </div>
 
-    <!-- right Info -->
+    <!-- right  info -->
     <div class="col-lg-6 col-md-12 col-12 offset-lg-1">
       <div class="pill-cat">Stationery</div>
-      <h1 class="product-title"><?php echo htmlspecialchars($row['product_name']); ?></h1>
+      <h1 class="product-title"><?php echo htmlspecialchars($row['product_name']); ?></h1><hr>
+      <h4 class="details-heading"><strong>Product Details:</strong></h4>
 
       <p class="product-desc">
         <?php echo nl2br(htmlspecialchars($row['product_description'] ?? '')); ?>
       </p>
+         
+    <?php if ($promoPrice !== null): ?>
+  <div class="promo-line">
+    With promo code <span class="code">$<?php echo number_format($promoPrice, 2); ?></span>
+    <small>(<?php echo $discountPercent; ?>% off)</small>
+  </div>
 
-      <?php if ($promoPrice && $promoPrice > 0): ?>
-        <div class="promo-line">With promo code <span class="code">$<?php echo number_format($promoPrice, 2); ?></span></div>
-      <?php endif; ?>
+<?php endif; ?>
+
+
 
       <div class="price-main">$<?php echo number_format($price, 2); ?></div>
 
       <?php if ($savings > 0): ?>
-        <div class="save-pill">SAVE $<?php echo number_format($savings, 0); ?></div>
+        <div class="save-pill">SAVE $<?php echo number_format($savings, 2); ?></div>
       <?php endif; ?>
 
      <?php
@@ -128,7 +145,7 @@ if(isset($_GET['product_id'])){
   <input type="hidden" name="product_name" value="<?php echo $row['product_name']; ?>"/>
   <input type="hidden" name="product_price" value="<?php echo $row['product_price']; ?>"/>
 
-  <input type="number" name="product_quantity" value="1" />
+  <input type="number" name="product_quantity" value="1" min="1" step="1"  required/>
   <button class="buy-btn" type="submit" name="add_to_cart">Add To Cart</button>
 </form>
 
@@ -139,10 +156,11 @@ if(isset($_GET['product_id'])){
   </div>
 </section>
 
-<!-- related products -->
+
+<!-- related products  -->
 <section id="featured" class="my-5 pb-5">
   <div class="container text-center mt-5 py-5">
-    <h3>Related Products</h3>
+    
     <hr class="mx-auto" />
   </div>
 
@@ -175,7 +193,7 @@ if(isset($_GET['product_id'])){
 </section>
 
 <script>
-  // image swap 
+  // image swap (works with any number of thumbs)
   const mainImg = document.getElementById("mainImg");
   const smallImgs = document.getElementsByClassName("small-img");
   for (let i = 0; i < smallImgs.length; i++) {
@@ -186,3 +204,22 @@ if(isset($_GET['product_id'])){
 </script>
 
 <?php include('layouts/footer.php'); ?>
+
+<script>
+
+  const mainImg = document.getElementById("mainImg");
+  const smallImgs = document.getElementsByClassName("small-img");
+  for (let i = 0; i < smallImgs.length; i++) {
+    smallImgs[i].onclick = function () { mainImg.src = smallImgs[i].src; }
+  }
+  const qty = document.querySelector('input[name="product_quantity"]');
+  if (qty) {
+    qty.addEventListener('input', function () {
+      const v = parseInt(this.value, 10);
+      if (isNaN(v) || v < 1) this.value = 1;
+    });
+    qty.addEventListener('keydown', function (e) {
+      if (['e','E','+','-','.'].includes(e.key)) e.preventDefault();
+    });
+  }
+</script>

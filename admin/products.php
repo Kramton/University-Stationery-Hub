@@ -13,34 +13,6 @@ if (!isset($_SESSION['admin_logged_in'])) {
 ?>
 
 
-<?php
-// stock update 
-if (isset($_POST['update_stock'])) {
-  $page_keep   = isset($_POST['page_no']) ? (int)$_POST['page_no'] : 1;
-  $product_id  = (int)$_POST['product_id'];
-  $new_stock   = max(0, (int)$_POST['product_stock']); // never negative
-
-  $stmt = $conn->prepare("UPDATE products SET product_stock = ? WHERE product_id = ?");
-  $stmt->bind_param("ii", $new_stock, $product_id);
-  $ok = $stmt->execute();
-  $stmt->close();
-
-  if ($ok) {
-  header("Location: products.php?page_no={$page_keep}&stock_success_message=" . urlencode('Stock updated.'));
-} else {
-  header("Location: products.php?page_no={$page_keep}&stock_failure_message=" . urlencode('Failed to update stock.'));
-}
-exit();
-
-}
-?>
-
-
-
-
-
-
-
 
 <?php
 
@@ -176,18 +148,26 @@ $products = $stmt2->get_result();
               <td><?php echo $product['product_name']; ?></td>
               <td><?php echo "$" . $product['product_price']; ?></td>
               
-              <td>
-    <form method="POST" action="products.php" class="d-flex align-items-center gap-2">
-      <input type="hidden" name="product_id" value="<?php echo (int)$product['product_id']; ?>">
-      <input type="hidden" name="page_no"   value="<?php echo (int)$page_no; ?>">
-      <input type="number" min="0" step="1" name="product_stock"
-             value="<?php echo isset($product['product_stock']) ? (int)$product['product_stock'] : 0; ?>"
-             class="form-control form-control-sm" style="width:90px;">
-      <button type="submit" name="update_stock" class="btn btn-sm btn-outline-secondary">Save</button>
-    </form>
-  </td>
+            <td>
+            <?php $stock = isset($product['product_stock']) ? (int)$product['product_stock'] : 0;
+            // color code
+            if ($stock === 0) 
+            { $badge = 'bg-secondary';} 
+             elseif ($stock <= 5) 
+            { 
+             $badge = 'bg-danger';              // low
+           } 
+        elseif ($stock <= 20) 
+           {
+            $badge = 'bg-warning text-dark';   // medium
+           } 
+          else 
+            { $badge = 'bg-success';             // high
+              }   ?>
+              <span class="badge <?php echo $badge; ?>"><?php echo $stock; ?></span> </td>
+
               
-              
+            
               
               <td><?php echo $product['product_special_offer'] . "%"; ?></td>
               <td><?php echo $product['product_category']; ?></td>

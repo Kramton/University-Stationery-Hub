@@ -33,36 +33,7 @@
           </div>
         </div>
 
-        <!-- TODO: Maybe remove this section? -->
-        <!-- <div class="footer-one col-lg-3 col-md-6 col-sm-12">
-          <h5 class="pb-2">Instagram</h5>
-          <div class="row">
-            <img
-              src="assets/imgs/1.png"
-              class="img-fluid w-25 h-100 m-2"
-              alt=""
-            />
-            <img
-              src="assets/imgs/1.png"
-              class="img-fluid w-25 h-100 m-2"
-              alt=""
-            />
-            <img
-              src="assets/imgs/1.png"
-              class="img-fluid w-25 h-100 m-2"
-              alt=""
-            />
-            <img
-              src="assets/imgs/1.png"
-              class="img-fluid w-25 h-100 m-2"
-              alt=""
-            />
-            <img
-              src="assets/imgs/1.png"
-              class="img-fluid w-25 h-100 m-2"
-              alt=""
-            />
-          </div> -->
+        
         </div>
       </div>
 

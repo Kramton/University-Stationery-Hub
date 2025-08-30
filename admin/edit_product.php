@@ -18,10 +18,12 @@ if (isset($_GET['product_id'])) {
     $offer = $_POST['offer'];
     $color = $_POST['color'];
     $category = $_POST['category'];
-
-    $stmt = $conn->prepare("UPDATE products SET product_name=?, product_description=?, product_price=?,
-                                   product_special_offer=?, product_color=?, product_category=? WHERE product_id=?");
-    $stmt->bind_param('ssssssi', $title, $description, $price, $offer, $color, $category, $product_id);
+    $stock = isset($_POST['stock']) ? max(0, (int)$_POST['stock']) : 0;
+   
+   
+   $stmt = $conn->prepare("UPDATE products SET product_name=?, product_description=?, product_price=?,
+                                   product_special_offer=?, product_color=?, product_category=?, product_stock=? WHERE product_id=?");
+    $stmt->bind_param('ssssssii', $title, $description, $price, $offer, $color, $category,$stock, $product_id);
 
     if ($stmt->execute()) {
         header('location: products.php?edit_success_message=Product updated successfully.');
@@ -71,9 +73,10 @@ if (isset($_GET['product_id'])) {
                             </div>
                             <div class="form-group mt-2">
                                 <label for="">Description</label>
-                                <input type="text" class="form-control" id="product-desc"
-                                    value="<?php echo $product['product_description']; ?>" name="description"
-                                    placeholder="Description" required>
+                                <textarea class="form-control" id="product-desc" name="description"
+                                rows="5" style="resize: vertical;" required><?php
+                          echo htmlspecialchars($product['product_description']);
+                          ?></textarea>
                             </div>
                             <div class="form-group mt-2">
                                 <label for="">Price</label>
@@ -85,11 +88,11 @@ if (isset($_GET['product_id'])) {
                                 <label for="">Category</label>
                                 <select class="form-select" required name="category">
                                     <!-- TODO: rename values / add more categories -->
-                                    <option value="bags">Writing Essentials</option>
-                                    <option value="shoes">Notebooks & Paper</option>
-                                    <option value="watches">Desk Accessories</option>
-                                    <option value="clothes">Creative Supplies</option>
-                                    <option value="clothes">Study Tools</option>
+                                    <option value="Writing Essentials">Writing Essentials</option>
+                                    <option value="Notebooks & Paper">Notebooks & Paper</option>
+                                    <option value="Desk Accessories">Desk Accessories</option>
+                                    <option value="Creative Supplies">Creative Supplies</option>
+                                    <option value="Study Tools">Study Tools</option>
                                 </select>
                             </div>
                             <div class="form-group mt-2">
@@ -103,6 +106,19 @@ if (isset($_GET['product_id'])) {
                                     value="<?php echo $product['product_special_offer']; ?>" id="product-offer" name="offer"
                                     placeholder="Sale %" required>
                             </div>
+                           
+                            <div class="form-group mt-2">
+                            <label for="product-stock">Stock</label>
+                            <input type="number" class="form-control" id="product-stock"
+                                   value="<?php echo isset($product['product_stock']) ? (int)$product['product_stock'] : 0; ?>"
+                                   name="stock" placeholder="Units in stock" min="0" step="1" required> </div>
+
+
+
+
+
+
+
 
                             <div class="form-group mt-3">
                                 <input type="submit" class="btn btn-primary" name="edit_btn" value="Edit">

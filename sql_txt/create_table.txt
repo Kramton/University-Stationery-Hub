@@ -115,3 +115,6 @@ ALTER TABLE products
 UPDATE products SET product_stock = 12 WHERE product_name='white shoes';
 UPDATE products SET product_stock = 40 WHERE product_name='Note Book';
 UPDATE products SET product_stock = 5  WHERE product_name='Pen';
+
+ALTER TABLE products
+  MODIFY product_description TEXT NOT NULL;

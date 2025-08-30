@@ -25,7 +25,7 @@ if(isset($_POST['create_product'])) {
     if ($safe_base === '') { $safe_base = 'product'; }
     
     
-    // This is the image names
+    // image names
     $image_name1 = $product_name."1.jpeg";
     $image_name2 = $product_name."2.jpeg";
     $image_name3 = $product_name."3.jpeg";
@@ -46,21 +46,20 @@ if(isset($_POST['create_product'])) {
          VALUES (?,?,?,?,?,?,?,?,?,?,?)"
     );
 
-    // Types: name(s) + desc(s) = s,s ; price = d ; offer = i ; 6 strings (images+category+color) ; stock = i
-    // => 'ssdissssss i'  (no spaces) => "ssdissssssi"
+   
     $stmt->bind_param(
         "ssdissssssi",
         $product_name,
         $product_description,
-        $product_price,           // d
-        $product_special_offer,   // i
+        $product_price,          
+        $product_special_offer,   
         $image_name1,
         $image_name2,
         $image_name3,
         $image_name4,
         $product_category,
         $product_color,
-        $product_stock            // i
+        $product_stock           
     );
 
     if ($stmt->execute()) {

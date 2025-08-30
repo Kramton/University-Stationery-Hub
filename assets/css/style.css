@@ -392,7 +392,7 @@ footer .copyright img {
 /* Save pill */
 .single-product .save-pill {
   display: inline-block;
-  background: #0ea5e9; /* blue */
+  background: #0ea5e9; 
   color: #fff;
   font-weight: 700;
   border-radius: 9999px;
@@ -402,7 +402,7 @@ footer .copyright img {
 
 /* Stock note */
 .single-product .stock-note {
-  color: #f97316; /* orange */
+  color: #f97316; 
   font-weight: 700;
   text-align: center;
   margin-top: 1rem;
@@ -432,18 +432,18 @@ footer .copyright img {
 
 /* Out-of-stock button + message */
 .single-product .buy-btn.out-of-stock {
-  background: #9ca3af;     /* grey */
+  background: #9ca3af;   
   color: #fff;
   cursor: not-allowed;
 }
 .single-product .buy-btn.out-of-stock:hover {
-  background: #9ca3af;     /* stay grey on hover */
+  background: #9ca3af;     
 }
 
 .single-product .stock-msg {
   margin-top: .5rem;
   font-weight: 700;
-  color: #b91c1c;          /* red text */
+  color: #b91c1c;          
   display: none;
 }
 .single-product .stock-msg.show { display: block; }
@@ -638,6 +638,7 @@ th:last-child {
 
 .orders th:nth-child(2) {
   /* text-align: right; */
+  
 }
 
 .orders td {
