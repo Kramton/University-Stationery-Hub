@@ -89,165 +89,150 @@ if (isset($_POST['search'])) {
 
 ?>
 
-<!-- Search -->
-<!-- Featured -->
-<section id="search" class="my-5 py-5 ms-2">
+<!-- Product Page -->
+<section id="shop" class="my-5 py-5">
   <div class="container mt-5 py-5">
-    <p>Search Product</p>
-    <hr>
-  </div>
+    <div class="row">
 
-  <form action="shop.php" method="POST">
-    <div class="row mx-auto container">
-      <div class="col-lg-12 col-md-12 col-sm-12">
+      <!-- Search Filters -->
+      <div class="col-lg-3 col-md-4 col-sm-12">
+        <h4>Search Product</h4>
+        <hr>
 
+        <form action="shop.php" method="POST">
 
-        <p>Category</p>
-        <div class="form-check">
-          <input class="form-check-input" value="Writing Essentials" type="radio" name="category" id="category_one" <?php if (isset($category) && $category == 'Writing Essentials') {
-            echo 'checked';
-          } ?>>
-          <label class="form-check-label" for="flexRadioDefault1">
-            Writing Essentials
-          </label>
+          <p>Category</p>
+          <div class="form-check">
+            <input class="form-check-input" value="Writing Essentials" type="radio" name="category" id="category_one"
+              <?php if (isset($category) && $category == 'Writing Essentials')
+                echo 'checked'; ?>>
+            <label class="form-check-label" for="category_one">Writing Essentials</label>
+          </div>
+
+          <div class="form-check">
+            <input class="form-check-input" value="Notebooks & Paper" type="radio" name="category" id="category_two"
+              <?php if (isset($category) && $category == 'Notebooks & Paper')
+                echo 'checked'; ?>>
+            <label class="form-check-label" for="category_two">Notebooks & Paper</label>
+          </div>
+
+          <div class="form-check">
+            <input class="form-check-input" value="Desk Accessories" type="radio" name="category" id="category_three"
+              <?php if (isset($category) && $category == 'Desk Accessories')
+                echo 'checked'; ?>>
+            <label class="form-check-label" for="category_three">Desk Accessories</label>
+          </div>
+
+          <div class="form-check">
+            <input class="form-check-input" value="Creative Supplies" type="radio" name="category" id="category_four"
+              <?php if (isset($category) && $category == 'Creative Supplies')
+                echo 'checked'; ?>>
+            <label class="form-check-label" for="category_four">Creative Supplies</label>
+          </div>
+
+          <div class="form-check">
+            <input class="form-check-input" value="Study Tools" type="radio" name="category" id="category_five"
+              <?php if (isset($category) && $category == 'Study Tools') echo 'checked'; ?>>
+            <label class="form-check-label" for="category_five">Study Tools</label>
+          </div>
+
+          <div class="mt-4">
+            <p>Price</p>
+            <input type="range" class="form-range w-100" name="price" value="<?php if (isset($price))
+              echo $price; ?>"
+              min="1" max="1000" id="customRange2">
+            <div>
+              <span style="float:left;">1</span>
+              <span style="float:right;">1000</span>
+            </div>
+          </div>
+
+          <div class="form-group my-3">
+            <input type="submit" name="search" value="Search" class="btn btn-primary w-100">
+          </div>
+
+        </form>
+      </div>
+
+      <!-- Product List -->
+      <div class="col-lg-9 col-md-8 col-sm-12">
+
+        <!-- Title -->
+        <div class="text-center mb-4">
+          <h3>Our Products</h3>
+          <hr class="mx-auto" />
+          <p>Here you can check out our products</p>
         </div>
 
-        <div class="form-check">
-          <input class="form-check-input" value="Notebooks & Paper" type="radio" name="category" id="category_two" <?php if (isset($category) && $category == 'Notebooks & Paper') {
-            echo 'checked';
-          } ?>>
-          <label class="form-check-label" for="flexRadioDefault2">
-            Notebooks & Paper
-          </label>
+        <!-- Product Grid -->
+        <div class="row">
+          <?php while ($row = $products->fetch_assoc()) { ?>
+            <div class="col-lg-3 col-md-4 col-sm-6 d-flex">
+              <div class="product d-flex flex-column w-100"
+                onclick="window.location.href='single_product.php?product_id=<?php echo $row['product_id']; ?>'">
+
+
+                <!-- Product image -->
+                <img class="img-fluid" src="assets/imgs/<?php echo $row['product_image']; ?>"
+                  alt="<?php echo $row['product_name']; ?>">
+
+                <!-- Name and price -->
+                <div class="p-info">
+                  <h5 class="p-name"><?php echo $row['product_name']; ?></h5>
+                  <h4 class="p-price">$<?php echo $row['product_price']; ?></h4>
+                </div>
+
+                <!-- Button at bottom -->
+                <a href="single_product.php?product_id=<?php echo $row['product_id']; ?>" class="buy-btn w-100">
+                  Buy Now
+                </a>
+
+              </div>
+            </div>
+
+          <?php } ?>
         </div>
 
-        <div class="form-check">
-          <input class="form-check-input" value="Desk Accessories" type="radio" name="category" id="category_two" <?php if (isset($category) && $category == 'Desk Accessories') {
-            echo 'checked';
-          } ?>>
-          <label class="form-check-label" for="flexRadioDefault2">
-            Desk Accessories
-          </label>
-        </div>
 
-        <div class="form-check">
-          <input class="form-check-input" value="Creative Supplies" type="radio" name="category" id="category_two" <?php if (isset($category) && $category == 'Creative Supplies') {
-            echo 'checked';
-          } ?>>
-          <label class="form-check-label" for="flexRadioDefault2">
-            Creative Supplies
-          </label>
-        </div>
+        <!-- Pagination -->
+        <nav aria-label="Page navigation" class="d-flex justify-content-center mt-4">
+          <ul class="pagination">
+            <!-- Previous Button -->
+            <li class="page-item <?php if ($page_no <= 1)
+              echo 'disabled'; ?>">
+              <a class="page-link"
+                href="<?php if ($page_no > 1)
+                  echo "?page_no=" . ($page_no - 1);
+                else
+                  echo '#'; ?>">Previous</a>
+            </li>
 
-        <div class="form-check">
-          <input class="form-check-input" value="Study Tools" type="radio" name="category" id="category_two" <?php if (isset($category) && $category == 'Study Tools') {
-            echo 'checked';
-          } ?>>
-          <label class="form-check-label" for="flexRadioDefault2">
-            Study Tools
-          </label>
-        </div>
+            <!-- Page Numbers -->
+            <li class="page-item"><a class="page-link" href="?page_no=1">1</a></li>
+            <li class="page-item"><a class="page-link" href="?page_no=2">2</a></li>
+
+            <?php if ($page_no >= 3) { ?>
+              <li class="page-item"><a class="page-link" href="#">...</a></li>
+              <li class="page-item"><a class="page-link"
+                  href="<?php echo "?page_no=" . $page_no; ?>"><?php echo $page_no; ?></a></li>
+            <?php } ?>
+
+            <!-- Next Button -->
+            <li class="page-item <?php if ($page_no >= $total_no_of_pages)
+              echo 'disabled'; ?>">
+              <a class="page-link"
+                href="<?php if ($page_no < $total_no_of_pages)
+                  echo "?page_no=" . ($page_no + 1);
+                else
+                  echo '#'; ?>">Next</a>
+            </li>
+          </ul>
+        </nav>
+
       </div>
     </div>
-
-    <div class="row mx-auto container mt-5">
-      <div class="col-lg-12 col-md-12 col-sm-12">
-
-        <p>Price</p>
-        <input type="range" class="form-range w-50" name="price" value="<?php if (isset($price))
-          echo $price; ?>" min="1"
-          max="1000" id="customRange2">
-        <div class="w-50">
-          <span style="float:left;">1</span>
-          <span style="float:right;">1000</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="form-group my-3 mx-3">
-      <input type="submit" name="search" value="Search" class="btn btn-primary">
-    </div>
-
-  </form>
-
-</section>
-
-
-<!-- Products -->
-<section id="featured" class="my-5 py-5">
-  <div class="container text-center mt-5 py-5">
-    <h3>Our Products</h3>
-    <hr class="mx-auto" />
-    <p>Here you can check out our products</p>
-  </div>
-
-  <?php while ($row = $products->fetch_assoc()) { ?>
-
-
-    <div class="row mx-auto container">
-      <div class="product text-center col-lg-3 col-md-4 col-sm-12" onclick="window.location.href='single_product.php'">
-        <img class="img-fluid mb-3" src="assets/imgs/<?php echo $row['product_image']; ?>" alt="" />
-
-        <div class="star">
-          <i class="fa fa-star"></i>
-          <i class="fa fa-star"></i>
-          <i class="fa fa-star"></i>
-          <i class="fa fa-star"></i>
-          <i class="fa fa-star"></i>
-          <i class="fa fa-star"></i>
-        </div>
-
-        <h5 class="p-name"><?php echo $row['product_name']; ?></h5>
-        <h4 class="p-price">$<?php echo $row['product_price']; ?></h4>
-        <a class="btn shop-buy-btn" href="<?php echo "single_product.php?product_id=" . $row['product_id']; ?>">Buy
-          Now</a>
-      </div>
-    </div>
-
-  <?php } ?>
-
-
-
-
-  <nav aria-label="Page navigation example" class="mx-auto">
-    <ul class="pagination mt-5 mx-auto">
-
-      <!-- Previous Button -->
-      <li class="page-item <?php if ($page_no <= 1)
-        echo 'disabled'; ?>">
-        <a class="page-link"
-          href="<?php if ($page_no <= 1) {
-            echo '#';
-          } else {
-            echo "?page_no=" . ($page_no - 1);
-          } ?>">Previous</a>
-      </li>
-
-      <!-- Page Numbers -->
-      <li class="page-item"><a class="page-link" href="?page_no=1">1</a></li>
-      <li class="page-item"><a class="page-link" href="?page_no=2">2</a></li>
-
-      <?php if ($page_no >= 3) { ?>
-        <li class="page-item"><a class="page-link" href="#">...</a></li>
-        <li class="page-item"><a class="page-link"
-            href="<?php echo "?page_no=" . $page_no; ?>"><?php echo $page_no; ?></a></li>
-      <?php } ?>
-
-      <!-- Next Button -->
-      <li class="page-item <?php if ($page_no >= $total_no_of_pages)
-        echo 'disabled'; ?>">
-        <a class="page-link"
-          href="<?php if ($page_no >= $total_no_of_pages) {
-            echo '#';
-          } else {
-            echo "?page_no=" . ($page_no + 1);
-          } ?>">Next</a>
-      </li>
-
-    </ul>
-  </nav>
-
   </div>
 </section>
+
 
 <?php include('layouts/footer.php') ?>

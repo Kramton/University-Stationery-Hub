@@ -183,36 +183,53 @@ button:hover {
 /* Product */
 
 .product {
+  padding: 1rem;
+  height: 100%;
   cursor: pointer;
   margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
 }
 
 .product img {
-  transition: 0.3s all;
+  max-height: 180px;
+  display: block;
+  margin: 0 auto 0.5rem auto;
 }
 
 .product:hover img {
   opacity: 0.7;
 }
 
-.product .buy-btn {
-  background-color: coral;
-  transform: translateY(50px);
-  opacity: 0;
-  transition: 0.3s all;
-  color: #fff;
+.p-info {
+  text-align: center;
+  margin-top: auto;
+  margin-bottom: 0.5rem;
 }
 
-.shop-buy-btn {
+.product .p-name {
+  margin-bottom: 0.25rem;
+  font-size: 1rem;
+}
+
+.product .p-price {
+  font-weight: bold;
+  margin-bottom: 0;
+}
+
+.buy-btn {
+  display: block;
+  text-align: center;
   background-color: coral;
-  opacity: 1;
   color: #fff;
+  border-radius: 6px;
+  padding: 0.4rem 0;
   text-decoration: none;
+  font-weight: 600;
 }
 
-.product:hover .buy-btn {
-  transform: translateY(0px);
-  opacity: 1;
+.buy-btn:hover {
+  background-color: #e67654;
 }
 
 hr {
