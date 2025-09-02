@@ -691,3 +691,54 @@ th:last-child {
     margin: -2px;
     font-size: 1rem;
 }
+
+/*  Single product styles */
+  .single-product .ribbon {
+    position:absolute; top:12px; left:12px; z-index:3;
+    background:#000; color:#fff; font-size:.72rem; letter-spacing:.04em;
+    padding:4px 8px; border-radius:9999px; opacity:.9;
+  }
+  .single-product .img-wrap { position:relative; }
+  .single-product #mainImg { border-radius:12px; box-shadow:0 6px 18px rgba(0,0,0,.08); }
+  .small-img-group { display:grid; grid-template-columns:repeat(4,1fr); gap:.5rem; margin-top:.75rem; }
+  .small-img-col img { border-radius:10px; cursor:pointer; border:1px solid #eee; }
+  .small-img-col img:hover { transform:scale(1.02); transition:.15s ease; }
+
+  .pill-style { font-size:.8rem; color:#6b7280; text-transform:uppercase; letter-spacing:.08em; }
+  .product-title { font-size:2.2rem; font-weight:800; line-height:1.1; margin:.25rem 0 1rem; }
+  .product-desc { color:#374151; font-size:1rem; line-height:1.6; }
+
+  .promo-line { color:#ef4444; font-weight:800; font-size:1.25rem; margin:1.25rem 0 .25rem; }
+  .promo-line .code { color:#ef4444; }
+  .price-main { font-size:2.5rem; font-weight:900; margin:.25rem 0; }
+  .save-pill { display:inline-block; background:#0ea5e9; color:#fff; font-weight:700; border-radius:9999px; padding:.25rem .75rem; margin:.25rem 0 1rem; }
+
+  .buy-btns {
+    background:#ec8037; color:#fff; border:0; border-radius:12px; padding:.9rem 1.25rem;
+    font-weight:700; font-size:1.05rem; width:100%; max-width:280px;
+  }
+  .buy-btns:hover { background:#2edb17; }
+
+  .qty-input {
+    width:96px; border:1px solid #e5e7eb; border-radius:10px; padding:.6rem .75rem; margin-right:.75rem;
+  }
+
+  .stock-note {
+    color:#f97316; font-weight:700; text-align:center; margin-top:1rem;
+  }
+
+  #featured .product { border:1px solid #f3f4f6; border-radius:14px; padding:1rem; box-shadow:0 2px 10px rgba(0,0,0,.03); }
+
+/*  singal product page stock color   */
+.stocks-note       
+{ text-align:center; margin-top:1rem; }
+.stocks-note.low   
+{ color:#e6891eff; font-weight:700; } 
+.stocks-note.ok  
+  { color:green; }                 
+.stocks-note.out  
+ { color:red; font-weight:700;} 
+
+
+
+   

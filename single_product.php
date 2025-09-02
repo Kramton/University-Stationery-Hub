@@ -1,4 +1,5 @@
 <?php include('layouts/header.php'); ?>
+<link rel="stylesheet" href="/University-Stationary-Hub/assets/css/style.css?v=5">
 
 <?php 
 include('server/connection.php');
@@ -15,44 +16,7 @@ if(isset($_GET['product_id'])){
 }
 ?>
 
-<style>
-  /*  Single product styles */
-  .single-product .ribbon {
-    position:absolute; top:12px; left:12px; z-index:3;
-    background:#000; color:#fff; font-size:.72rem; letter-spacing:.04em;
-    padding:4px 8px; border-radius:9999px; opacity:.9;
-  }
-  .single-product .img-wrap { position:relative; }
-  .single-product #mainImg { border-radius:12px; box-shadow:0 6px 18px rgba(0,0,0,.08); }
-  .small-img-group { display:grid; grid-template-columns:repeat(4,1fr); gap:.5rem; margin-top:.75rem; }
-  .small-img-col img { border-radius:10px; cursor:pointer; border:1px solid #eee; }
-  .small-img-col img:hover { transform:scale(1.02); transition:.15s ease; }
 
-  .pill-cat { font-size:.8rem; color:#6b7280; text-transform:uppercase; letter-spacing:.08em; }
-  .product-title { font-size:2.2rem; font-weight:800; line-height:1.1; margin:.25rem 0 1rem; }
-  .product-desc { color:#374151; font-size:1rem; line-height:1.6; }
-
-  .promo-line { color:#ef4444; font-weight:800; font-size:1.25rem; margin:1.25rem 0 .25rem; }
-  .promo-line .code { color:#ef4444; }
-  .price-main { font-size:2.5rem; font-weight:900; margin:.25rem 0; }
-  .save-pill { display:inline-block; background:#0ea5e9; color:#fff; font-weight:700; border-radius:9999px; padding:.25rem .75rem; margin:.25rem 0 1rem; }
-
-  .buy-btn {
-    background:#111827; color:#fff; border:0; border-radius:12px; padding:.9rem 1.25rem;
-    font-weight:700; font-size:1.05rem; width:100%; max-width:280px;
-  }
-  .buy-btn:hover { background:#000; }
-
-  .qty-input {
-    width:96px; border:1px solid #e5e7eb; border-radius:10px; padding:.6rem .75rem; margin-right:.75rem;
-  }
-
-  .stock-note {
-    color:#f97316; font-weight:700; text-align:center; margin-top:1rem;
-  }
-
-  #featured .product { border:1px solid #f3f4f6; border-radius:14px; padding:1rem; box-shadow:0 2px 10px rgba(0,0,0,.03); }
-</style>
 
 
 <section class="container single-product my-5 pt-5">
@@ -100,16 +64,26 @@ if(isset($_GET['product_id'])){
         <?php endforeach; ?>
       </div>
     
-      <?php if ($stock > 0): ?>
-  <div class="stock-note">Only <?php echo $stock; ?> left remaining!</div>
+<?php
+$lowThreshold = 6;            
+$stock = (int)$stock;       
+
+if ($stock <= 0): ?>
+  <div class="stocks-note out">Out of stock</div>
+
+<?php elseif ($stock < $lowThreshold): ?>
+  <div class="stocks-note low">Only <?= $stock ?> left remaining!</div>
+
 <?php else: ?>
-  <div class="stock-note" style="color:#ef4444">Out of stock</div>
+  <div class="stocks-note ok"><?= $stock ?> left remaining</div>
 <?php endif; ?>
+
+
     </div>
 
-    <!-- right  info -->
+    <!-- right side info -->
     <div class="col-lg-6 col-md-12 col-12 offset-lg-1">
-      <div class="pill-cat">Stationery</div>
+      <div class="pill-style">Stationery</div>
       <h1 class="product-title"><?php echo htmlspecialchars($row['product_name']); ?></h1><hr>
       <h4 class="details-heading"><strong>Product Details:</strong></h4>
 
@@ -117,24 +91,23 @@ if(isset($_GET['product_id'])){
         <?php echo nl2br(htmlspecialchars($row['product_description'] ?? '')); ?>
       </p>
          
+     <div class="d-flex">
+  <div class="price-box ms-lg-0 text-lg-end text-start">
     <?php if ($promoPrice !== null): ?>
-  <div class="promo-line">
-    With promo code <span class="code">$<?php echo number_format($promoPrice, 2); ?></span>
-    <small>(<?php echo $discountPercent; ?>% off)</small>
-  </div>
+      <div class="promo-line mb-1">
+        With promo code <span class="code">$<?= number_format($promoPrice, 2) ?></span>
+        <small>(<?= (int)$discountPercent ?>% off)</small>
+      </div>
+    <?php endif; ?>
 
-<?php endif; ?>
+    <div class="price-main mb-1">$<?= number_format($price, 2) ?></div>
 
+    <?php if ($savings > 0): ?>
+      <div class="save-pill">SAVE $<?= number_format($savings, 2) ?></div>
+    <?php endif; ?>
+  </div></div>
 
-
-      <div class="price-main">$<?php echo number_format($price, 2); ?></div>
-
-      <?php if ($savings > 0): ?>
-        <div class="save-pill">SAVE $<?php echo number_format($savings, 2); ?></div>
-      <?php endif; ?>
-
-     <?php
-  // compute stock right before the form
+   <?php
   $stock = isset($row['product_stock']) ? (int)$row['product_stock'] : 0;
   $isOut = $stock <= 0;
 ?>
@@ -146,7 +119,7 @@ if(isset($_GET['product_id'])){
   <input type="hidden" name="product_price" value="<?php echo $row['product_price']; ?>"/>
 
   <input type="number" name="product_quantity" value="1" min="1" step="1"  required/>
-  <button class="buy-btn" type="submit" name="add_to_cart">Add To Cart</button>
+  <button class="buy-btns" type="submit" name="add_to_cart">Add To Cart</button>
 </form>
 
 
@@ -193,14 +166,12 @@ if(isset($_GET['product_id'])){
 </section>
 
 <script>
-  // image swap (works with any number of thumbs)
   const mainImg = document.getElementById("mainImg");
   const smallImgs = document.getElementsByClassName("small-img");
   for (let i = 0; i < smallImgs.length; i++) {
     smallImgs[i].onclick = function () {
       mainImg.src = smallImgs[i].src;
-    }
-  }
+    } }
 </script>
 
 <?php include('layouts/footer.php'); ?>
