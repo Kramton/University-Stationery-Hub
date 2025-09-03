@@ -20,6 +20,23 @@ session_start();
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
     />
     <link rel="stylesheet" href="assets/css/style.css" />
+    <style>
+    .search-bar {
+      min-width: 200px;   
+    }
+    .search-bar .form-control {
+      font-size: 16px;       
+      padding: 8px 12px;
+    }
+    .search-bar .btn {
+      border: none;
+      background: none;
+    }
+    .search-bar .btn i {
+      font-size: 18px;
+      color: #555;
+    }
+  </style>
   </head>
   <body>
     <!-- Navbar -->
@@ -53,10 +70,12 @@ session_start();
             </ul>
 
              <!-- NEW: Search Bar -->
-          <form class="d-flex me-3" action="shop.php" method="POST">
-            <input class="form-control me-2" type="search" name="keyword" placeholder="Search products...">
-            <button class="btn btn-outline-success" type="submit" name="top_search">Search</button>
-          </form>
+          <form class="d-flex me-3 search-bar" action="shop.php" method="GET">
+          <div class="input-group">
+            <input class="form-control" type="search" name="q" placeholder="Search in site" aria-label="Search">
+            <button class="btn" type="submit"><i class="fa fa-search"></i></button>
+          </div>
+        </form>
           <!-- End Search -->
 
           <ul class="navbar-nav">
@@ -71,20 +90,14 @@ session_start();
               </a>
 
               
-              <!--NEW: Log In / Log Out -->
-              <?php if (isset($_SESSION['user_id'])): ?>
-               
-                <form action="logout.php" method="POST" class="d-inline">
-                  <button type="submit" class="btn btn-danger">Log Out</button>
-                </form>
-              <?php else: ?>
-               
-                <a href="login.php" class="btn btn-primary">Log In</a>
-              <?php endif; ?>
-              <!-- End Log In / Log Out -->
+              <!-- Updated: Person icon now links to My Profile --> 
+               <a href="my_profile.php" title="My Profile"> 
+              <i class="fa fa-user" aria-hidden="true">
 
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
+              </i> 
+            </a> 
+          </li> 
+        </ul> 
+      </div> 
+    </div> 
+  </nav>
