@@ -50,18 +50,39 @@ session_start();
             <li class="nav-item">
               <a class="nav-link" href="contact.php">Contact Us</a>
             </li>
-            <li class="nav-item">
-              <a href="cart.php">
+            </ul>
+
+             <!-- NEW: Search Bar -->
+          <form class="d-flex me-3" action="shop.php" method="POST">
+            <input class="form-control me-2" type="search" name="keyword" placeholder="Search products...">
+            <button class="btn btn-outline-success" type="submit" name="top_search">Search</button>
+          </form>
+          <!-- End Search -->
+
+          <ul class="navbar-nav">
+            <li class="nav-item d-flex align-items-center">
+            
+              <a href="cart.php" class="me-3">
                 <i class="fa fa-shopping-cart" aria-hidden="true">
                   <?php if (isset($_SESSION['quantity']) && $_SESSION['quantity'] != 0) { ?>
                     <span class="cart-quantity"><?php echo $_SESSION['quantity']; ?></span>
                   <?php } ?>
                 </i>
               </a>
-              <!-- Updated: Person icon now links to My Profile -->
-              <a href="my_profile.php" title="My Profile">
-                <i class="fa fa-user" aria-hidden="true"></i>
-              </a>
+
+              
+              <!--NEW: Log In / Log Out -->
+              <?php if (isset($_SESSION['user_id'])): ?>
+               
+                <form action="logout.php" method="POST" class="d-inline">
+                  <button type="submit" class="btn btn-danger">Log Out</button>
+                </form>
+              <?php else: ?>
+               
+                <a href="login.php" class="btn btn-primary">Log In</a>
+              <?php endif; ?>
+              <!-- End Log In / Log Out -->
+
             </li>
           </ul>
         </div>
