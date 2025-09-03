@@ -38,17 +38,48 @@
   }
 ?>
 
+<!-- Login css -->
+<style>
+#login-form {
+    width: 700px;
+    margin: 0 auto;
+    padding: 30px;
+  }
+
+  #login-form .form-control {
+    height: 45px;
+    font-size: 16px;
+    border-radius: 5px;
+  }
+
+  #login-form .btn {
+    background-color: #e6862dff;
+    margin-top: 20px;
+    color: white;
+    font-size: 18px;
+    padding: 10px;
+    border-radius: 5px;
+    width: 100%;
+    transition: background-color 0.3s ease;
+  }
+
+  #login-form .form-group {
+    text-align: center;
+    margin-top: 20px;
+  }
+</style>
+
       <!-- Login -->
     <section class="my-5 py-5">
       <div class="container text-center mt-3 pt-5">
-        <h2 class="form-weight-bold">Login</h2>
+        <h1 class="form-weight-bold"><b>Admin Login</b></h1>
         <hr class="mx-auto" />
       </div>
       <div class="mx-auto container">
         <form id="login-form" method="POST" action="login.php">
           <p style="color: red;" class="text-center"><?php if(isset($_GET['error'])) { echo $_GET['error']; } ?></p>
           <div class="form-group">
-            <label for="">Email</label>
+            <label for=""><h5>Email</h5></label>
             <input
               type="text"
               class="form-control"
@@ -59,9 +90,9 @@
             />
           </div>
           <div class="form-group">
-            <label for="">Password</label>
+            <label for=""><h5>Password</h5></label>
             <input
-              type="text"
+              type="password"
               class="form-control"
               id="login-password"
               name="password"
