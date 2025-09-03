@@ -1,76 +1,66 @@
 <?php
 
-require 'vendor/autoload.php';
 require_once 'dbcon.php';
 
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
-
-function generateVerificationToken() {
-    return bin2hex(random_bytes(32));
-}
-
-function sendVerificationEmail($email, $verificationToken) {
-    $mail = new PHPMailer(true);
+if (isset($_GET['token']) && !empty($_GET['token'])) {
+    
+    $token = $_GET['token'];
 
     try {
-        $mail->isSMTP();
-        $mail->Host = 'smtp.gmail.com';
-        $mail->SMTPAuth = true;
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-        $mail->Port = 465;
-        $mail->Username = 'tempestplaysgrow@gmail.com';
-        $mail->Password = 'qufq ctky rnis bzwd';
-
-        $mail->setFrom('tempestplaysgrow@gmail.com', 'University Stationary Hub');
-        $mail->addAddress($email);
-
-        $verificationLink = 'http://localhost/verify.php?token=' . $verificationToken . '&email=' . urlencode($email);
-
-        $mail->isHTML(true);
-        $mail->Subject = 'Verify Your Email Address';
-        $mail->Body = '
-            <p>Please verify your email address by clicking the link below:</p>
-            <a href="' . $verificationLink . '">' . $verificationLink . '</a>';
-        $mail->AltBody = 'Verify at: ' . $verificationLink;
-
-        $mail->send();
-        return true;
-    } catch (Exception $e) {
-        echo "Mailer Error: {$mail->ErrorInfo}";
-        return false;
-    }
-}
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $username = $_POST["name"] ?? '';
-    $password = $_POST["password"] ?? '';
-    $email = $_POST["email"] ?? '';
-
-    try {
-        $checkQuery = "SELECT email FROM users WHERE email = :email";
-        $checkStmt = $db->prepare($checkQuery);
-        $checkStmt->bindParam(':email', $email);
-        $checkStmt->execute();
-
-        if ($checkStmt->rowCount() > 0) {
-            echo "Email already registered. Please use a different email address.";
-            exit;
-        }
-
-        $verificationToken = generateVerificationToken();
-
-        $query = "INSERT INTO users (username,password,email) VALUES (:username,:password,:email)";
+        $query = "SELECT id FROM email_test WHERE verification_token = :token AND is_verified = FALSE";
+        
         $stmt = $db->prepare($query);
-        $stmt->bindParam(':username', $username);
-        $stmt->bindParam(':password', $password); 
-        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':token', $token);
         $stmt->execute();
 
-        if (sendVerificationEmail($email, $verificationToken)) {
-            echo "Registration successful! Please check your email to verify your account.";
+        if ($stmt->rowCount() > 0) {
+            
+            $updateQuery = "UPDATE email_test SET is_verified = TRUE, verification_token = NULL WHERE verification_token = :token";
+            $updateStmt = $db->prepare($updateQuery);
+            $updateStmt->bindParam(':token', $token);
+            $updateStmt->execute();
+
+            echo '
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <title>Verification Successful</title>
+                <style>
+                    body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
+                    .container { max-width: 600px; margin: auto; border: 1px solid #ccc; padding: 20px; border-radius: 5px; }
+                    h1 { color: #4CAF50; }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <h1>Email Verification Successful!</h1>
+                    <p>Your account has been successfully verified. You can now log in.</p>
+                    <a href="login.html">Go to Login Page</a>
+                </div>
+            </body>
+            </html>';
+
         } else {
-            echo "User created but failed to send verification email.";
+            echo '
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <title>Verification Failed</title>
+                 <style>
+                    body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
+                    .container { max-width: 600px; margin: auto; border: 1px solid #ccc; padding: 20px; border-radius: 5px; }
+                    h1 { color: #f44336; }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <h1>Verification Failed!</h1>
+                    <p>This verification link is invalid, has expired, or has already been used.</p>
+                </div>
+            </body>
+            </html>';
         }
 
     } catch (PDOException $e) {
@@ -78,6 +68,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
 } else {
-    header('Location: register.html');
-    exit;
+    echo '
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Invalid Request</title>
+        <style>
+            body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
+            .container { max-width: 600px; margin: auto; border: 1px solid #ccc; padding: 20px; border-radius: 5px; }
+            h1 { color: #f44336; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Invalid Request</h1>
+            <p>No verification token was provided. Please use the link sent to your email.</p>
+        </div>
+    </body>
+    </html>';
 }

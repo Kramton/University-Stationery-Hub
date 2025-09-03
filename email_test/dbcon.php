@@ -1,15 +1,16 @@
 <?php
-    // $conn = new mysqli('database-1.cbeu6c08gvb5.ap-southeast-2.rds.amazonaws.com', 'admin', 'UniversityProject+2114', 'test');\
-    $host = "database-1.cbeu6c08gvb5.ap-southeast-2.rds.amazonaws.com";
-    $user = "admin";
-    $pswd = "UniversityProject+2114";
-    $dbnm = "users";
-    $db = new PDO("mysql:host=$host;dbname=$dbnm", $user, $pswd);
-    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // if ($conn->connect_error) {
-    //     die("Connection failed: " . $conn->connect_error);
-    // }
-    
-    // echo "Connected successfully<br><br>";
-?>
+$host = 'localhost';    
+$dbname = 'email_test'; 
+$username = 'root';         // Default XAMPP username
+$password = '';             // Default XAMPP password
+
+try {
+    $db = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
+
+    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+
+} catch (PDOException $e) {
+    die("Database connection failed: " . $e->getMessage());
+}
