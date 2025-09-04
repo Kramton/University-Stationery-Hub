@@ -82,7 +82,7 @@ if(isset($_POST['register'])) {
           <div class="form-group">
             <label for="">Email</label>
             <input
-              type="text"
+              type="email"
               class="form-control"
               id="register-email"
               name="email"
