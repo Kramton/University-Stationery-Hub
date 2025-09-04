@@ -64,7 +64,7 @@ if (isset($_POST['login_btn'])) {
 
       <div class="form-group">
         <label for="">Password:</label>
-        <input type="text" class="form-control" id="login-password" name="password" placeholder="Password" required />
+        <input type="password" class="form-control" id="login-password" name="password" placeholder="Password" required />
       </div>
 
       <div class="form-group">

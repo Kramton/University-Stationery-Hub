@@ -93,7 +93,7 @@ if(isset($_POST['register'])) {
           <div class="form-group">
             <label for="">Password</label>
             <input
-              type="text"
+              type="password"
               class="form-control"
               id="register-password"
               name="password"
