@@ -758,4 +758,30 @@ th:last-child {
 
 
 
-   
+
+  /* category */
+  .category-filter .form-check { margin: .25rem 0; }
+  .category-filter .form-check-input { display: none; } /* keep radios, hide visually */
+  .category-filter .form-check-label{
+    display:inline-block; cursor:pointer;
+    padding:.35rem .7rem; border:1px solid #e5e7eb; border-radius:9999px;
+    font-size:.95rem; background:#fff;
+  }
+  .category-filter .form-check-input:checked + .form-check-label{
+    background:#111827; color:#fff; border-color:#111827;
+  }
+
+  /* slider + live chip */
+  .price-row{ display:flex; align-items:center; gap:.5rem; }
+  .price-chip{
+    font-weight:700; background:#fff;
+    border:1px solid #e5e7eb; border-radius:9999px;
+    padding:.25rem .6rem; min-width:64px; text-align:center;
+  }
+  .filter-card{
+    background:#f9fafb; border:1px solid #e5e7eb;
+    border-radius:12px; padding:1rem;
+  }
+
+
+

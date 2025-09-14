@@ -16,13 +16,19 @@ if (isset($_POST['search'])) {
   }
 
 
-
-  $category = $_POST['category'];
-  $price = $_POST['price'];
+  // price filter 
+    $category = $_POST['category'];
+    $price    = (int)$_POST['price'];
+    $isAll    = ($category === '' || strtolower($category) === 'all'); 
+   
 
   // Return number of products
-  $stmt1 = $conn->prepare("SELECT COUNT(*) AS total_records FROM products WHERE product_category=? AND product_price<=?");
-  $stmt1->bind_param("si", $category, $price);
+   if ($isAll) {
+  $stmt1 = $conn->prepare("SELECT COUNT(*) AS total_records FROM products WHERE product_price <= ?");
+    $stmt1->bind_param("i", $price);} else {
+      $stmt1 = $conn->prepare("SELECT COUNT(*) AS total_records FROM products WHERE product_category = ? AND product_price <= ?");
+    $stmt1->bind_param("si", $category, $price);} 
+
   $stmt1->execute();
   $stmt1->bind_result($total_records);
   $stmt1->store_result();
@@ -40,8 +46,14 @@ if (isset($_POST['search'])) {
 
   $total_no_of_pages = ceil($total_records / $total_records_per_page);
 
-  $stmt2 = $conn->prepare("SELECT * FROM products WHERE product_category=? AND product_price<=? LIMIT $offset, $total_records_per_page");
-  $stmt2->bind_param("si", $category, $price);
+  if ($isAll) {
+$stmt2 = $conn->prepare("SELECT * FROM products WHERE product_price <= ? LIMIT $offset, $total_records_per_page");
+    $stmt2->bind_param("i", $price); } 
+    else {
+       $stmt2 = $conn->prepare("SELECT * FROM products WHERE product_category = ? AND product_price <= ? LIMIT $offset, $total_records_per_page");
+    $stmt2->bind_param("si", $category, $price);
+    }
+  
   $stmt2->execute();
   $products = $stmt2->get_result();//[]
 
@@ -86,6 +98,10 @@ if (isset($_POST['search'])) {
 
 }
 
+$ui_price_value = isset($price) ? (int)$price : 1000;///price 
+$ui_category    = isset($category) ? $category : '';
+
+
 
 ?>
 
@@ -95,64 +111,84 @@ if (isset($_POST['search'])) {
     <div class="row">
 
       <!-- Search Filters -->
-      <div class="col-lg-3 col-md-4 col-sm-12">
-        <h4>Search Product</h4>
-        <hr>
+<div class="col-lg-3 col-md-4 col-sm-12">
+  <h4>Search Product</h4>
+  <hr>
 
-        <form action="shop.php" method="POST">
+  <form action="shop.php" method="POST" class="filter-card">
 
-          <p>Category</p>
-          <div class="form-check">
-            <input class="form-check-input" value="Writing Essentials" type="radio" name="category" id="category_one"
-              <?php if (isset($category) && $category == 'Writing Essentials')
-                echo 'checked'; ?>>
-            <label class="form-check-label" for="category_one">Writing Essentials</label>
-          </div>
+    <p class="mb-2 fw-bold">Category : </p>
+    <div class="category-filter">
 
-          <div class="form-check">
-            <input class="form-check-input" value="Notebooks & Paper" type="radio" name="category" id="category_two"
-              <?php if (isset($category) && $category == 'Notebooks & Paper')
-                echo 'checked'; ?>>
-            <label class="form-check-label" for="category_two">Notebooks & Paper</label>
-          </div>
+   
+      
+<div class="form-check">
+  <input class="form-check-input" type="radio" name="category" id="cat_all" value=""
+         <?php if ($ui_category === '') echo 'checked'; ?> />
+  <label class="form-check-label" for="cat_all">All</label>
+</div>
 
-          <div class="form-check">
-            <input class="form-check-input" value="Desk Accessories" type="radio" name="category" id="category_three"
-              <?php if (isset($category) && $category == 'Desk Accessories')
-                echo 'checked'; ?>>
-            <label class="form-check-label" for="category_three">Desk Accessories</label>
-          </div>
 
-          <div class="form-check">
-            <input class="form-check-input" value="Creative Supplies" type="radio" name="category" id="category_four"
-              <?php if (isset($category) && $category == 'Creative Supplies')
-                echo 'checked'; ?>>
-            <label class="form-check-label" for="category_four">Creative Supplies</label>
-          </div>
-
-          <div class="form-check">
-            <input class="form-check-input" value="Study Tools" type="radio" name="category" id="category_five"
-              <?php if (isset($category) && $category == 'Study Tools') echo 'checked'; ?>>
-            <label class="form-check-label" for="category_five">Study Tools</label>
-          </div>
-
-          <div class="mt-4">
-            <p>Price</p>
-            <input type="range" class="form-range w-100" name="price" value="<?php if (isset($price))
-              echo $price; ?>"
-              min="1" max="1000" id="customRange2">
-            <div>
-              <span style="float:left;">1</span>
-              <span style="float:right;">1000</span>
-            </div>
-          </div>
-
-          <div class="form-group my-3">
-            <input type="submit" name="search" value="Search" class="btn btn-primary w-100">
-          </div>
-
-        </form>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="category" id="cat_we" value="Writing Essentials"
+          <?php if ($ui_category === 'Writing Essentials') echo 'checked'; ?> />
+        <label class="form-check-label" for="cat_we">Writing Essentials</label>
       </div>
+
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="category" id="cat_np" value="Notebooks & Paper"
+          <?php if ($ui_category === 'Notebooks & Paper') echo 'checked'; ?> />
+        <label class="form-check-label" for="cat_np">Notebooks & Paper</label>
+      </div>
+
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="category" id="cat_da" value="Desk Accessories"
+          <?php if ($ui_category === 'Desk Accessories') echo 'checked'; ?> />
+        <label class="form-check-label" for="cat_da">Desk Accessories</label>
+      </div>
+
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="category" id="cat_cs" value="Creative Supplies"
+          <?php if ($ui_category === 'Creative Supplies') echo 'checked'; ?> />
+        <label class="form-check-label" for="cat_cs">Creative Supplies</label>
+      </div>
+
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="category" id="cat_st" value="Study Tools"
+          <?php if ($ui_category === 'Study Tools') echo 'checked'; ?> />
+        <label class="form-check-label" for="cat_st">Study Tools</label>
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <p class="mb-1 fw-bold">Price :</p>
+      <div class="price-row">
+        <input
+          type="range"
+          class="form-range flex-grow-1"
+          name="price"
+          id="priceRange"
+          min="1" max="200"
+          value="<?php echo $ui_price_value; ?>" />
+        <span class="price-chip" id="priceValue">$<?php echo number_format($ui_price_value, 0); ?></span>
+      </div>
+      <div class="d-flex justify-content-between small text-muted mt-1">
+        <span>$1</span><span>$200</span>
+      </div>
+    </div>
+
+    <div class="row g-2 my-3">
+      <div class="col-6">
+    <a href="shop.php" id="filterReset" class="btn btn-outline-secondary w-100">Reset</a>
+      </div>
+      <div class="col-6">
+    <input type="submit" name="search" value="Search" class="btn btn-primary w-100">
+      </div>
+    </div>
+
+  </form>
+</div>
+
 
       <!-- Product List -->
       <div class="col-lg-9 col-md-8 col-sm-12">
@@ -233,6 +269,18 @@ if (isset($_POST['search'])) {
     </div>
   </div>
 </section>
+<script>
+// price + reset behavior
+(function(){
+  const slider = document.getElementById('priceRange');
+  const out    = document.getElementById('priceValue');
+  const fmt  = v => '$' + Number(v).toFixed(0);
+  const sync = () => { if (out && slider) out.textContent = fmt(slider.value); };
+  if (slider) slider.addEventListener('input', sync);
+  sync();
+})();
+</script>
+
 
 
 <?php include('layouts/footer.php') ?>
