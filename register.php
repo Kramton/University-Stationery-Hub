@@ -2,7 +2,47 @@
 
 <?php
 
-include('server/connection.php');
+require 'vendor/autoload.php';
+require_once 'server/connection.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+function generateVerificationToken() {
+    return bin2hex(random_bytes(32));
+}
+
+function sendVerificationEmail($email, $verificationToken) {
+    $mail = new PHPMailer(true);
+
+    try {
+        $mail->isSMTP();
+        $mail->Host = 'smtp.gmail.com';
+        $mail->SMTPAuth = true;
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+        $mail->Port = 465;
+        $mail->Username = 'tempestplaysgrow@gmail.com';
+        $mail->Password = 'qufq ctky rnis bzwd';
+
+        $mail->setFrom('tempestplaysgrow@gmail.com', 'University Stationary Hub');
+        $mail->addAddress($email);
+
+        $verificationLink = 'http://localhost/university/University-Stationary-Hub/verify_account.php?token=' . $verificationToken;
+
+        $mail->isHTML(true);
+        $mail->Subject = 'Verify Your Email Address';
+        $mail->Body = '
+            <p>Thank you for registering! Please verify your email address by clicking the link below:</p>
+            <a href="' . $verificationLink . '">' . $verificationLink . '</a>';
+        $mail->AltBody = 'To verify your account, please visit the following link: ' . $verificationLink;
+
+        $mail->send();
+        return true;
+    } catch (Exception $e) {
+        return false;
+    }
+}
+
 
 if(isset($_SESSION['logged_in'])) {
   header('location: my_profile.php');
@@ -36,23 +76,22 @@ if(isset($_POST['register'])) {
       header('location: register.php?error=User with this email already exists');
     } else {
       // Create a new user
-      $stmt = $conn->prepare("INSERT INTO users (user_name, user_email, user_password)
-                              VALUES (?,?,?)");
+      $stmt = $conn->prepare("INSERT INTO users (user_name, user_email, user_password, verification_token)
+                              VALUES (?,?,?,?)");
 
       $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-      $stmt->bind_param('sss', $name, $email, $hashed_password);
+      $verificationToken = generateVerificationToken();
 
-
+      $stmt->bind_param('ssss', $name, $email, $hashed_password, $verificationToken);
 
       if($stmt->execute()) {
-        $user_id = $stmt->insert_id;
-        $_SESSION['user_id'] = $user_id;
-        $_SESSION['user_email'] = $email;
-        $_SESSION['user_name'] = $name;
-        $_SESSION['logged_in'] = true;
-        header('location: my_profile.php?register_success=You registered successfully');
+        if (sendVerificationEmail($email, $verificationToken)) {
+            header('location: register.php?success=Registration successful! Please check your email to verify your account.');
+        } else {
+            header('location: register.php?error=Account created, but the verification email could not be sent. Please contact support.');
+        }
       } else {
-        header('location: register.php?register=Account creation failed');
+        header('location: register.php?error=Account creation failed');
       }
     }
   }
@@ -68,6 +107,7 @@ if(isset($_POST['register'])) {
       <div class="mx-auto container">
         <form id="register-form" method="POST" action="register.php">
           <p style="color: red;"><?php if(isset($_GET['error'])) { echo $_GET['error']; } ?></p>
+          <p style="color: green;"><?php if(isset($_GET['success'])) { echo $_GET['success']; } ?></p>
           <div class="form-group">
             <label for="">Name</label>
             <input
