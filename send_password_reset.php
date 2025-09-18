@@ -39,3 +39,28 @@ if ($conn->affected_rows) {
 echo "Message sent, please check your inbox."; //TODO: create page for message sent
 
 ?>
+
+<?php include('layouts/header.php') ?>
+
+<!-- Reset Password Message Sent -->
+<section id="contact" class="container my-5 py-5">
+  <div class="container text-center mt-5">
+    <h2 class="form-weight-bold">Check Email</h2>
+    <hr class="mx-auto" />
+
+  </div>
+
+  <div class="container text-center">
+    <p>Please check your email inbox and click on the link to reset password.</p>
+  </div>
+
+
+</section>
+
+<!-- Footer -->
+<?php include('layouts/footer.php') ?>
+
+
+<?php
+
+?>
