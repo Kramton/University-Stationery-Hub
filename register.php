@@ -27,7 +27,7 @@ function sendVerificationEmail($email, $verificationToken) {
         $mail->setFrom('tempestplaysgrow@gmail.com', 'University Stationary Hub');
         $mail->addAddress($email);
 
-        $verificationLink = 'http://localhost/university/University-Stationary-Hub/verify_account.php?token=' . $verificationToken;
+        $verificationLink = 'http://localhost/UniversityStationaryHub/University-Stationary-Hub/verify_account.php?token=' . $verificationToken;
 
         $mail->isHTML(true);
         $mail->Subject = 'Verify Your Email Address';
