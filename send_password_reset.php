@@ -1,41 +1,93 @@
 <?php
 
+$token = $_POST["token"];
+$token_hash = hash("sha256", $token);
+
 include('server/connection.php');
 
-$email = $_POST["email"];
-$token = bin2hex(random_bytes(16));
-$token_hash = hash("sha256", $token);
-$expiry = date("Y-m-d H:i:s", time() + 60 * 30); // expires in 30 minutes
-
-$sql = "UPDATE users
-         SET reset_token_hash = ?,
-             reset_token_expires_at = ?
-         WHERE user_email = ?";
+$sql = "SELECT * FROM users
+        WHERE reset_token_hash = ?";
 
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("sss", $token_hash, $expiry, $email);
+$stmt->bind_param("s", $token_hash);
 $stmt->execute();
 
-if ($conn->affected_rows) {
-    
-    $mail = require __DIR__ . "/mailer.php";
+$result = $stmt->get_result();
+$user = $result->fetch_assoc();
 
-    $mail->setFrom("example@gmail.com", "University Stationery Hub");
-    $mail->addAddress($email);
-    $mail->Subject = "Password Reset";
-    $mail->Body = <<<END
-
-    Click <a href="http://localhost/UniversityStationaryHub/University-Stationary-Hub/reset_password.php?token=$token">here</a> to reset your password.
-
-    END;
-
-    try {
-        $mail->send();
-    } catch(Exception $e) {
-        echo "Message could not be sent. Mailer error: {$mail->ErrorInfo}";
-    }
+if ($user === null) {
+    die("token not found");
 }
 
-echo "Message sent, please check your inbox."; //TODO: create page for message sent
+if (strtotime($user["reset_token_expires_at"]) <= time()) {
+    die("token has expired");
+}
+
+if (strlen($_POST["password"]) < 8) {
+    die("Password must be at least 8 characters");
+}
+
+if (!preg_match("/[a-z]/i", $_POST["password"])) {
+    die("Password must contain at least one letter");
+}
+
+if (!preg_match("/[0-9]/", $_POST["password"])) {
+    die("Password must contain at least one number");
+}
+
+if ($_POST["password"] !== $_POST["password_confirmation"]) {
+    die("Passwords must match");
+}
+
+$password_hash = password_hash($_POST["password"], PASSWORD_DEFAULT);
+
+$sql = "UPDATE users
+        SET user_password = ?,
+            reset_token_hash = NULL,
+            reset_token_expires_at = NULL
+        WHERE user_id = ?";
+
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("ss", $password_hash, $user["user_id"]);
+$stmt->execute();
 
 ?>
+
+<?php include('layouts/header.php') ?>
+
+<style>
+    .return-to-page-btn {
+        background-color: coral;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        border-radius: 5px;
+        margin-top: 10px;
+        text-decoration: none;
+    }
+</style>
+
+<!-- Reset Password -->
+<section id="contact" class="container my-5 py-5">
+    <div class="container text-center mt-5">
+        <h2 class="form-weight-bold">Password Changed</h2>
+        <hr class="mx-auto" />
+
+        <div>
+            <p>Your password has been changed successfully.</p>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-4">
+                <div class="d-grid gap-2">
+                    <a href="http://localhost/UniversityStationaryHub/University-Stationary-Hub/login.php" class="return-to-page-btn">Continue</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</section>
+
+<!-- Footer -->
+<?php include('layouts/footer.php') ?>
