@@ -411,7 +411,7 @@ calculateTotalCart();
                 </tr>
                 <?php endif; ?>
                 <tr>
-                    <td class="colspan" colspan="2"><hr></td>
+                    <td colspan="2"><hr></td>
                 </tr>
                 <tr>
                     <td>Total:</td>
