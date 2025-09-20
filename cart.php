@@ -148,7 +148,7 @@ calculateTotalCart();
 
 <style>
   :root {
-    --primary-color: #F97316; /* Orange color */
+    --primary-color: #F97316; 
   }
 
   .cart {
@@ -195,7 +195,7 @@ calculateTotalCart();
   }
   
   .quantity-column {
-    text-align: center;
+    text-align: left;
   }
 
   .stock-status {
@@ -235,20 +235,20 @@ calculateTotalCart();
   
   .promo-and-total-container {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;  
+    align-items: center;
     margin-top: 40px;
-    flex-wrap: wrap;
-    gap: 20px;
   }
   
   .promo-container {
-    flex: 1;
     min-width: 280px;
+    margin-bottom: 20px;
   }
 
   .cart-total-container {
-    flex: 1;
-    min-width: 300px;
+    width: 100%;
+    max-width: 450px;
+    
   }
 
   .promo-container form {
@@ -279,11 +279,13 @@ calculateTotalCart();
     font-size: 1.8rem;
     font-weight: 700;
     margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
   }
 
   .cart-total-table {
     width: 100%;
-    max-width: 400px; /* Limit width for better alignment */
+    max-width: 400px;
   }
   
   .cart-total-table td {
@@ -306,24 +308,7 @@ calculateTotalCart();
     margin: 10px 0;
   }
 
-  .checkout-container {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 20px;
-  }
 
-  .checkout-btn {
-    background-color: var(--primary-color);
-    color: white;
-    padding: 15px 40px;
-    text-decoration: none;
-    border-radius: 5px;
-    font-size: 1.2rem;
-    font-weight: bold;
-    border: none;
-    text-transform: uppercase;
-    cursor: pointer;
-  }
 </style>
 
 
@@ -426,7 +411,7 @@ calculateTotalCart();
                 </tr>
                 <?php endif; ?>
                 <tr>
-                    <td colspan="2"><hr></td>
+                    <td class="colspan" colspan="2"><hr></td>
                 </tr>
                 <tr>
                     <td>Total:</td>

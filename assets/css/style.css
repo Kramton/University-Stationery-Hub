@@ -571,12 +571,22 @@ th:last-child {
 
 .checkout-container {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
+  margin-top: 20px;
 }
 
 .checkout-btn {
   background-color: coral;
   color: white;
+  color: white;
+  padding: 15px 40px;
+  text-decoration: none;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border: none;
+  text-transform: uppercase;
+  cursor: pointer;
 }
 
 /* Login */
