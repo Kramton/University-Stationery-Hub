@@ -19,12 +19,12 @@ function sendVerificationEmail($email, $verificationToken) {
         $mail->isSMTP();
         $mail->Host = 'smtp.gmail.com';
         $mail->SMTPAuth = true;
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-        $mail->Port = 465;
-        $mail->Username = 'tempestplaysgrow@gmail.com';
-        $mail->Password = 'qufq ctky rnis bzwd';
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port = 587;
+        $mail->Username = 'universitystationeryhub@gmail.com';
+        $mail->Password = 'blan phaw gedq tdno';
 
-        $mail->setFrom('tempestplaysgrow@gmail.com', 'University Stationary Hub');
+        $mail->setFrom('universitystationeryhub@gmail.com', 'University Stationary Hub');
         $mail->addAddress($email);
 
         $verificationLink = 'http://localhost/UniversityStationaryHub/University-Stationary-Hub/verify_account.php?token=' . $verificationToken;
