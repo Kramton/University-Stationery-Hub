@@ -2,42 +2,14 @@
 <?php
 include('server/connection.php');
 
-/*
-// Normalize legacy cart keys to product_id (run once per request)
-function normalizeCartKeys() {
-  if (empty($_SESSION['cart'])) return;
-
-  $normalized = [];
-  foreach ($_SESSION['cart'] as $k => $line) {
-    if (!is_array($line) || !isset($line['product_id'])) continue;
-    $pid = (int)$line['product_id'];
-    if ($pid <= 0) {
-      // fallback to old key if it was a valid int-like key
-      $pid = is_numeric($k) ? (int)$k : 0;
-    }
-    if ($pid <= 0) continue; // skip malformed entries
-
-    if (isset($normalized[$pid])) {
-      // merge quantities if duplicated under different keys
-      $normalized[$pid]['product_quantity'] += (int)($line['product_quantity'] ?? 0);
-    } else {
-      $line['product_id'] = $pid; // ensure int
-      $line['product_quantity'] = max(1, (int)($line['product_quantity'] ?? 1));
-      $normalized[$pid] = $line;
-    }
-  }
-  $_SESSION['cart'] = $normalized;
-}
-
-// Ensure cart array exists, then normalize
+// Ensure cart array exists
 if (!isset($_SESSION['cart'])) {
   $_SESSION['cart'] = [];
 }
-normalizeCartKeys();*/
 
 // Fetch a product by id with safe fields.
- 
-function getProductById(mysqli $conn, int $id) {
+function getProductById(mysqli $conn, int $id)
+{
   $stmt = $conn->prepare(
     "SELECT product_id, product_name, product_image, product_price, product_stock
      FROM products WHERE product_id = ?"
@@ -51,8 +23,8 @@ function getProductById(mysqli $conn, int $id) {
 }
 
 // calculate cart totals (price & quantity).
-
-function calculateTotalCart() {
+function calculateTotalCart()
+{
   $total_price = 0.0;
   $total_quantity = 0;
 
@@ -65,15 +37,16 @@ function calculateTotalCart() {
     }
   }
 
-  $_SESSION['total']    = $total_price;
+  // Apply promo code if valid
+  if (isset($_SESSION['promo_code']) && $_SESSION['promo_code'] === 'AUT112') { // Example promo code
+    $_SESSION['promo_discount'] = 5.00;
+  } else {
+    unset($_SESSION['promo_discount']);
+  }
+
+  $_SESSION['subtotal']    = $total_price;
   $_SESSION['quantity'] = $total_quantity;
 }
-
-// Ensure cart array exists
-if (!isset($_SESSION['cart'])) {
-  $_SESSION['cart'] = [];
-}
-
 
 
 // back URL (referrer or index)
@@ -119,20 +92,13 @@ if (isset($_POST['add_to_cart'])) {
 
   calculateTotalCart();
 
-
-
-
-// Remove from cart 
+  // Remove from cart 
 } else if (isset($_POST['remove_product'])) {
   $product_id = (int)$_POST['product_id'];
   unset($_SESSION['cart'][$product_id]);
   calculateTotalCart();
 
-
-
-
-
-// Edit quantity
+  // Edit quantity
 } else if (isset($_POST['edit_quantity'])) {
   $product_id   = (int)$_POST['product_id'];
   $new_quantity = (int)$_POST['product_quantity'];
@@ -156,100 +122,327 @@ if (isset($_POST['add_to_cart'])) {
       }
       if (isset($_SESSION['cart'][$product_id])) {
         $_SESSION['cart'][$product_id]['product_quantity'] = $new_quantity;
-      } else {
-        // If editing a product not yet in cart, add it
-        $_SESSION['cart'][$product_id] = [
-          'product_id'       => $product['product_id'],
-          'product_name'     => $product['product_name'],
-          'product_price'    => (float)$product['product_price'],
-          'product_image'    => $product['product_image'],
-          'product_quantity' => $new_quantity
-        ];
       }
     }
   }
 
   calculateTotalCart();
+
+// Apply Promo Code
+} else if (isset($_POST['apply_promo'])) {
+    $promo_code = trim($_POST['promo_code']);
+    // Replace 'AUT112' with your actual valid promo code logic
+    if ($promo_code === 'AUT112') { 
+        $_SESSION['promo_code'] = $promo_code;
+    } else {
+        unset($_SESSION['promo_code']);
+        echo "<script>alert('Invalid promo code.');</script>";
+    }
+    calculateTotalCart();
 }
+
+// Initial calculation on page load
+calculateTotalCart();
+
 ?>
 
+<style>
+  :root {
+    --primary-color: #F97316; /* Orange color */
+  }
+
+  .cart {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
+
+  .cart-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+  
+  .cart-table-container {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  
+  .cart-table-container th {
+    color: white;
+    padding: 15px 10px;
+    text-align: left;
+    font-weight: bold;
+  }
+
+  .cart-table-container td {
+    padding: 20px 10px;
+    vertical-align: middle;
+    border-bottom: 1px solid #dee2e6;
+  }
+  
+  .product-info {
+    display: flex;
+    align-items: center;
+  }
+
+  .product-info img {
+    width: 60px;
+    height: auto;
+    margin-right: 15px;
+  }
+  
+  .quantity-column {
+    text-align: center;
+  }
+
+  .stock-status {
+    font-size: 0.85em;
+    color: #6c757d;
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  .quantity-selector {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: fit-content;
+  }
+
+  .quantity-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 5px 12px;
+    color: #555;
+  }
+
+  .quantity-text {
+    padding: 0 15px;
+    font-size: 1rem;
+  }
+  
+  .subtotal-column {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .promo-and-total-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 40px;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  
+  .promo-container {
+    flex: 1;
+    min-width: 280px;
+  }
+
+  .cart-total-container {
+    flex: 1;
+    min-width: 300px;
+  }
+
+  .promo-container form {
+    display: flex;
+    max-width: 350px;
+  }
+  
+  .promo-container input[type="text"] {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-right: none;
+    border-radius: 5px 0 0 5px;
+  }
+
+  .apply-btn {
+    padding: 10px 20px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 0 5px 5px 0;
+    text-transform: uppercase;
+    font-weight: bold;
+  }
+  
+  .cart-total-container h3 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+
+  .cart-total-table {
+    width: 100%;
+    max-width: 400px; /* Limit width for better alignment */
+  }
+  
+  .cart-total-table td {
+    padding: 8px 0;
+    font-size: 1.1rem;
+    border: none;
+  }
+  
+  .cart-total-table td:first-child {
+      font-weight: bold;
+  }
+
+  .cart-total-table tr td:last-child {
+    text-align: right;
+  }
+
+  .cart-total-table hr {
+    border: 0;
+    border-top: 1px solid #ddd;
+    margin: 10px 0;
+  }
+
+  .checkout-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+  }
+
+  .checkout-btn {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 15px 40px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border: none;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+</style>
+
+
 <!-- Cart -->
-<section class="cart container my-5 py-5">
-  <div class="container mt-5">
-    <h2 class="font-weight-bold text-center">Your Cart</h2>
-    <hr class="mx-auto" />
+<section class="cart">
+  <div class="container">
+    <h2 class="cart-title">Your Cart</h2>
   </div>
 
-  <table class="mt-5 pt-5">
-    <tr>
-      <th>Product</th>
-      <th>Quantity</th>
-      <th>Subtotal</th>
-    </tr>
-
-    <?php if (!empty($_SESSION['cart'])): ?>
-      <?php foreach ($_SESSION['cart'] as $value): ?>
-        <?php
-          // Get live stock to cap the input (nice UX; server still enforces)
-          $stock_row = getProductById($conn, (int)$value['product_id']);
-          $live_stock = $stock_row ? (int)$stock_row['product_stock'] : 0;
-          $live_stock_max = max(1, $live_stock);
-        ?>
-        <tr>
-          <td>
-            <div class="product-info">
-              <img src="assets/imgs/<?php echo htmlspecialchars($value['product_image']); ?>" alt="" />
-              <div>
+  <table class="cart-table-container">
+    <thead>
+      <tr>
+        <th style="width: 40%;">Product</th>
+        <th style="width: 15%;">Price</th>
+        <th style="width: 25%;">Quantity</th>
+        <th style="width: 20%;">Subtotal</th>
+      </tr>
+    </thead>
+    <tbody>
+      <?php if (!empty($_SESSION['cart'])) : ?>
+        <?php foreach ($_SESSION['cart'] as $value) : ?>
+          <?php
+            $stock_row = getProductById($conn, (int)$value['product_id']);
+            $live_stock = $stock_row ? (int)$stock_row['product_stock'] : 0;
+          ?>
+          <tr>
+            <td>
+              <div class="product-info">
+                <img src="assets/imgs/<?php echo htmlspecialchars($value['product_image']); ?>" alt="<?php echo htmlspecialchars($value['product_name']); ?>" />
                 <p><?php echo htmlspecialchars($value['product_name']); ?></p>
-                <small><span>$</span><?php echo number_format((float)$value['product_price'], 2); ?></small>
-                <br>
-                <form method="POST" action="cart.php">
+              </div>
+            </td>
+
+            <td>$<?php echo number_format((float)$value['product_price'], 2); ?></td>
+
+            <td class="quantity-column">
+              <?php if ($live_stock == 1) : ?>
+                <span class="stock-status">last stock</span>
+              <?php elseif ($live_stock > 1 && $live_stock <= 10) : ?>
+                <span class="stock-status"><?php echo $live_stock; ?> stock left</span>
+              <?php endif; ?>
+              
+              <div class="quantity-selector">
+                <form method="POST" action="cart.php" class="d-inline">
                   <input type="hidden" name="product_id" value="<?php echo (int)$value['product_id']; ?>" />
-                  <input type="submit" name="remove_product" class="remove-btn" value="remove" />
+                  <input type="hidden" name="product_quantity" value="<?php echo (int)$value['product_quantity'] - 1; ?>" />
+                  <button type="submit" name="edit_quantity" class="quantity-btn">-</button>
+                </form>
+
+                <span class="quantity-text"><?php echo (int)$value['product_quantity']; ?></span>
+                
+                <form method="POST" action="cart.php" class="d-inline">
+                  <input type="hidden" name="product_id" value="<?php echo (int)$value['product_id']; ?>" />
+                  <input type="hidden" name="product_quantity" value="<?php echo (int)$value['product_quantity'] + 1; ?>" />
+                  <button type="submit" name="edit_quantity" class="quantity-btn">+</button>
                 </form>
               </div>
-            </div>
-          </td>
+            </td>
 
-          <td>
-            <form method="POST" action="cart.php">
-              <input type="hidden" name="product_id" value="<?php echo (int)$value['product_id']; ?>" />
-              <input type="number" name="product_quantity"
-                     value="<?php echo (int)$value['product_quantity']; ?>"
-                     min="1" max="<?php echo $live_stock_max; ?>" />
-              <input type="submit" class="edit-btn" value="edit" name="edit_quantity" />
-            </form>
-            <?php if ($live_stock <= 0): ?>
-              <div class="text-danger" style="font-size: .9rem;">Currently out of stock</div>
-            <?php elseif ($live_stock < (int)$value['product_quantity']): ?>
-              <div class="text-warning" style="font-size: .9rem;">Reduced to max available: <?php echo $live_stock; ?></div>
-            <?php endif; ?>
-          </td>
-
-          <td>
-            <span>$</span>
-            <span class="product-price">
-              <?php echo number_format(((float)$value['product_price'] * (int)$value['product_quantity']), 2); ?>
-            </span>
-          </td>
+            <td>
+              <div class="subtotal-column">
+                <span>$<?php echo number_format(((float)$value['product_price'] * (int)$value['product_quantity']), 2); ?></span>
+                <form method="POST" action="cart.php">
+                    <input type="hidden" name="product_id" value="<?php echo (int)$value['product_id']; ?>" />
+                    <button type="submit" name="remove_product" class="remove-btn" title="Remove item">&#128465;</button>
+                </form>
+              </div>
+            </td>
+          </tr>
+        <?php endforeach; ?>
+      <?php else: ?>
+        <tr>
+            <td colspan="4" class="text-center py-5">Your cart is empty.</td>
         </tr>
-      <?php endforeach; ?>
-    <?php endif; ?>
+      <?php endif; ?>
+    </tbody>
   </table>
 
-  <div class="cart-total">
-    <table>
-      <tr>
-        <td>Total</td>
-        <td>$ <?php echo isset($_SESSION['total']) ? number_format((float)$_SESSION['total'], 2) : '0.00'; ?></td>
-      </tr>
-    </table>
-  </div>
+  <div class="promo-and-total-container">
+    <div class="promo-container">
+      <form method="POST" action="cart.php">
+        <label for="promo_code" class="visually-hidden">Promo code</label>
+        <input type="text" name="promo_code" id="promo_code" placeholder="Promo code">
+        <button type="submit" name="apply_promo" class="apply-btn">Apply</button>
+      </form>
+    </div>
 
-  <div class="checkout-container">
-    <form method="POST" action="checkout.php">
-      <input type="submit" class="btn checkout-btn" value="Checkout" name="checkout">
-    </form>
+    <div class="cart-total-container">
+        <h3>Cart Total</h3>
+        <table class="cart-total-table">
+            <tbody>
+                <tr>
+                    <td>Subtotal:</td>
+                    <td>$<?php echo number_format($_SESSION['subtotal'] ?? 0.00, 2); ?></td>
+                </tr>
+                <?php if (isset($_SESSION['promo_discount'])): ?>
+                <tr>
+                    <td>Promo Discount:</td>
+                    <td>-$<?php echo number_format($_SESSION['promo_discount'], 2); ?></td>
+                </tr>
+                <?php endif; ?>
+                <tr>
+                    <td colspan="2"><hr></td>
+                </tr>
+                <tr>
+                    <td>Total:</td>
+                    <td>$<?php 
+                        $final_total = ($_SESSION['subtotal'] ?? 0.00) - ($_SESSION['promo_discount'] ?? 0.00);
+                        echo number_format($final_total, 2); 
+                    ?></td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="checkout-container">
+            <form method="POST" action="checkout.php">
+                <button type="submit" name="checkout" class="checkout-btn">Check Out</button>
+            </form>
+        </div>
+    </div>
   </div>
 </section>
 

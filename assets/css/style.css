@@ -527,12 +527,14 @@ footer .copyright img {
 }
 
 .cart .remove-btn {
-  color: coral;
+  color: rgb(0, 0, 0);
   text-decoration: none;
   font-size: 14px;
   background-color: white;
   border: none;
   width: 100%;
+  font-size: 1.75rem; /* Make the icon itself bigger (e.g., ~24px) */
+  padding: 5px 10px;
 }
 
 .cart .edit-btn {
