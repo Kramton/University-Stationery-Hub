@@ -20,6 +20,15 @@ session_start();
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
     />
     <link rel="stylesheet" href="assets/css/style.css" />
+
+    <style>
+    .nav-search input{ width:220px; }
+    @media (max-width: 992px){ .nav-search input{ width:100%; } }
+    </style> 
+
+
+
+
   </head>
   <body>
     <!-- Navbar -->
@@ -39,8 +48,9 @@ session_start();
           <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div class="collapse navbar-collapse nav-buttons" id="navbarSupportedContent">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
             <li class="nav-item">
               <a class="nav-link" href="index.php">Home</a>
             </li>
@@ -50,20 +60,34 @@ session_start();
             <li class="nav-item">
               <a class="nav-link" href="contact.php">Contact Us</a>
             </li>
-            <li class="nav-item">
-              <a href="cart.php">
-                <i class="fa fa-shopping-cart" aria-hidden="true">
-                  <?php if (isset($_SESSION['quantity']) && $_SESSION['quantity'] != 0) { ?>
-                    <span class="cart-quantity"><?php echo $_SESSION['quantity']; ?></span>
-                  <?php } ?>
-                </i>
+            </ul>
+
+            <form class="d-flex align-items-center ms-lg-3 my-2 my-lg-0 nav-search" role="search" action="search.php" method="get">
+           <input class="form-control form-control-sm me-2" type="search" name="q" placeholder="Search in site" aria-label="Search">
+           <button class="btn btn-outline-secondary btn-sm" type="submit">
+          <i class="fa fa-search" aria-hidden="true"></i>
+          </button>
+         </form>
+
+
+
+
+
+
+
+ 
+               <div class="d-flex align-items-center ms-lg-3 position-relative">
+              <a href="cart.php" class="me-3 position-relative">
+             <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+            <?php if (!empty($_SESSION['quantity'])) { ?>
+              <span class="cart-quantity"><?php echo (int)$_SESSION['quantity']; ?></span>
+            <?php } ?>
               </a>
               <!-- Updated: Person icon now links to My Profile -->
               <a href="my_profile.php" title="My Profile">
                 <i class="fa fa-user" aria-hidden="true"></i>
               </a>
-            </li>
-          </ul>
+           
         </div>
       </div>
     </nav>

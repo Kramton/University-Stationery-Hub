@@ -1,4 +1,5 @@
 <?php include('layouts/header.php') ?>
+<link rel="stylesheet" href="assets/css/style.css?v=6">
 
 <?php
 
@@ -8,11 +9,9 @@ include('server/connection.php');
 if (isset($_POST['search'])) {
 
   if (isset($_GET['page_no']) && $_GET['page_no'] != "") {
-    // If user has already entered page then page number is the one that they selected
-    $page_no = $_GET['page_no'];
+     $page_no = $_GET['page_no'];
   } else {
-    // If user just entered the page then default page is 1
-    $page_no = 1;
+     $page_no = 1;
   }
 
 
@@ -42,38 +41,80 @@ if (isset($_POST['search'])) {
   $previous_page = $page_no - 1;
   $next_page = $page_no + 1;
 
-  $adjacents = 2; // Number of adjacent pages on either side of the current page
+  $adjacents = 2;
 
   $total_no_of_pages = ceil($total_records / $total_records_per_page);
 
   if ($isAll) {
-$stmt2 = $conn->prepare("SELECT * FROM products WHERE product_price <= ? LIMIT $offset, $total_records_per_page");
+    $stmt2 = $conn->prepare("SELECT * FROM products WHERE product_price <= ? LIMIT $offset, $total_records_per_page");
     $stmt2->bind_param("i", $price); } 
     else {
        $stmt2 = $conn->prepare("SELECT * FROM products WHERE product_category = ? AND product_price <= ? LIMIT $offset, $total_records_per_page");
     $stmt2->bind_param("si", $category, $price);
     }
   
+     $stmt2->execute();
+     $products = $stmt2->get_result();
+
+
+
+
+      } 
+       elseif (isset($_GET['cat']) && $_GET['cat'] !== '')
+   
+   {
+
+     if (isset($_GET['page_no']) && $_GET['page_no'] != "") {
+     $page_no = (int)$_GET['page_no'];
+      } else 
+    {
+         $page_no = 1;
+    }
+
+  $category = $_GET['cat'];
+  $price    = 200; 
+
+  // Count for pagination
+  $stmt1 = $conn->prepare("SELECT COUNT(*) AS total_records
+                           FROM products
+                           WHERE product_category = ? AND product_price <= ?");
+  $stmt1->bind_param("si", $category, $price);
+  $stmt1->execute();
+  $stmt1->bind_result($total_records);
+  $stmt1->store_result();
+  $stmt1->fetch();
+
+  $total_records_per_page = 8;
+  $offset = ($page_no - 1) * $total_records_per_page;
+  $previous_page = $page_no - 1;
+  $next_page = $page_no + 1;
+  $adjacents = 2;
+  $total_no_of_pages = ceil($total_records / $total_records_per_page);
+
+
+$stmt2 = $conn->prepare("SELECT * FROM products
+                           WHERE product_category = ? AND product_price <= ?
+                           LIMIT $offset, $total_records_per_page");
+  $stmt2->bind_param("si", $category, $price);
   $stmt2->execute();
-  $products = $stmt2->get_result();//[]
+  $products = $stmt2->get_result();
 
+  $ui_price_value = $price;
+  $ui_category    = $category;
+    
+    
 
+    } else{
 
-
-
-
-  //return all products 
-} else {
-
-  if (isset($_GET['page_no']) && $_GET['page_no'] != "") {
-    // If user has already entered page then page number is the one that they selected
+     if (isset($_GET['page_no']) && $_GET['page_no'] != "")
+   {
+   
     $page_no = $_GET['page_no'];
-  } else {
-    // If user just entered the page then default page is 1
-    $page_no = 1;
-  }
+     } else {
+   
+        $page_no = 1;
+    }
 
-  // Return number of products
   $stmt1 = $conn->prepare("SELECT COUNT(*) AS total_records FROM products");
   $stmt1->execute();
   $stmt1->bind_result($total_records);
@@ -88,7 +129,7 @@ $stmt2 = $conn->prepare("SELECT * FROM products WHERE product_price <= ? LIMIT $
   $previous_page = $page_no - 1;
   $next_page = $page_no + 1;
 
-  $adjacents = 2; // Number of adjacent pages on either side of the current page
+  $adjacents = 2; 
 
   $total_no_of_pages = ceil($total_records / $total_records_per_page);
 
@@ -98,8 +139,8 @@ $stmt2 = $conn->prepare("SELECT * FROM products WHERE product_price <= ? LIMIT $
 
 }
 
-$ui_price_value = isset($price) ? (int)$price : 1000;///price 
-$ui_category    = isset($category) ? $category : '';
+     $ui_price_value = isset($price) ? (int)$price : 1000;///price 
+     $ui_category    = isset($category) ? $category : '';
 
 
 
@@ -109,6 +150,7 @@ $ui_category    = isset($category) ? $category : '';
 <section id="shop" class="my-5 py-5">
   <div class="container mt-5 py-5">
     <div class="row">
+
 
       <!-- Search Filters -->
 <div class="col-lg-3 col-md-4 col-sm-12">
@@ -236,31 +278,34 @@ $ui_category    = isset($category) ? $category : '';
             <!-- Previous Button -->
             <li class="page-item <?php if ($page_no <= 1)
               echo 'disabled'; ?>">
-              <a class="page-link"
-                href="<?php if ($page_no > 1)
-                  echo "?page_no=" . ($page_no - 1);
-                else
-                  echo '#'; ?>">Previous</a>
+              <a class="page-link" href="<?php echo ($page_no > 1) ? '?page_no='.($page_no-1).(isset($_GET['cat']) ? '&cat='.urlencode($_GET['cat']) : '')  : '#'; ?>">Previous</a>
             </li>
 
-            <!-- Page Numbers -->
-            <li class="page-item"><a class="page-link" href="?page_no=1">1</a></li>
-            <li class="page-item"><a class="page-link" href="?page_no=2">2</a></li>
+            <!-- Page Numbers  -->
+            <!-- 1 -->
+            <li class="page-item">
+              <a class="page-link" href="<?php
+                echo '?page_no=1'.(isset($_GET['cat']) ? '&cat='.urlencode($_GET['cat']) : ''); ?>">1</a>
+            </li>
 
+            <!-- 2 -->
+            <li class="page-item">
+              <a class="page-link" href="<?php
+                echo '?page_no=2'.(isset($_GET['cat']) ? '&cat='.urlencode($_GET['cat']) : ''); ?>">2</a>
+            </li>
+            <!-- 3-->
             <?php if ($page_no >= 3) { ?>
               <li class="page-item"><a class="page-link" href="#">...</a></li>
               <li class="page-item"><a class="page-link"
-                  href="<?php echo "?page_no=" . $page_no; ?>"><?php echo $page_no; ?></a></li>
+                  href="<?php echo '?page_no='.$page_no.(isset($_GET['cat']) ? '&cat='.urlencode($_GET['cat']) : '');?>"><?php echo $page_no; ?></a></li>
             <?php } ?>
 
             <!-- Next Button -->
             <li class="page-item <?php if ($page_no >= $total_no_of_pages)
               echo 'disabled'; ?>">
-              <a class="page-link"
-                href="<?php if ($page_no < $total_no_of_pages)
-                  echo "?page_no=" . ($page_no + 1);
-                else
-                  echo '#'; ?>">Next</a>
+              <a class="page-link" href="<?php 
+              echo ($page_no < $total_no_of_pages)
+              ? '?page_no='.($page_no+1).(isset($_GET['cat']) ? '&cat='.urlencode($_GET['cat']) : '') : '#'; ?>">Next</a>
             </li>
           </ul>
         </nav>
