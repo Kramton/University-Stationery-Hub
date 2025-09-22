@@ -30,23 +30,31 @@ function calculateTotalCart()
 
   if (!empty($_SESSION['cart'])) {
     foreach ($_SESSION['cart'] as $line) {
-      $price    = (float)$line['product_price'];
-      $quantity = (int)$line['product_quantity'];
+      $priceRaw = $line['product_price'] ?? 0;
+      if (!is_numeric($priceRaw)) {
+        $priceRaw = preg_replace('/[^\d.]/', '', (string)$priceRaw); // handle "$2.00"
+      }
+      $price    = (float)$priceRaw;
+      $quantity = (int)($line['product_quantity'] ?? 0);
+
       $total_price    += ($price * $quantity);
       $total_quantity += $quantity;
     }
   }
 
-  // Apply promo code if valid
-  if (isset($_SESSION['promo_code']) && $_SESSION['promo_code'] === 'AUT112') { // Example promo code
+  if (isset($_SESSION['promo_code']) && $_SESSION['promo_code'] === 'AUT112') {
     $_SESSION['promo_discount'] = 5.00;
   } else {
     unset($_SESSION['promo_discount']);
   }
 
-  $_SESSION['subtotal']    = $total_price;
+  $_SESSION['subtotal'] = $total_price;
   $_SESSION['quantity'] = $total_quantity;
+
+  $discount = isset($_SESSION['promo_discount']) ? (float)$_SESSION['promo_discount'] : 0.0;
+  $_SESSION['total'] = max(0, $total_price - $discount);
 }
+
 
 
 // back URL (referrer or index)
