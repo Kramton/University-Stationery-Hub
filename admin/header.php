@@ -1,9 +1,5 @@
 <?php session_start(); ?>
-
 <?php include('../server/connection.php'); ?>
-
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -14,7 +10,7 @@
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Hugo 0.88.1">
-    <title>Dashboard Template · Bootstrap v5.1</title>
+    <title>Admin Dashboard · University Stationary Hub</title>
 
     <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/dashboard/">
 
@@ -23,43 +19,90 @@
         integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous" />
 
     <style>
-        .bd-placeholder-img {
-            font-size: 1.125rem;
-            text-anchor: middle;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            user-select: none;
+        /* Adjust navbar */
+        .navbar {
+            background-color: white;
+            border-bottom: 1px solid #ddd;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            padding-top: 8px;
+            padding-bottom: 8px;
         }
 
-        @media (min-width: 768px) {
-            .bd-placeholder-img-lg {
-                font-size: 3.5rem;
+        .navbar-brand {
+            color: #333;
+            font-size: 1.4rem;
+            font-weight: bold;
+        }
+
+        .navbar .logo {
+            height: 30px;
+            margin-right: 10px;
+        }
+
+        .navbar-nav {
+            flex-direction: row;
+        }
+
+        .navbar-nav .nav-item {
+            margin-left: 15px;
+        }
+
+        .navbar-nav .nav-link {
+            color: #333;
+            font-weight: 500;
+        }
+
+        .btn-signout {
+            background-color: #FF9F7F;
+            color: black;
+            border-radius: 5px;
+            padding: 5px 15px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .btn-signout:hover {
+            background-color: #FF7F50;
+        }
+
+        body {
+            margin-top: 70px;
+        }
+
+        #sidebarMenu {
+            margin-top: 70px;
+        }
+
+        @media (max-width: 992px) {
+            .navbar-toggler {
+                border-color: transparent;
             }
         }
     </style>
-
-
-    <!-- Custom styles for this template -->
-    <link href="dashboard.css" rel="stylesheet">
 </head>
 
 <body>
-    <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-        <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">University Stationary Hub</a>
-        <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
-            data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false"
-            aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        
-        <div class="navbar-nav">
-            <div class="nav-item text-nowrap">
-                <?php if (isset($_SESSION['admin_logged_in'])) { ?>
-                    <a class="nav-link px-3" href="logout.php?logout=1">Sign out</a>
-                <?php } ?>
+    <nav class="navbar navbar-expand-lg navbar-light bg-white py-3 fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <img class="logo" src="../assets/imgs/1.png" alt="University Stationery Hub Logo" />
+                University Stationery Hub
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="btn btn-signout" href="logout.php?logout=1">Sign Out</a>
+                    </li>
+                </ul>
             </div>
         </div>
-    </header>
+    </nav>
 </body>
-
 </html>

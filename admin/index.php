@@ -57,17 +57,9 @@ $orders = $stmt2->get_result();
   <div class="row">
 
     <?php include('sidemenu.php'); ?>
-
-    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
-        <h1>Dashboard</h1>
-        
-      </div>
-      
-    </main>
     
     <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-      <hr class="mx-auto" />
+      <br>
       <h2>Orders</h2>
       <div class="table-responsive">
         <table class="table table-striped table-sm">

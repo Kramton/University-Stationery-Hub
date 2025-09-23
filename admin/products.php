@@ -12,6 +12,8 @@ if (!isset($_SESSION['admin_logged_in'])) {
 
 ?>
 
+
+
 <?php
 
 // get orders
@@ -57,17 +59,62 @@ $products = $stmt2->get_result();
 
     <?php include('sidemenu.php'); ?>
 
-    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
-        <h1>Dashboard</h1>
-
-      </div>
-
     </main>
 
+    <style>
+    /* Add New Product Button - Positioning */
+#add-new-product-btn {
+    background-color: #FF9F7F; /* Pale Orange */
+    color: black;
+    border-radius: 5px;
+    padding: 5px 15px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none; /* Remove underline */
+    position: absolute; /* Position relative to the nearest positioned ancestor */
+    top: 90px; /* Adjust this to your preference (distance from the top) */
+    right: 30px; /* Distance from the right edge */
+    z-index: 10; /* Ensures the button appears above other elements */
+}
+
+#add-new-product-btn:hover {
+    background-color: #FF7F50; /* Slightly darker orange on hover */
+}
+
+/* Button to Add New Product, styled like the Sign-Out Button */
+    .btn-signout {
+        background-color: #FF9F7F; /* Pale Orange */
+        color: black;
+        border-radius: 5px;
+        padding: 5px 15px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        text-decoration: none; /* Remove underline */
+    }
+
+    .btn-signout:hover {
+        background-color: #FF7F50; /* Slightly darker orange on hover */
+    }
+
+    /* Ensure button is placed in the top right corner */
+    .btn-signout {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+    }
+
+
+</style>
+
+
     <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-      <hr class="mx-auto" />
+      <br>
       <h2>Products</h2>
+
+      <a href="add_product.php" class="btn btn-signout" id="add-new-product-btn">
+    + Add New Product
+</a>
+
 
       <!-- Edit product messages -->
       <?php if (isset($_GET['edit_success_message'])) { ?>
