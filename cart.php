@@ -100,11 +100,17 @@ if (isset($_POST['add_to_cart'])) {
 
   calculateTotalCart();
 
+  header('Location: cart.php');
+  exit();
+
   // Remove from cart 
 } else if (isset($_POST['remove_product'])) {
   $product_id = (int)$_POST['product_id'];
   unset($_SESSION['cart'][$product_id]);
   calculateTotalCart();
+
+  header('Location: cart.php');
+  exit();
 
   // Edit quantity
 } else if (isset($_POST['edit_quantity'])) {
@@ -136,6 +142,9 @@ if (isset($_POST['add_to_cart'])) {
 
   calculateTotalCart();
 
+  header('Location: cart.php');
+  exit();
+
 // Apply Promo Code
 } else if (isset($_POST['apply_promo'])) {
     $promo_code = trim($_POST['promo_code']);
@@ -147,6 +156,9 @@ if (isset($_POST['add_to_cart'])) {
         echo "<script>alert('Invalid promo code.');</script>";
     }
     calculateTotalCart();
+
+    header('Location: cart.php');
+    exit();
 }
 
 // Initial calculation on page load
