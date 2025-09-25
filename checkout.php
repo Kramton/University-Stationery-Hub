@@ -80,10 +80,6 @@ $amount = (float) $order['total'];
 $order_id = (int) ($order['order_id'] ?? ($_SESSION['order_id'] ?? 0));
 ?>
 
-?>
-
-
-
 <style>
   /* Push down so Checkout title isn’t blocked by fixed header */
   .wrap {
@@ -221,8 +217,8 @@ $order_id = (int) ($order['order_id'] ?? ($_SESSION['order_id'] ?? 0));
     <h2 class="form-weight-bold">Check Out</h2>
     <hr class="mx-auto" />
   </div>
-  
-  <div class="mx-auto container wrap">
+
+  <div class="mx-auto container">
     <form id="checkout-form" method="POST" action="server/place_order.php">
       <p class="text-center" style="color: red;">
         <?php if (isset($_GET['message'])) {
@@ -230,115 +226,80 @@ $order_id = (int) ($order['order_id'] ?? ($_SESSION['order_id'] ?? 0));
         } ?>
         <?php if (isset($_GET['message'])) { ?>
           <a href="login.php" class="btn btn-primary">Login</a>
-          <?php } ?>
-        </p>
-        
-      
-      <div class="form-group checkout-small-element grid">
-        <div class="head">Collection</div>
-        <h4>Click & Collect at:</h4>
-        <label for="checkout-name">Address: </label>
-        <input readonly type="text" class="form-control" placeholder="55 Wellesley Street East, Auckland Central, Auckland 1010"  />
-      </div>
+        <?php } ?>
+      </p>
 
-      <h4>Enter details of person collecting this order:</h4>
       <div class="form-group checkout-small-element">
-        <label for="checkout-name">Full Name: </label>
+        <label for="checkout-name">Name</label>
         <input type="text" class="form-control" id="checkout-name" name="name" placeholder="Name" required />
       </div>
 
-      <!-- <div class="form-group checkout-small-element">
+      <div class="form-group checkout-small-element">
         <label for="checkout-email">Email</label>
-        <input
-          type="email"
-          class="form-control"
-          id="checkout-email"
-          name="email"
-          placeholder="Email"
-          required
-        />
-      </div> -->
+        <input type="email" class="form-control" id="checkout-email" name="email" placeholder="Email" required />
+      </div>
 
       <div class="form-group checkout-small-element">
-        <label for="checkout-phone">Phone Number: </label>
+        <label for="checkout-phone">Phone</label>
         <input type="tel" class="form-control" id="checkout-phone" name="phone" placeholder="Phone" required />
       </div>
 
-      <!-- <div class="form-group checkout-small-element">
+      <div class="form-group checkout-small-element">
         <label for="checkout-city">City</label>
-        <input
-          type="text"
-          class="form-control"
-          id="checkout-city"
-          name="city"
-          placeholder="City"
-          required
-        />
+        <input type="text" class="form-control" id="checkout-city" name="city" placeholder="City" required />
       </div>
 
       <div class="form-group checkout-large-element">
         <label for="checkout-address">Address</label>
-        <input
-          type="text"
-          class="form-control"
-          id="checkout-address"
-          name="address"
-          placeholder="Address"
-          required
-        />
-      </div> -->
+        <input type="text" class="form-control" id="checkout-address" name="address" placeholder="Address" required />
+      </div>
 
       <div class="form-group checkout-btn-container d-flex align-items-center justify-content-between">
-        <!-- <p class="mb-0">
-          <strong>Total amount:</strong>
-          $ <//?= number_format($_SESSION['total'] ?? 0, 2) ?>
-        </p> -->
+
 
         <input type="submit" class="btn" id="checkout-btn" name="place_order" value="Place Order" />
       </div>
     </form>
-    
-    <div class="wrap">
-  
-      <div class="grid">
-        <!-- Collection form -->
-  
-  
-        <!-- Order Summary -->
-        <div class="card">
-          <div class="head">Order Summary</div>
-          <div class="body">
-            <div class="summary-header">
-              <div>Product</div>
-              <div class="muted">Quantity</div>
-              <div class="muted">Price</div>
+  </div>
+
+  <div class="wrap">
+
+    <div class="grid">
+      <!-- Collection form -->
+
+
+      <!-- Order Summary -->
+      <div class="card">
+        <div class="head">Order Summary</div>
+        <div class="body">
+          <div class="summary-header">
+            <div>Product</div>
+            <div class="muted">Quantity</div>
+            <div class="muted">Price</div>
+          </div>
+
+          <?php foreach ($order['items'] as $it): ?>
+            <div class="sum-item">
+              <div><?= htmlspecialchars($it['name'] ?? 'Item') ?></div>
+              <div class="muted">x<?= (int) ($it['quantity'] ?? 0) ?></div>
+              <div>$ <?= number_format((float) ($it['subtotal'] ?? 0), 2) ?></div>
             </div>
-  
-            <?php foreach ($order['items'] as $it): ?>
-              <div class="sum-item">
-                <div><?= htmlspecialchars($it['name'] ?? 'Item') ?></div>
-                <div class="muted">x<?= (int) ($it['quantity'] ?? 0) ?></div>
-                <div>$ <?= number_format((float) ($it['subtotal'] ?? 0), 2) ?></div>
-              </div>
-            <?php endforeach; ?>
-  
-            <div class="divider"></div>
-  
-            <div class="tot">
-              <span class="muted">Promo code</span>
-              <span class="muted">- $ <?= number_format((float) ($order['discount'] ?? 0), 2) ?></span>
-            </div>
-            <div class="tot">
-              <span>Total Amount</span>
-              <span>$ <?= number_format($amount, 2) ?></span>
-            </div>
+          <?php endforeach; ?>
+
+          <div class="divider"></div>
+
+          <div class="tot">
+            <span class="muted">Promo code</span>
+            <span class="muted">- $ <?= number_format((float) ($order['discount'] ?? 0), 2) ?></span>
+          </div>
+          <div class="tot">
+            <span>Total Amount</span>
+            <span>$ <?= number_format($amount, 2) ?></span>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
 </section>
-
 
 <?php include('layouts/footer.php'); ?>
