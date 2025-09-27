@@ -259,8 +259,54 @@ ALTER TABLE `products`
 --
 ALTER TABLE `users`
   MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `promo_codes`
+--
+CREATE TABLE `promo_codes` (
+  `id` int(11) NOT NULL,
+  `code` varchar(50) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `discount_type` enum('fixed','percent') NOT NULL,
+  `discount_value` decimal(10,2) NOT NULL,
+  `min_purchase` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `start_date` datetime DEFAULT NULL,
+  `end_date` datetime DEFAULT NULL,
+  `max_uses` int(11) NOT NULL DEFAULT 1000,
+  `current_uses` int(11) NOT NULL DEFAULT 0,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `promo_codes`
+--
+INSERT INTO `promo_codes` (`id`, `code`, `description`, `discount_type`, `discount_value`, `min_purchase`, `start_date`, `end_date`, `max_uses`, `current_uses`, `is_active`, `created_at`, `updated_at`) VALUES
+(1, 'AUT112', '$5 off for Autumn Sale', 'fixed', 5.00, 20.00, NULL, '2025-11-30 23:59:59', 500, 0, 1, '2025-09-18 12:00:00', '2025-09-18 12:00:00'),
+(2, 'SAVE15', '15% off for orders over $50', 'percent', 15.00, 50.00, NULL, NULL, 1000, 0, 1, '2025-09-18 12:00:00', '2025-09-18 12:00:00'),
+(3, 'OLDCODE', 'An old, disabled code', 'fixed', 10.00, 0.00, NULL, '2024-01-01 00:00:00', 1000, 0, 0, '2025-09-18 12:00:00', '2025-09-18 12:00:00');
+
+--
+-- Indexes for table `promo_codes`
+--
+ALTER TABLE `promo_codes`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `code` (`code`);
+
+--
+-- AUTO_INCREMENT for table `promo_codes`
+--
+ALTER TABLE `promo_codes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+
