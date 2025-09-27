@@ -17,8 +17,6 @@ if(isset($_GET['product_id'])){
 ?>
 
 
-
-
 <section class="container single-product my-5 pt-5">
   <div class="row mt-5">
     <?php while($row = $product->fetch_assoc()): 
@@ -85,27 +83,30 @@ if ($stock <= 0): ?>
     <div class="col-lg-6 col-md-12 col-12 offset-lg-1">
       <div class="pill-style">Stationery</div>
       <h1 class="product-title"><?php echo htmlspecialchars($row['product_name']); ?></h1><hr>
-      <h4 class="details-heading"><strong>Product Details:</strong></h4>
+      <div class="details-card">
+  <h4 class="details-heading"><strong>Product Details:</strong></h4>
+  <p class="product-desc">
+    <?php echo nl2br(htmlspecialchars($row['product_description'] ?? '')); ?>
+  </p>
+</div>
 
-      <p class="product-desc">
-        <?php echo nl2br(htmlspecialchars($row['product_description'] ?? '')); ?>
-      </p>
          
-     <div class="d-flex">
-  <div class="price-box ms-lg-0 text-lg-end text-start">
-    <?php if ($promoPrice !== null): ?>
-      <div class="promo-line mb-1">
-        With promo code <span class="code">$<?= number_format($promoPrice, 2) ?></span>
-        <small>(<?= (int)$discountPercent ?>% off)</small>
-      </div>
-    <?php endif; ?>
+   
+ <div class="price-box text-start">
+  <?php if ($promoPrice !== null): ?>
+    <div class="promo-line mb-1">
+      With promo <span class="code">$<?= number_format($promoPrice, 2) ?></span>
+      <small>(<?= (int)$discountPercent ?>% off)</small>
+    </div>
+  <?php endif; ?>
 
-    <div class="price-main mb-1">$<?= number_format($price, 2) ?></div>
+  <div class="price-main mb-1">$<?= number_format($price, 2) ?></div>
 
-    <?php if ($savings > 0): ?>
-      <div class="save-pill">SAVE $<?= number_format($savings, 2) ?></div>
-    <?php endif; ?>
-  </div></div>
+  <?php if ($savings > 0): ?>
+    <div class="save-pill">SAVE $<?= number_format($savings, 2) ?></div>
+  <?php endif; ?>
+</div>
+
 
    <?php
   $stock = isset($row['product_stock']) ? (int)$row['product_stock'] : 0;
@@ -131,39 +132,44 @@ if ($stock <= 0): ?>
 
 
 <!-- related products  -->
+<?php
+$relStmt = $conn->prepare("
+  SELECT product_id, product_name, product_price, product_image
+  FROM products
+  WHERE product_id <> ? 
+  ORDER BY RAND()
+  LIMIT 4
+");
+$relStmt->bind_param("i", $product_id);
+$relStmt->execute();
+$related = $relStmt->get_result();
+?>
+
 <section id="featured" class="my-5 pb-5">
-  <div class="container text-center mt-5 py-5">
-    
+  <div class="container text-center mt-5 py-3">
+    <h4 class="mb-1">You may also like</h4>
     <hr class="mx-auto" />
   </div>
 
   <div class="row mx-auto container-fluid">
-    <div class="product text-center col-lg-3 col-md-4 col-sm-12">
-      <img class="img-fluid mb-3" src="assets/imgs/1.png" alt="" />
-      <h5 class="p-name">Product</h5>
-      <h4 class="p-price">$199</h4>
-      <button class="buy-btn">Buy Now</button>
-    </div>
-    <div class="product text-center col-lg-3 col-md-4 col-sm-12">
-      <img class="img-fluid mb-3" src="assets/imgs/1.png" alt="" />
-      <h5 class="p-name">Product</h5>
-      <h4 class="p-price">$199</h4>
-      <button class="buy-btn">Buy Now</button>
-    </div>
-    <div class="product text-center col-lg-3 col-md-4 col-sm-12">
-      <img class="img-fluid mb-3" src="assets/imgs/1.png" alt="" />
-      <h5 class="p-name">Product</h5>
-      <h4 class="p-price">$199</h4>
-      <button class="buy-btn">Buy Now</button>
-    </div>
-    <div class="product text-center col-lg-3 col-md-4 col-sm-12">
-      <img class="img-fluid mb-3" src="assets/imgs/1.png" alt="" />
-      <h5 class="p-name">Product</h5>
-      <h4 class="p-price">$199</h4>
-      <button class="buy-btn">Buy Now</button>
-    </div>
+    <?php while ($r = $related->fetch_assoc()): ?>
+      <div class="product text-center col-lg-3 col-md-4 col-sm-12">
+        <a href="single_product.php?product_id=<?= (int)$r['product_id'] ?>">
+          <img class="img-fluid mb-3"
+               src="assets/imgs/<?= htmlspecialchars($r['product_image'] ?: '1.png') ?>"
+               alt="<?= htmlspecialchars($r['product_name']) ?>" />
+        </a>
+        <h5 class="p-name"><?= htmlspecialchars($r['product_name']) ?></h5>
+        <h4 class="p-price">$<?= number_format((float)$r['product_price'], 2) ?></h4>
+        <a class="buy-btn" href="single_product.php?product_id=<?= (int)$r['product_id'] ?>">View</a>
+      </div>
+    <?php endwhile; ?>
+    <?php if ($related->num_rows === 0): ?>
+      <div class="col-12 text-center text-muted">No other products yet.</div>
+    <?php endif; ?>
   </div>
 </section>
+
 
 <script>
   const mainImg = document.getElementById("mainImg");
