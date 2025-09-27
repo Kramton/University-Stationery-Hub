@@ -22,9 +22,26 @@ function getProductById(mysqli $conn, int $id)
   return $row ?: null;
 }
 
-// calculate cart totals (price & quantity).
+// Get promo code
+function getPromoCode(mysqli $conn, string $code)
+{
+  $stmt = $conn->prepare(
+    "SELECT code, discount_type, discount_value, min_purchase 
+     FROM promo_codes WHERE code = ? AND is_active = 1"
+  );
+  $stmt->bind_param("s", $code);
+  $stmt->execute();
+  $res = $stmt->get_result();
+  $row = $res->fetch_assoc();
+  $stmt->close();
+  return $row ?: null;
+}
+
+
 function calculateTotalCart()
 {
+  global $conn; 
+
   $total_price = 0.0;
   $total_quantity = 0;
 
@@ -42,10 +59,28 @@ function calculateTotalCart()
     }
   }
 
-  if (isset($_SESSION['promo_code']) && $_SESSION['promo_code'] === 'AUT112') {
-    $_SESSION['promo_discount'] = 5.00;
-  } else {
-    unset($_SESSION['promo_discount']);
+
+  unset($_SESSION['promo_discount']);
+
+  if (isset($_SESSION['promo_data'])) {
+    $promo = $_SESSION['promo_data'];
+    $min_purchase = (float) $promo['min_purchase'];
+
+    if ($total_price >= $min_purchase) {
+      $discount_value = (float) $promo['discount_value'];
+      $discount = 0.0;
+
+      if ($promo['discount_type'] === 'fixed') {
+        $discount = $discount_value;
+      } else if ($promo['discount_type'] === 'percent') {
+        $discount = ($total_price * $discount_value) / 100;
+      }
+      $_SESSION['promo_discount'] = $discount;
+    } else {
+      unset($_SESSION['promo_data']);
+      $_SESSION['promo_message'] = "Promo code was removed as cart no longer meets the minimum purchase of $" . number_format($min_purchase, 2);
+      $_SESSION['promo_message_type'] = "danger";
+    }
   }
 
   $_SESSION['subtotal'] = $total_price;
@@ -107,6 +142,9 @@ if (isset($_POST['add_to_cart'])) {
 } else if (isset($_POST['remove_product'])) {
   $product_id = (int) $_POST['product_id'];
   unset($_SESSION['cart'][$product_id]);
+  if (empty($_SESSION['cart'])) {
+    unset($_SESSION['promo_data']);
+  }
   calculateTotalCart();
 
   header('Location: cart.php');
@@ -140,24 +178,47 @@ if (isset($_POST['add_to_cart'])) {
     }
   }
 
+  // Also remove promo code if cart becomes empty
+  if (empty($_SESSION['cart'])) {
+    unset($_SESSION['promo_data']);
+  }
   calculateTotalCart();
 
   header('Location: cart.php');
   exit();
 
-  // Apply Promo Code
 } else if (isset($_POST['apply_promo'])) {
-  $promo_code = trim($_POST['promo_code']);
-  if ($promo_code === 'AUT112') {
-    $_SESSION['promo_code'] = $promo_code;
-    $_SESSION['promo_message'] = "Promo code <b>$promo_code</b> applied!";
-    $_SESSION['promo_message_type'] = "success";
+  $promo_code_input = trim($_POST['promo_code']);
+  $promo_data = getPromoCode($conn, $promo_code_input);
+
+  if ($promo_data) {
+    $min_purchase = (float) $promo_data['min_purchase'];
+    
+    $current_subtotal = 0.0;
+    if (!empty($_SESSION['cart'])) {
+        foreach ($_SESSION['cart'] as $line) {
+            $current_subtotal += (float)$line['product_price'] * (int)$line['product_quantity'];
+        }
+    }
+
+    if ($current_subtotal >= $min_purchase) {
+      $_SESSION['promo_data'] = $promo_data;
+      $_SESSION['promo_message'] = "Promo code <b>" . htmlspecialchars($promo_data['code']) . "</b> applied!";
+      $_SESSION['promo_message_type'] = "success";
+    } else {
+      unset($_SESSION['promo_data']); 
+      $_SESSION['promo_message'] = "This code requires a minimum purchase of $" . number_format($min_purchase, 2) . ".";
+      $_SESSION['promo_message_type'] = "danger";
+    }
+
   } else {
-    unset($_SESSION['promo_code']);
-    $_SESSION['promo_message'] = "Promo code <b>$promo_code</b> is not valid.";
+    // Invalid or inactive code
+    unset($_SESSION['promo_data']);
+    $_SESSION['promo_message'] = "Promo code <b>" . htmlspecialchars($promo_code_input) . "</b> is not valid.";
     $_SESSION['promo_message_type'] = "danger";
   }
-  calculateTotalCart();
+
+  calculateTotalCart(); 
 
   header('Location: cart.php');
   exit();
@@ -167,6 +228,7 @@ if (isset($_POST['add_to_cart'])) {
 calculateTotalCart();
 
 ?>
+
 
 <style>
   :root {
@@ -450,8 +512,7 @@ calculateTotalCart();
           <tr>
             <td>Total:</td>
             <td>$<?php
-            $final_total = ($_SESSION['subtotal'] ?? 0.00) - ($_SESSION['promo_discount'] ?? 0.00);
-            echo number_format($final_total, 2);
+            echo number_format($_SESSION['total'] ?? 0.00, 2);
             ?></td>
           </tr>
         </tbody>
