@@ -47,6 +47,12 @@ function setActiveClass($page, $current_page) {
                     Products
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link <?php echo setActiveClass(['promo_codes.php', 'add_promo_code.php', 'edit_promo_code.php'], $current_page); ?>" href="promo_codes.php" id="promo-codes-btn">
+            <span data-feather="tag"></span>
+            Promo Codes
+        </a>
+    </li>
         </ul>
     </div>
 </nav>
