@@ -77,7 +77,7 @@ body { padding-top: 110px; font-family: 'Poppins', sans-serif; }
                             <th>Date</th>
                             <th>Payment</th>
                             <th>Status</th>
-                            <th>Actions</th>
+                            <th style="text-align:left;">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -88,7 +88,7 @@ body { padding-top: 110px; font-family: 'Poppins', sans-serif; }
                                     <td><?php echo date('d-m-Y', strtotime($row['order_date'])); ?></td>
                                     <td>$<?php echo number_format((float)$row['order_cost'], 2); ?></td>
                                     <td><?php echo ucfirst($row['order_status']); ?></td>
-                                    <td>
+                                    <td style="text-align:left; vertical-align:middle;">
                                         <a class="view-link" href="order_details.php?order_id=<?php echo $row['order_id']; ?>">
                                             View Order
                                         </a>
