@@ -144,7 +144,7 @@ $order_id = (int)($order['order_id'] ?? ($_SESSION['order_id'] ?? 0));
             <button type="submit" class="btn-primary">Continue to payment</button>
           </div>
           <div class="row full">
-            <div class="muted" aria-live="polite">Total to pay: $ <?= number_format($amount, 2) ?></div>
+            
           </div>
         </form>
       </div>
