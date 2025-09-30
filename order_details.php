@@ -17,16 +17,28 @@ if (isset($_POST['order_id'])) {
     exit;
 }
 
-// Fetch order_status from DB if not provided
+// Fetch order_status and order_date from DB if not provided
+$order_date = '';
 if ($order_status === null) {
-    $stmt_status = $conn->prepare("SELECT order_status FROM orders WHERE order_id = ? LIMIT 1");
+    $stmt_status = $conn->prepare("SELECT order_status, order_date FROM orders WHERE order_id = ? LIMIT 1");
     $stmt_status->bind_param('i', $order_id);
     $stmt_status->execute();
     $result_status = $stmt_status->get_result();
     if ($row_status = $result_status->fetch_assoc()) {
         $order_status = $row_status['order_status'];
+        $order_date = $row_status['order_date'];
     } else {
         $order_status = '';
+        $order_date = '';
+    }
+} else {
+    // If order_status is set, still fetch order_date
+    $stmt_date = $conn->prepare("SELECT order_date FROM orders WHERE order_id = ? LIMIT 1");
+    $stmt_date->bind_param('i', $order_id);
+    $stmt_date->execute();
+    $result_date = $stmt_date->get_result();
+    if ($row_date = $result_date->fetch_assoc()) {
+        $order_date = $row_date['order_date'];
     }
 }
 
@@ -63,12 +75,15 @@ function calculateTotalOrderPrice($order_details)
     <div class="container mt-5">
         <h2 class="font-weight-bold text-center">Order Details</h2>
         <hr class="mx-auto" />
+        <p class="text-center" style="font-size:18px; color:#555; margin-bottom:0;">Order ID: <strong><?php echo htmlspecialchars($order_id); ?></strong></p>
+        <?php if (!empty($order_date)): ?>
+            <p class="text-center" style="font-size:16px; color:#888; margin-bottom:0;">Order Date: <strong><?php echo date('d M Y, h:i A', strtotime($order_date)); ?></strong></p>
+        <?php endif; ?>
     </div>
 
 
     <table class="mt-5 pt-5 mx-auto">
         <tr>
-            <th>Order ID</th>
             <th>Product</th>
             <th>Price</th>
             <th>Quantity</th>
@@ -76,9 +91,6 @@ function calculateTotalOrderPrice($order_details)
 
         <?php foreach($order_details as $row) { ?>
             <tr>
-                <td style="font-weight:bold; color:#555;">
-                    <?php echo htmlspecialchars($order_id); ?>
-                </td>
                 <td>
                     <div class="product-info">
                         <img src="assets/imgs/<?php echo $row['product_image']; ?>" alt="" />
@@ -100,6 +112,24 @@ function calculateTotalOrderPrice($order_details)
 
 
     <?php if ($order_status == "not paid") { ?>
+        <?php
+        // Prepare last_order session for payment.php
+        $order_items = [];
+        foreach ($order_details as $row) {
+            $order_items[] = [
+                'name' => $row['product_name'],
+                'quantity' => (int)$row['product_quantity'],
+                'subtotal' => (float)$row['product_price'] * (int)$row['product_quantity']
+            ];
+        }
+        $_SESSION['last_order'] = [
+            'order_id' => $order_id,
+            'items' => $order_items,
+            'subtotal' => $order_total_price,
+            'discount' => 0.0,
+            'total' => $order_total_price
+        ];
+        ?>
         <form style="float: right; margin-left:10px;" method="POST" action="payment.php">
             <input type="hidden" name="order_id" value="<?php echo $order_id; ?>">
             <input type="hidden" name="order_total_price" value="<?php echo $order_total_price; ?>">
