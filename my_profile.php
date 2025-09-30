@@ -3,227 +3,196 @@ include('layouts/header.php');
 include('server/connection.php');
 
 if (!isset($_SESSION['logged_in'])) {
-    header('location: login.php');
-    exit;
+  header('location: login.php');
+  exit;
 }
 
-// Handle logout
-if (isset($_GET['logout'])) {
-    if (isset($_SESSION['logged_in'])) {
-        unset($_SESSION['logged_in']);
-        unset($_SESSION['user_email']);
-        unset($_SESSION['user_name']);
-        header('location: login.php');
-        exit;
-    }
+/* ---- Helpers ---- */
+function split_name($full) {
+  $parts = preg_split('/\s+/', trim($full ?? ''), 2);
+  return [$parts[0] ?? '', $parts[1] ?? ''];
+}
+[$firstNamePrefill, $lastNamePrefill] = split_name($_SESSION['user_name'] ?? '');
+
+/* ---- Handle Logout (bottom button) ---- */
+if (isset($_GET['logout']) && $_GET['logout'] === '1') {
+  unset($_SESSION['logged_in'], $_SESSION['user_email'], $_SESSION['user_name']);
+  header('location: login.php');
+  exit;
 }
 
-// Handle profile update
-if (isset($_POST['save_changes'])) {
-    $first_name = $_POST['first_name'];
-    $last_name = $_POST['last_name'];
-    $email = $_SESSION['user_email'];
+/* ---- Submit: profile (and optional password) ---- */
+if (isset($_POST['save_all'])) {
+  $email      = $_SESSION['user_email'];
+  $first_name = trim($_POST['first_name'] ?? '');
+  $last_name  = trim($_POST['last_name'] ?? '');
 
-    $full_name = $first_name . ' ' . $last_name;
-
-    $stmt = $conn->prepare("UPDATE users SET user_name=? WHERE user_email=?");
-    $stmt->bind_param('ss', $full_name, $email);
+  // Update profile
+  if ($first_name !== '' || $last_name !== '') {
+    $stmt = $conn->prepare("UPDATE users SET first_name=?, last_name=? WHERE user_email=?");
+    $stmt->bind_param('sss', $first_name, $last_name, $email);
     $stmt->execute();
+    $stmt->close();
+    $_SESSION['user_name'] = trim($first_name.' '.$last_name);
+  }
 
-    $_SESSION['user_name'] = $full_name;
+  // Optional password change (only if any field provided)
+  $current_pass = $_POST['current_password'] ?? '';
+  $new_pass     = $_POST['new_password'] ?? '';
+  $confirm_pass = $_POST['confirm_password'] ?? '';
+  $changing     = ($current_pass !== '' || $new_pass !== '' || $confirm_pass !== '');
 
-    header('location: my_profile.php?message=Profile updated successfully');
-    exit;
-}
-
-// Handle password change
-if (isset($_POST['change_password'])) {
-    $current_pass = $_POST['current_password'];
-    $new_pass = $_POST['new_password'];
-    $confirm_pass = $_POST['confirm_password'];
-    $email = $_SESSION['user_email'];
+  if ($changing) {
+    if ($current_pass === '' || $new_pass === '' || $confirm_pass === '') {
+      header('location: my_profile.php?error=Please+fill+all+password+fields');
+      exit;
+    }
+    if ($new_pass !== $confirm_pass) {
+      header('location: my_profile.php?error=Passwords+do+not+match');
+      exit;
+    }
+    if (strlen($new_pass) < 6) {
+      header('location: my_profile.php?error=Password+must+be+at+least+6+characters');
+      exit;
+    }
 
     $stmt = $conn->prepare("SELECT user_password FROM users WHERE user_email=?");
     $stmt->bind_param('s', $email);
     $stmt->execute();
-    $stmt->bind_result($hashed_password);
+    $stmt->bind_result($hash);
     $stmt->fetch();
     $stmt->close();
 
-    if (!password_verify($current_pass, $hashed_password)) {
-        header('location: my_profile.php?error=Current password is incorrect');
-        exit;
-    }
-    if ($new_pass !== $confirm_pass) {
-        header('location: my_profile.php?error=Passwords do not match');
-        exit;
-    }
-    if (strlen($new_pass) < 6) {
-        header('location: my_profile.php?error=Password must be at least 6 characters');
-        exit;
+    if (!password_verify($current_pass, $hash)) {
+      header('location: my_profile.php?error=Current+password+is+incorrect');
+      exit;
     }
 
-    $hashed_new_pass = password_hash($new_pass, PASSWORD_DEFAULT);
+    $new_hash = password_hash($new_pass, PASSWORD_DEFAULT);
     $stmt = $conn->prepare("UPDATE users SET user_password=? WHERE user_email=?");
-    $stmt->bind_param('ss', $hashed_new_pass, $email);
+    $stmt->bind_param('ss', $new_hash, $email);
+    $stmt->execute();
+    $stmt->close();
 
-    if ($stmt->execute()) {
-        header('location: my_profile.php?message=Password updated successfully');
-    } else {
-        header('location: my_profile.php?error=Could not update password');
-    }
+    header('location: my_profile.php?message=Profile+and+password+updated+successfully');
     exit;
+  }
+
+  header('location: my_profile.php?message=Profile+updated+successfully');
+  exit;
 }
 ?>
 
 <style>
-    body {
-        padding-top: 110px;
-        /* Increased so heading is fully visible */
-        font-family: 'Poppins', sans-serif;
-    }
+  body{padding-top:110px;font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+  .container-account{max-width:1120px;margin:0 auto;padding:0 16px}
+  .page-title{font-size:36px;font-weight:700;text-align:center;margin:6px 0 26px}
 
-    .account-container {
-        max-width: 1200px;
-        margin: auto;
-    }
+  .grid{display:grid;grid-template-columns:220px 1fr;gap:40px;align-items:start}
+  @media(max-width:992px){.grid{grid-template-columns:1fr}}
 
-    .account-title {
-        font-size: 40px;
-        font-weight: 600;
-        text-align: center;
-        margin-bottom: 40px;
-    }
+  /* Sidebar (no borders; no logout) */
+  .sidebar-title{font-size:14px;color:#7a7a7a;margin-bottom:12px}
+  .navlink{display:block;padding:6px 0;color:#111;text-decoration:none}
+  .navlink.active{color:#F15A29;font-weight:600}
 
-    .sidebar {
-        padding-right: 20px;
-    }
+  /* Main content */
+  .section-title{font-size:16px;font-weight:600;margin:6px 0 12px;color:#222}
+  .muted{color:#666;font-size:13px;margin-bottom:10px}
+  .row-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:576px){.row-2{grid-template-columns:1fr}}
 
-    .sidebar h5 {
-        margin-bottom: 20px;
-        font-weight: 500;
-    }
+  /* Inputs (flat, light placeholders) */
+  .control{width:100%;padding:12px 14px;border:none;border-radius:6px;background:#f5f5f5;color:#111;font-size:14px}
+  .control::placeholder{color:#9d9d9d}
+  .control[disabled]{background:#e9e9e9;color:#666}
 
-    .sidebar a {
-        display: block;
-        padding: 8px 0;
-        color: #000;
-        text-decoration: none;
-    }
+  .block{margin-bottom:28px}
+  .msg,.err{margin:0 0 14px;font-size:14px}
+  .msg{color:#1a7f37}.err{color:#b42318}
 
-    .sidebar a.active {
-        color: #F15A29;
-        font-weight: 600;
-    }
-
-    .content-box {
-        background: #fff;
-        padding: 30px;
-        border-radius: 6px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-    }
-
-    .content-box h5 {
-        color: #F15A29;
-        font-weight: 500;
-        margin-bottom: 20px;
-    }
-
-    .content-box label {
-        margin-top: 10px;
-        font-weight: 400;
-    }
-
-    .btn-orange {
-        background-color: #F15A29;
-        color: #fff;
-        border: none;
-        padding: 8px 18px;
-    }
-
-    .btn-orange:hover {
-        background-color: #d94d20;
-    }
-
-    hr {
-        border: 0;
-        height: 2px;
-        background-color: #F15A29;
-        width: 40px;
-        margin: 20px 0;
-    }
+  .actions{display:flex;align-items:center;gap:14px;margin-top:12px;flex-wrap:wrap}
+  .link-cancel{color:#666;text-decoration:none;font-weight:500}
+  .link-cancel:hover{text-decoration:underline;color:#333}
+  .btn-primary{background:#F15A29;color:#fff;border:none;border-radius:6px;padding:10px 16px;font-weight:600;cursor:pointer}
+  .btn-primary:hover{background:#e14e1e}
+  .btn-secondary{background:#efefef;color:#111;border:none;border-radius:6px;padding:10px 16px;font-weight:600;cursor:pointer}
+  .btn-secondary:hover{background:#e6e6e6}
 </style>
 
-<section class="account-container">
-    <h2 class="account-title">Account</h2>
-    <?php if (isset($_GET['error'])) { ?>
-        <p style="color:red; text-align:center;"><?php echo $_GET['error']; ?></p>
-    <?php } ?>
-    <?php if (isset($_GET['message'])) { ?>
-        <p style="color:green; text-align:center;"><?php echo $_GET['message']; ?></p>
-    <?php } ?>
+<div class="container-account">
+  <h2 class="page-title">Account</h2>
 
-    <div class="row">
-        <!-- Sidebar -->
-        <div class="col-md-3 sidebar">
-            <h5>Manage My Account</h5>
-            <a href="my_profile.php" class="active">My Profile</a>
-            <a href="my_orders.php">My Orders</a>
-        </div>
+  <?php if(isset($_GET['error'])): ?>
+    <p class="err"><?= htmlspecialchars($_GET['error']) ?></p>
+  <?php endif; ?>
+  <?php if(isset($_GET['message'])): ?>
+    <p class="msg"><?= htmlspecialchars($_GET['message']) ?></p>
+  <?php endif; ?>
 
-        <!-- Profile Form -->
-        <div class="col-md-9">
-            <div class="content-box">
-                <h5>Edit Your Profile</h5>
-                <form method="POST" action="my_profile.php">
-                    <label>First Name</label>
-                    <input type="text" name="first_name" class="form-control"
-                        value="<?php echo explode(' ', $_SESSION['user_name'])[0]; ?>" required>
+  <div class="grid">
+    <!-- Sidebar -->
+    <aside>
+      <div class="sidebar-title">Manage My Account</div>
+      <a class="navlink active" href="my_profile.php">My Profile</a>
+      <a class="navlink" href="my_orders.php">My Orders</a>
+    </aside>
 
-                    <label>Last Name</label>
-                    <input type="text" name="last_name" class="form-control"
-                        value="<?php echo explode(' ', $_SESSION['user_name'])[1] ?? ''; ?>" required>
+    <!-- Main -->
+    <main>
+      <form method="POST" action="my_profile.php">
+        <!-- Profile -->
+        <section class="block">
+          <div class="section-title">Edit Your Profile</div>
 
-                    <label>Email</label>
-                    <input type="email" class="form-control" value="<?php echo $_SESSION['user_email']; ?>" disabled>
-
-                    <br>
-                    <button type="submit" name="save_changes" class="btn btn-orange">Save Changes</button>
-                </form>
-
-                <hr>
-
-                <h5>Password Changes</h5>
-                <form method="POST" action="my_profile.php">
-                    <label>Current Password</label>
-                    <input type="password" name="current_password" class="form-control" required>
-
-                    <label>New Password</label>
-                    <input type="password" name="new_password" class="form-control" required>
-
-                    <label>Confirm New Password</label>
-                    <input type="password" name="confirm_password" class="form-control" required>
-
-                    <br>
-                    <button type="submit" name="change_password" class="btn btn-orange">Change Password</button>
-                </form>
-
-
-
-
-
-                <div class="text-center mt-3 pt-5 col-lg-6 col-md-12 col-sm-12">
-                    <p><a href="my_profile.php?logout=1" id="logout-btn">Logout</a></p>
-                </div>
-
-
-
-
-
-
+          <div class="row-2" style="margin-top:8px;">
+            <div>
+              <label class="muted">First Name</label>
+              <input class="control" type="text" name="first_name"
+                     value="<?= htmlspecialchars($firstNamePrefill) ?>" required>
             </div>
+            <div>
+              <label class="muted">Last Name</label>
+              <input class="control" type="text" name="last_name"
+                     value="<?= htmlspecialchars($lastNamePrefill) ?>" required>
+            </div>
+          </div>
+
+          <div style="margin-top:14px;">
+            <label class="muted">Email</label>
+            <input class="control" type="email" value="<?= htmlspecialchars($_SESSION['user_email']) ?>" disabled>
+          </div>
+        </section>
+
+        <!-- Password (single vertical stack) -->
+        <section class="block">
+          <div class="section-title">Password Changes</div>
+
+          <div style="margin:8px 0;">
+            <input class="control" type="password" name="current_password"
+                   placeholder="Current Password">
+          </div>
+
+          <div style="margin:8px 0;">
+            <input class="control" type="password" name="new_password"
+                   placeholder="New Password">
+          </div>
+
+          <div style="margin:8px 0;">
+            <input class="control" type="password" name="confirm_password"
+                   placeholder="Confirm New Password">
+          </div>
+        </section>
+
+        <!-- Bottom actions: Cancel, Save, Logout -->
+        <div class="actions">
+          <a class="link-cancel" href="my_profile.php">Cancel</a>
+          <button class="btn-primary" type="submit" name="save_all">Save Changes</button>
+          <a class="btn-secondary" href="my_profile.php?logout=1">Logout</a>
         </div>
-    </div>
-</section>
+      </form>
+    </main>
+  </div>
+</div>
 
 <?php include('layouts/footer.php'); ?>
