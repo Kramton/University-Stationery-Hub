@@ -14,7 +14,7 @@ if (!isset($_SESSION['logged_in'])) {
   exit;
 }
 
-// Helper to coerce prices safely (handles "$2.00", "2.00 NZD")
+// Helper to coerce prices safely
 function to_float($v) {
   if (is_numeric($v)) return (float)$v;
   $clean = preg_replace('/[^\d.]/', '', (string)$v);
@@ -25,12 +25,14 @@ if (isset($_POST['place_order'])) {
 
   // Basic form fields
   $name    = trim($_POST['name']    ?? '');
-  $email   = trim($_POST['email']   ?? '');
   $phone   = trim($_POST['phone']   ?? '');
-  $city    = trim($_POST['city']    ?? '');
   $address = trim($_POST['address'] ?? '');
 
-  if ($name === '' || $email === '' || $phone === '' || $city === '' || $address === '') {
+  // Email and City are no longer required
+  $email   = trim($_POST['email']   ?? '');
+  $city    = trim($_POST['city']    ?? '');
+
+  if ($name === '' || $phone === '' || $address === '') {
     header('Location: ../checkout.php?message=Please+fill+all+fields');
     exit;
   }
@@ -41,7 +43,7 @@ if (isset($_POST['place_order'])) {
     exit;
   }
 
-  // Recompute total from the session cart (never trust client/session totals blindly)
+  // Recompute total from the session cart
   $computed_total = 0.0;
   $items_snapshot = [];
 
@@ -67,11 +69,11 @@ if (isset($_POST['place_order'])) {
     ];
   }
 
-  // Apply any promo discount already stored (optional)
+  // Apply promo discount if any
   $discount = isset($_SESSION['promo_discount']) ? (float)$_SESSION['promo_discount'] : 0.0;
   $order_cost = max(0, $computed_total - $discount);
 
-  // Keep totals in session for display, but DB uses $order_cost
+  // Save totals in session
   $_SESSION['subtotal'] = $computed_total;
   $_SESSION['total']    = $order_cost;
 
@@ -82,19 +84,19 @@ if (isset($_POST['place_order'])) {
   // Start transaction
   $conn->begin_transaction();
   try {
-    // Insert order
+    // Insert order (removed NOT NULL requirement for email/city)
     $stmt = $conn->prepare(
       "INSERT INTO orders
         (order_cost, order_status, user_id, user_phone, user_city, user_address, order_date)
        VALUES (?, ?, ?, ?, ?, ?, ?)"
     );
-    // d = double (money), s = string, i = int
-    $stmt->bind_param('dsissss',
+    $stmt->bind_param(
+      'dsissss',
       $order_cost,      // d
       $order_status,    // s
       $user_id,         // i
-      $phone,           // s  (keep as string to preserve leading zeros)
-      $city,            // s
+      $phone,           // s
+      $city,            // s (can be empty string)
       $address,         // s
       $order_date       // s
     );
@@ -111,20 +113,14 @@ if (isset($_POST['place_order'])) {
        VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
     );
     foreach ($items_snapshot as $it) {
-      $pid   = $it['product_id'];
-      $pname = $it['product_name'];
-      $pimg  = $it['product_image'];
-      $pprice= $it['product_price'];   // decimal
-      $pqty  = $it['product_quantity'];
-
-      // i, i, s, s, d, i, i, s
-      $stmt1->bind_param('iissdiis',
+      $stmt1->bind_param(
+        'iissdiis',
         $order_id,
-        $pid,
-        $pname,
-        $pimg,
-        $pprice,
-        $pqty,
+        $it['product_id'],
+        $it['product_name'],
+        $it['product_image'],
+        $it['product_price'],
+        $it['product_quantity'],
         $user_id,
         $order_date
       );
@@ -134,16 +130,14 @@ if (isset($_POST['place_order'])) {
     }
     $stmt1->close();
 
-    
-
     // Commit all DB work
     $conn->commit();
 
-    // Save a snapshot for the payment/thank-you page
+    // Save snapshot for thank_you/payment page
     $_SESSION['order_id']   = $order_id;
     $_SESSION['last_order'] = [
       'order_id'   => $order_id,
-      'customer'   => compact('name','email','phone','city','address'),
+      'customer'   => compact('name','phone','address'),
       'items'      => $items_snapshot,
       'subtotal'   => $computed_total,
       'discount'   => $discount,
@@ -151,14 +145,11 @@ if (isset($_POST['place_order'])) {
       'order_date' => $order_date,
     ];
 
-    
-
     header('Location: ../payment.php?order_status=Order+placed+successfully');
     exit;
 
   } catch (Throwable $e) {
     $conn->rollback();
-    // Log $e->getMessage() in real apps
     header('Location: ../cart.php?message=Could+not+place+order');
     exit;
   }

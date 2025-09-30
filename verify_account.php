@@ -1,6 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) { session_start(); }
 include('server/connection.php');
+
 
 if (isset($_GET['token']) && !empty($_GET['token'])) {
     
@@ -19,49 +20,101 @@ if (isset($_GET['token']) && !empty($_GET['token'])) {
             $message_type = "success";
             $title = "Verification Successful!";
             $message = "Your account has been successfully verified. You can now log in.";
-            $link = '<a href="login.php">Go to Login Page</a>';
+            $button_text = "Go to Login Page";
+            $button_link = "login.php";
         } else {
             $message_type = "error";
             $title = "Verification Failed!";
             $message = "There was a problem verifying your account. Please try again or contact support.";
-            $link = '';
+            $button_text = "Return to Home";
+            $button_link = "index.php";
         }
 
     } else {
         $message_type = "error";
         $title = "Verification Failed!";
         $message = "This verification link is invalid, has expired, or has already been used.";
-        $link = '';
+        $button_text = "Return to Home";
+        $button_link = "index.php";
     }
 
 } else {
     $message_type = "error";
     $title = "Invalid Request";
     $message = "No verification token was provided. Please use the link sent to your email.";
-    $link = '';
+    $button_text = "Return to Home";
+    $button_link = "index.php";
 }
+
+require_once __DIR__ . '/layouts/header.php';
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title><?php echo htmlspecialchars($title); ?></title>
-    <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background-color: #f4f4f4; }
-        .container { max-width: 600px; margin: auto; background-color: #fff; border: 1px solid #ccc; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        h1.success { color: #4CAF50; }
-        h1.error { color: #f44336; }
-        p { font-size: 1.1em; color: #555; }
-        a { display: inline-block; margin-top: 20px; padding: 10px 20px; background-color: #007bff; color: #fff; text-decoration: none; border-radius: 5px; }
-        a:hover { background-color: #0056b3; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1 class="<?php echo $message_type; ?>"><?php echo htmlspecialchars($title); ?></h1>
-        <p><?php echo htmlspecialchars($message); ?></p>
-        <?php echo $link; ?>
+<style>
+  .wrap { max-width: 1100px; margin: 100px auto 50px; padding: 0 16px; }
+
+  /* Verification Card*/
+  .card { 
+    background: #fff; 
+    border: 1px solid #eee; 
+    border-radius: 16px; 
+    box-shadow: 0 6px 18px rgba(0,0,0,.06); 
+    overflow: hidden;
+    max-width: 600px; 
+    margin: 0 auto;   
+  }
+
+  .head {
+    color: #fff;
+    padding: 20px 24px;
+    font-size: 24px;
+    font-weight: 800;
+    text-align: center;
+  }
+  .head.bg-success { background-color: #28a745; } /* Green for success */
+  .head.bg-danger  { background-color: #ff7f50; } /* Red for error */
+
+  .body {
+    padding: 30px;
+    background: #fff;
+    text-align: center;
+  }
+  .body p {
+    font-size: 1.1em;
+    color: #555;
+    margin: 0 0 25px;
+  }
+  .body .btn {
+    display: inline-block;
+    background: #ff7f50;
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+  }
+  .body .btn:hover {
+    background: #d6600d; /* Darker orange on hover */
+  }
+</style>
+
+<div class="wrap">
+  <div class="card">
+    
+    <div class="head <?php echo ($message_type === 'success') ? 'bg-success' : 'bg-danger'; ?>">
+      <?php echo htmlspecialchars($title); ?>
     </div>
-</body>
-</html>
+
+    <div class="body">
+      <p><?php echo htmlspecialchars($message); ?></p>
+
+      <a href="<?php echo htmlspecialchars($button_link); ?>" class="btn">
+        <?php echo htmlspecialchars($button_text); ?>
+      </a>
+    </div>
+
+  </div>
+</div>
+
+<?php require_once __DIR__ . '/layouts/footer.php'; ?>

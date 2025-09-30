@@ -24,11 +24,13 @@ if (isset($_POST['save_changes'])) {
     $last_name = $_POST['last_name'];
     $email = $_SESSION['user_email'];
 
-    $stmt = $conn->prepare("UPDATE users SET first_name=?, last_name=? WHERE user_email=?");
-    $stmt->bind_param('sss', $first_name, $last_name, $email);
+    $full_name = $first_name . ' ' . $last_name;
+
+    $stmt = $conn->prepare("UPDATE users SET user_name=? WHERE user_email=?");
+    $stmt->bind_param('ss', $full_name, $email);
     $stmt->execute();
 
-    $_SESSION['user_name'] = $first_name . ' ' . $last_name;
+    $_SESSION['user_name'] = $full_name;
 
     header('location: my_profile.php?message=Profile updated successfully');
     exit;

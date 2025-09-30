@@ -31,10 +31,41 @@ function sendVerificationEmail($email, $verificationToken) {
 
         $mail->isHTML(true);
         $mail->Subject = 'Verify Your Email Address';
-        $mail->Body = '
-            <p>Thank you for registering! Please verify your email address by clicking the link below:</p>
-            <a href="' . $verificationLink . '">' . $verificationLink . '</a>';
-        $mail->AltBody = 'To verify your account, please visit the following link: ' . $verificationLink;
+        $mail->Body = <<<HTML
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+              <meta charset="UTF-8">
+              <title>Verify Your Email</title>
+          </head>
+          <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;">
+              <table align="center" border="0" cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse; margin-top: 40px; margin-bottom: 40px;">
+                  <tr>
+                      <td style="background-color: #ffffff; padding: 40px 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); text-align: center;">
+                          <h1 style="font-size: 24px; margin: 0 0 20px 0; color: #333333;">Verify Your Email</h1>
+                          <p style="font-size: 16px; color: #555555; line-height: 1.5; margin: 0 0 30px 0;">
+                              Thanks for signing up! Please click the button below to verify your account.
+                          </p>
+                          <!-- CTA Button -->
+                          <a href="{$verificationLink}" target="_blank" style="background-color: #ff7f50; color: #ffffff; padding: 15px 30px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">
+                              Verify Account
+                          </a>
+                          <!-- Fallback Link -->
+                          <p style="font-size: 12px; color: #888888; margin: 30px 0 0 0;">
+                              If the button doesn't work, copy and paste this link into your browser:<br>
+                              <a href="{$verificationLink}" target="_blank" style="color: #007bff;">{$verificationLink}</a>
+                          </p>
+                      </td>
+                  </tr>
+              </table>
+          </body>
+          </html>
+          HTML;
+
+          $mail->AltBody = <<<TEXT
+          To verify your account, please use the following link:
+          {$verificationLink}
+          TEXT;
 
         $mail->send();
         return true;
