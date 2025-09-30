@@ -17,46 +17,69 @@
       </div>
     </section>
 
-    <!-- Random Picks (just after top banner) -->
+    <!-- Random Picks-->
 <?php
 $random_stmt = $conn->prepare("
   SELECT product_id, product_name, product_price, product_image
   FROM products
   ORDER BY RAND()
-  LIMIT 4          -- was 3
+  LIMIT 12
 ");
 $random_stmt->execute();
-$random_products = $random_stmt->get_result();
+$res = $random_stmt->get_result();
+$items = $res ? $res->fetch_all(MYSQLI_ASSOC) : [];
+$groups = array_chunk($items, 4);
 ?>
 
 <section id="random-picks" class="my-5">
-   <div class="container-xxl px-4">
-<div class="section-header d-flex align-items-center justify-content-between mb-4">
-      <h3 class="mb-0">Suggest For You</h3>
+  <div class="container-xxl px-4">
+    <div class="section-header d-flex align-items-center justify-content-between mb-4">
+      <h3 class="mb-0">Suggested For You</h3>
       <a href="shop.php" class="btn btn-outline-dark btn-see-all">See All</a>
     </div>
 
-    <?php if ($random_products && $random_products->num_rows > 0): ?>
-      <div class="row g-3">
-        <?php while ($r = $random_products->fetch_assoc()): ?>
-          <div class="col-lg-3 col-md-6 col-sm-12"> 
-            <div class="card product-card h-100">
-              <a href="<?php echo 'single_product.php?product_id='.(int)$r['product_id']; ?>" class="text-decoration-none text-dark">
-                <div class="img-wrap">
-                  <img
-                    src="assets/imgs/<?php echo htmlspecialchars($r['product_image'] ?: 'placeholder.png'); ?>"
-                    class="card-img-top"
-                    alt="<?php echo htmlspecialchars($r['product_name']); ?>"
-                  />
-                </div>
-                <div class="card-body">
-                  <h6 class="card-title mb-1 text-truncate"><?php echo htmlspecialchars($r['product_name']); ?></h6>
-                  <p class="card-text fw-bold mb-0">$<?php echo number_format((float)$r['product_price'], 2); ?></p>
-                </div>
-              </a>
+    <?php if (!empty($groups)): ?>
+      <div id="suggestCarousel" class="carousel slide" data-bs-ride="false">
+        <div class="carousel-inner">
+
+          <?php foreach ($groups as $i => $group): ?>
+            <div class="carousel-item <?php echo $i === 0 ? 'active' : ''; ?>">
+              <div class="row g-3">
+                <?php foreach ($group as $r): ?>
+                  <div class="col-lg-3 col-md-6 col-sm-12">
+<div class="card product-card h-100">
+<a href="<?php echo 'single_product.php?product_id='.(int)$r['product_id']; ?>" class="text-decoration-none text-dark">
+<div class="img-wrap">
+      <img
+    src="assets/imgs/<?php echo htmlspecialchars($r['product_image'] ?: 'placeholder.png'); ?>"
+    class="card-img-top"
+    alt="<?php echo htmlspecialchars($r['product_name']); ?>"
+  />
+</div>
+<div class="card-body">
+  <h6 class="card-title mb-1 text-truncate"><?php echo htmlspecialchars($r['product_name']); ?></h6>
+  <p class="card-text fw-bold mb-0">$<?php echo number_format((float)$r['product_price'], 2); ?></p>
+</div>
+</a>
+</div>
+                  </div>
+                <?php endforeach; ?>
+              </div>
             </div>
-          </div>
-        <?php endwhile; ?>
+          <?php endforeach; ?>
+
+        </div>
+
+        <!-- Controls -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#suggestCarousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#suggestCarousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+
       </div>
     <?php else: ?>
       <p class="text-muted mb-0">No products found. Please add products to the catalog.</p>
@@ -220,34 +243,26 @@ $sale_products = $sale_stmt->get_result();
               <a href="<?php echo 'single_product.php?product_id='.(int)$row['product_id']; ?>"
                  class="text-decoration-none text-dark">
                 <div class="img-wrap">
-                  <img
-                    src="assets/imgs/<?php echo htmlspecialchars($row['product_image'] ?: 'placeholder.png'); ?>"
-                    class="card-img-top"
-                    alt="<?php echo htmlspecialchars($row['product_name']); ?>"
-                  />
-                </div>
+                  <img src="assets/imgs/<?php echo htmlspecialchars($row['product_image'] ?: 'placeholder.png'); ?>"
+class="card-img-top" alt="<?php echo htmlspecialchars($row['product_name']); ?>" /> </div>
 
-                <div class="card-body">
-                  <h6 class="card-title mb-1 text-truncate">
-                    <?php echo htmlspecialchars($row['product_name']); ?>
+   <div class="card-body">
+    <h6 class="card-title mb-1 text-truncate">
+     <?php echo htmlspecialchars($row['product_name']); ?>
                   </h6>
 
                   <?php if ($hasPromo): ?>
-                    <div class="price-wrap">
-                      <span class="new-price">$<?php echo number_format($promoPrice, 2); ?></span>
-                      <span class="old-price">$<?php echo number_format($price, 2); ?></span>
-                    </div>
-                    <div class="save-chip">You save $<?php echo number_format($saveAmt, 2); ?></div>
+   <div class="price-wrap">
+    <span class="new-price">$<?php echo number_format($promoPrice, 2); ?></span>
+     <span class="old-price">$<?php echo number_format($price, 2); ?></span> </div>
+    <div class="save-chip">You save $<?php echo number_format($saveAmt, 2); ?></div>
                   <?php else: ?>
-                    <p class="card-text fw-bold mb-0">
-                      $<?php echo number_format($price, 2); ?>
-                    </p>
+ <p class="card-text fw-bold mb-0">
+   $<?php echo number_format($price, 2); ?>
+        </p>
                   <?php endif; ?>
-                </div>
-              </a>
-            </div>
-          </div>
-        <?php endwhile; ?>
+                </div> </a> </div> </div>
+      <?php endwhile; ?>
       </div>
     <?php else: ?>
       <p class="text-muted mb-0">No promo items yet. Check back soon!</p>

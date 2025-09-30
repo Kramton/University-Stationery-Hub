@@ -396,7 +396,7 @@ hr {
 
 #banner {
   /* TODO: replace background image */
-  background-image: url(../imgs/gridBox.png);
+  background-image: url(../imgs/banner-sale.png);
   width: 100%;
   height: 60vh;
   background-size: cover;
@@ -1080,3 +1080,33 @@ th:last-child {
 }
 
 
+/* Position arrows nicely */
+.custom-prev, .custom-next {
+  position: absolute;
+  top: 40%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.5);
+  border: none;
+  padding: .75rem;
+  border-radius: 50%;
+  z-index: 10;
+}
+.custom-prev { left: -2rem; }
+.custom-next { right: -2rem; }
+
+.custom-prev:hover, .custom-next:hover {
+  background: rgba(0,0,0,0.8);
+}
+/* Carousel controls stay vertically centered and outside content a bit */
+#suggestCarousel .carousel-control-prev,
+#suggestCarousel .carousel-control-next{
+  width: 44px;
+}
+#suggestCarousel .carousel-control-prev{ left: -8px; }
+#suggestCarousel .carousel-control-next{ right: -8px; }
+
+/* On small screens, keep controls inside so they don't overflow */
+@media (max-width: 576px){
+  #suggestCarousel .carousel-control-prev{ left: 0; }
+  #suggestCarousel .carousel-control-next{ right: 0; }
+}
