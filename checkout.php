@@ -21,49 +21,25 @@ function to_float($v){
 }
 
 /* ------- Build / normalize order snapshot ------- */
-$order = $_SESSION['last_order'] ?? null;
-
-if (!$order) {
-  $items = [];
-  $subtotal = 0.0;
-  foreach ($_SESSION['cart'] as $it) {
-    $name  = $it['product_name'] ?? $it['name'] ?? 'Item';
-    $qty   = isset($it['product_quantity']) ? (int)$it['product_quantity'] : (int)($it['quantity'] ?? 0);
-    $price = isset($it['product_price']) ? to_float($it['product_price']) : to_float($it['price'] ?? 0);
-    $line  = $qty * $price;
-    $subtotal += $line;
-    $items[] = ['name' => $name, 'quantity' => $qty, 'subtotal' => $line];
-  }
-  $discount = (float)($_SESSION['promo_discount'] ?? 0.0);
-  $total    = max(0, $subtotal - $discount);
-  $order = [
-    'order_id'  => $_SESSION['order_id'] ?? 0,
-    'items'     => $items,
-    'subtotal'  => $subtotal,
-    'discount'  => $discount,
-    'total'     => $total,
-  ];
-} else {
-  // Normalize keys from last_order
-  $norm = [];
-  $subtotal = 0.0;
-  foreach ($order['items'] as $it) {
-    $name = $it['name'] ?? $it['product_name'] ?? 'Item';
-    $qty  = isset($it['quantity']) ? (int)$it['quantity'] : (int)($it['product_quantity'] ?? 0);
-    if (isset($it['subtotal'])) {
-      $line = to_float($it['subtotal']);
-    } else {
-      $price = isset($it['product_price']) ? to_float($it['product_price']) : to_float($it['price'] ?? 0);
-      $line  = $qty * $price;
-    }
-    $subtotal += $line;
-    $norm[] = ['name' => $name, 'quantity' => $qty, 'subtotal' => $line];
-  }
-  $order['items']    = $norm;
-  $order['subtotal'] = $order['subtotal'] ?? $subtotal;
-  $order['discount'] = $order['discount'] ?? (float)($_SESSION['promo_discount'] ?? 0.0);
-  $order['total']    = $order['total'] ?? max(0, $order['subtotal'] - $order['discount']);
+$items = [];
+$subtotal = 0.0;
+foreach ($_SESSION['cart'] as $it) {
+  $name  = $it['product_name'] ?? $it['name'] ?? 'Item';
+  $qty   = isset($it['product_quantity']) ? (int)$it['product_quantity'] : (int)($it['quantity'] ?? 0);
+  $price = isset($it['product_price']) ? to_float($it['product_price']) : to_float($it['price'] ?? 0);
+  $line  = $qty * $price;
+  $subtotal += $line;
+  $items[] = ['name' => $name, 'quantity' => $qty, 'subtotal' => $line];
 }
+$discount = (float)($_SESSION['promo_discount'] ?? 0.0);
+$total    = max(0, $subtotal - $discount);
+$order = [
+  'order_id'  => $_SESSION['order_id'] ?? 0,
+  'items'     => $items,
+  'subtotal'  => $subtotal,
+  'discount'  => $discount,
+  'total'     => $total,
+];
 
 $amount   = (float)$order['total'];
 $order_id = (int)($order['order_id'] ?? ($_SESSION['order_id'] ?? 0));
