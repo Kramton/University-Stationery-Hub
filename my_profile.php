@@ -251,11 +251,11 @@ if (isset($_POST['save_all'])) {
 <div class="container-account">
   <h2 class="page-title">Account</h2>
 
-  <?php if (isset($_GET['error'])): ?>
-    <p class="err"><?= htmlspecialchars($_GET['error']) ?></p>
+  <?php if(isset($_GET['error'])): ?>
+    <p class="err" style="text-align:center;"><?= htmlspecialchars($_GET['error']) ?></p>
   <?php endif; ?>
-  <?php if (isset($_GET['message'])): ?>
-    <p class="msg"><?= htmlspecialchars($_GET['message']) ?></p>
+  <?php if(isset($_GET['message'])): ?>
+    <p class="msg" style="text-align:center;"><?= htmlspecialchars($_GET['message']) ?></p>
   <?php endif; ?>
 
   <div class="grid">
@@ -311,10 +311,27 @@ if (isset($_POST['save_all'])) {
 
         <!-- Bottom actions: Cancel, Save, Logout -->
         <div class="actions">
-          <a class="link-cancel" href="my_profile.php">Cancel</a>
+          <a class="link-cancel" id="cancelBtn" href="my_profile.php" style="display:none;">Cancel</a>
           <button class="btn-primary" type="submit" name="save_all">Save Changes</button>
         </div>
-        <div style="margin-top:24px;">
+        <script>
+        // Show Cancel button only if any input is changed
+        const cancelBtn = document.getElementById('cancelBtn');
+        const form = document.querySelector('form[action="my_profile.php"]');
+        const watchedFields = [
+          ...form.querySelectorAll('input[name="first_name"], input[name="last_name"], input[name="current_password"], input[name="new_password"], input[name="confirm_password"]')
+        ];
+        let pristine = true;
+        watchedFields.forEach(field => {
+          field.addEventListener('input', () => {
+            if (pristine && (field.value.trim() !== '')) {
+              cancelBtn.style.display = '';
+              pristine = false;
+            }
+          });
+        });
+        </script>
+        <div style="margin-top:100px;">
           <a class="btn-secondary" href="my_profile.php?logout=1">Logout</a>
         </div>
       </form>
