@@ -50,12 +50,13 @@ button {
   outline: none;
   border: none;
   background-color: #1d1d1d;
-  color: aliceblue;
+  color: rgb(0, 0, 0);
   padding: 13px 30px;
   text-transform: uppercase;
   cursor: pointer;
   transition: 0.4s ease;
 }
+
 
 button:hover {
   background-color: coral;
@@ -1080,38 +1081,52 @@ th:last-child {
 }
 
 
-/*arrows */
-.custom-prev, .custom-next {
-  position: absolute;
-  top: 40%;
-  transform: translateY(-50%);
-  background: rgba(0,0,0,0.5);
-  border: none;
-  padding: .75rem;
-  border-radius: 50%;
-  z-index: 10;
-}
-.custom-prev { left: -2rem; }
-.custom-next { right: -2rem; }
 
-.custom-prev:hover, .custom-next:hover
- {
-  background: rgba(0,0,0,0.8);
-}
-#suggestCarousel .carousel-control-prev,
-#suggestCarousel .carousel-control-next
-{
-  width: 44px;
-}
-#suggestCarousel .carousel-control-prev{ left: -8px; }
-#suggestCarousel .carousel-control-next{ right: -8px; }
+  #suggestCarousel .carousel-control-prev,
+  #suggestCarousel .carousel-control-next {
+    opacity: 1 !important;
+    width: 44px; height: 44px;
+    top: 50%; transform: translateY(-50%);
+    border-radius: 50%;
+    background: rgba(0,0,0,.06);
+    display: flex; align-items: center; justify-content: center;
+    transition: background .2s ease, box-shadow .2s ease;
+  }
 
-@media (max-width: 576px)
-{
-  #suggestCarousel .carousel-control-prev{ left: 0; }
-  #suggestCarousel .carousel-control-next{ right: 0; }
-}
+  #suggestCarousel .carousel-control-prev:hover,
+  #suggestCarousel .carousel-control-next:hover {
+    background: #fb774b; 
+    box-shadow: 0 4px 12px rgba(0,0,0,.18);
+  }
 
+
+  #suggestCarousel .carousel-control-prev-icon,
+  #suggestCarousel .carousel-control-next-icon {
+    background-image: none !important;
+    width: 20px; height: 20px;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+
+ 
+  #suggestCarousel .carousel-control-prev-icon::before,
+  #suggestCarousel .carousel-control-next-icon::before {
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 26px;
+    line-height: 1;
+    color: #000;               
+    display: block;
+  }
+  #suggestCarousel .carousel-control-prev-icon::before { content: "\2039"; } /* ‹ */
+  #suggestCarousel .carousel-control-next-icon::before { content: "\203A"; } /* › */
+
+  #suggestCarousel .carousel-control-prev:hover .carousel-control-prev-icon::before,
+  #suggestCarousel .carousel-control-next:hover .carousel-control-next-icon::before {
+    color: #fff;
+  }
+
+  
 .login-link {
   text-decoration: none;   
   color: #000;             

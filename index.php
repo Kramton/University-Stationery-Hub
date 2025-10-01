@@ -2,6 +2,9 @@
 <?php include('server/connection.php'); ?>
 <link rel="stylesheet" href="assets/css/style.css?v=6">
 
+
+
+
     <!-- Home -->
 <section id="home" class="hero-parallax">
   <div class="hero-bg"></div>
@@ -100,11 +103,11 @@ $groups = array_chunk($items, 4);
 
     <?php
     $categories = [
-      ['name' => 'Writing Essentials', 'img' => 'assets/imgs/1.png'],
-      ['name' => 'Notebooks & Paper',  'img' => 'assets/imgs/1.png'],
-      ['name' => 'Desk Accessories',   'img' => 'assets/imgs/1.png'],
-      ['name' => 'Creative Supplies',  'img' => 'assets/imgs/1.png'],
-      ['name' => 'Study Tools',        'img' => 'assets/imgs/1.png'],
+      ['name' => 'Writing Essentials', 'img' => 'assets/imgs/WritingEssentialsIcon.png'],
+      ['name' => 'Notebooks & Paper',  'img' => 'assets/imgs/Notebooks&Paper.png'],
+      ['name' => 'Desk Accessories',   'img' => 'assets/imgs/DeskAccessories.png'],
+      ['name' => 'Creative Supplies',  'img' => 'assets/imgs/CreativeSupplies.png'],
+      ['name' => 'Study Tools',        'img' => 'assets/imgs/StudyTools.png'],
     ];
     ?>
 
@@ -138,41 +141,6 @@ $groups = array_chunk($items, 4);
 
 
 
-    <!-- Featured -->
-      <section id="featured" class="my-5 pb-5">
-      <div class="container text-center mt-5 py-5">
-        <h3>Our Featured</h3>
-        <hr class="mx-auto" />
-        <p>Here you can check out our featured products</p>
-      </div>
-  
-      <div class="row mx-auto container-fluid">
-
-      <?php include('server/get_featured_products.php'); ?>
-
-      <?php while($row= $featured_products-> fetch_assoc() ){ ?>
-        <div class="product text-center col-lg-3 col-md-4 col-sm-12">
-          <img class="img-fluid mb-3" src="assets/imgs/<?php echo $row ['product_image']; ?>" />
-
-          <!-- TODO: Remove star ratings -->
-          <!-- <div class="star">
-            <i class="fa fa-star"></i>
-            <i class="fa fa-star"></i>
-            <i class="fa fa-star"></i>
-            <i class="fa fa-star"></i>
-            <i class="fa fa-star"></i>
-            <i class="fa fa-star"></i>
-          </div> -->
-
-          <h5 class="p-name"><?php echo $row ['product_name']; ?></h5>
-          <h4 class="p-price"><?php echo $row ['product_price']; ?></h4>
-          <a href="<?php echo "single_product.php?product_id=". $row['product_id'];?>"> <button class="buy-btn">Buy Now</button> </a>
-        </div>
-
-      
-      <?php } ?>
-      </div>
-    </section>
 
 
 
@@ -182,12 +150,12 @@ $groups = array_chunk($items, 4);
     <!-- Banner 2 for sale  -->
     <section id="banner" class="my-5 py-5">
       <div class="container">
-        <h4>ON SALE</h4>
+         <!-- <h4>ON SALE</h4> -->
         <h1>
           Stationary <br />
           UP to 30% OFF
         </h1>
-        <button class="text-uppercase">Shop Now</button>
+        <!-- <button class="text-uppercase">Shop Now</button>-->
       </div>
     </section>
 
