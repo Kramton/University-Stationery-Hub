@@ -84,13 +84,15 @@ session_start();
             <?php } ?>
               </a>
               
-             <?php if (isset($_SESSION['user_id'])): ?>
-              <!-- if log in shows Log out -->
-              <a href="logout.php" class="login-link">Log out</a>
-             <?php else: ?>
-              <!-- if log out shows Log in -->
-            <a href="login.php" class="login-link">Log in</a>
+            <?php if (!empty($_SESSION['logged_in'])): ?>
+  <!-- When user login shows My Profile -->
+  <a href="my_profile.php" class="login-link">My Profile</a>
+<?php else: ?>
+  <!-- When user not login shows Log in -->
+  <a href="login.php" class="login-link">Log In</a>
 <?php endif; ?>
+
+
 
 
            
