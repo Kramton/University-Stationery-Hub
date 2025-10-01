@@ -74,10 +74,25 @@ $stmt2->bind_param(
 $stmt2->execute();
 $stmt2->close();
 
+// Decrement product stock for each item in the order
+$stmt_items = $conn->prepare("SELECT product_id, product_quantity FROM order_items WHERE order_id = ?");
+$stmt_items->bind_param('i', $order_id);
+$stmt_items->execute();
+$result_items = $stmt_items->get_result();
+while ($item = $result_items->fetch_assoc()) {
+  $product_id = (int)$item['product_id'];
+  $qty = (int)$item['product_quantity'];
+  $stmt_update = $conn->prepare("UPDATE products SET product_stock = GREATEST(product_stock - ?, 0) WHERE product_id = ?");
+  $stmt_update->bind_param('ii', $qty, $product_id);
+  $stmt_update->execute();
+  $stmt_update->close();
+}
+$stmt_items->close();
+
 // Save snapshot for thank you page
 if (isset($_SESSION['last_order']) && $_SESSION['last_order']['order_id'] == $order_id) {
-    $_SESSION['recent_order'] = $_SESSION['last_order'];
-    $_SESSION['recent_order']['transaction_id'] = $transaction_id;
+  $_SESSION['recent_order'] = $_SESSION['last_order'];
+  $_SESSION['recent_order']['transaction_id'] = $transaction_id;
 }
 
 // Clear the cart
