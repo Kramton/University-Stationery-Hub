@@ -1111,3 +1111,14 @@ th:last-child {
   #suggestCarousel .carousel-control-prev{ left: 0; }
   #suggestCarousel .carousel-control-next{ right: 0; }
 }
+
+.login-link {
+  text-decoration: none;   
+  color: #000;             
+  font-size: 14px;         
+  margin-left: 5px;        
+}
+
+.login-link:hover {
+  color: #007bff;          
+}

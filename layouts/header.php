@@ -83,10 +83,9 @@ session_start();
               <span class="cart-quantity"><?php echo (int)$_SESSION['quantity']; ?></span>
             <?php } ?>
               </a>
-              <!-- Updated: Person icon now links to My Profile -->
-              <a href="my_profile.php" title="My Profile">
-                <i class="fa fa-user" aria-hidden="true"></i>
-              </a>
+              <!-- Log In link -->
+              <a href="login.php" class="login-link">Log In</a>
+
            
         </div>
       </div>
