@@ -83,8 +83,15 @@ session_start();
               <span class="cart-quantity"><?php echo (int)$_SESSION['quantity']; ?></span>
             <?php } ?>
               </a>
-              <!-- Log In link -->
-              <a href="login.php" class="login-link">Log In</a>
+              
+             <?php if (isset($_SESSION['user_id'])): ?>
+              <!-- if log in shows Log out -->
+              <a href="logout.php" class="login-link">Log out</a>
+             <?php else: ?>
+              <!-- if log out shows Log in -->
+            <a href="login.php" class="login-link">Log in</a>
+<?php endif; ?>
+
 
            
         </div>
