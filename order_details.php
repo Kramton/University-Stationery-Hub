@@ -130,7 +130,7 @@ function calculateTotalOrderPrice($order_details)
             'total' => $order_total_price
         ];
         ?>
-        <form style="float: right; margin-left:10px;" method="POST" action="payment.php">
+    <form style="float: right; margin-left:10px;" method="POST" action="payment.php">
             <input type="hidden" name="order_id" value="<?php echo $order_id; ?>">
             <input type="hidden" name="order_total_price" value="<?php echo $order_total_price; ?>">
             <input type="hidden" name="order_status" value="<?php echo $order_status; ?>">
@@ -138,7 +138,7 @@ function calculateTotalOrderPrice($order_details)
         </form>
 
         <!-- Cancel Order button triggers modal -->
-        <button type="button" class="btn btn-danger" style="float: right; margin-right:10px;" onclick="showCancelModal()">Cancel Order</button>
+    <button type="button" class="btn btn-danger" style="float: right; margin-right:10px; text-transform:capitalize;" onclick="showCancelModal()">Cancel Order</button>
 
         <!-- Modal and overlay -->
         <div id="cancelModalOverlay" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.6); z-index:9998;"></div>
@@ -147,7 +147,7 @@ function calculateTotalOrderPrice($order_details)
             <p style="margin-bottom:24px; color:#555;">Are you sure you want to cancel this order?</p>
             <form method="POST" action="server/cancel_order.php" style="display:inline;">
                 <input type="hidden" name="order_id" value="<?php echo $order_id; ?>">
-                <button type="submit" name="cancel_order_btn" class="btn btn-danger" style="margin-right:10px;">Yes, Cancel</button>
+                <button type="submit" name="cancel_order_btn" class="btn btn-danger" style="margin-right:10px; text-transform:capitalize;">Yes, Cancel</button>
             </form>
             <button type="button" class="btn btn-secondary" onclick="hideCancelModal()">No, Go Back</button>
         </div>
@@ -169,7 +169,7 @@ function calculateTotalOrderPrice($order_details)
     <?php } ?>
 
     <!-- Back to My Orders button -->
-    <a href="my_orders.php" class="btn btn-secondary" style="float: right;">Back to My Orders</a>
+        <a href="my_orders.php" class="btn btn-secondary" style="float: left; background-color: #FF7F50; color: #fff; border: none;">Back to My Orders</a>
 
 </section>
 
