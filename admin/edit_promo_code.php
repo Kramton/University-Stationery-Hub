@@ -27,27 +27,19 @@ if (isset($_GET['promo_code_id'])) {
     $discount_type = $_POST['discount_type'];
     $discount_value = $_POST['discount_value'];
     $min_purchase = $_POST['min_purchase'];
-    $max_uses = $_POST['max_uses'];
-    $current_uses = $_POST['current_uses'];
 
-    $start_date = !empty($_POST['start_date']) ? $_POST['start_date'] : null;
     $end_date = !empty($_POST['end_date']) ? $_POST['end_date'] : null;
-    $is_active = isset($_POST['is_active']) ? 1 : 0;
 
-    $stmt = $conn->prepare("UPDATE promo_codes SET code=?, description=?, discount_type=?, discount_value=?, min_purchase=?, start_date=?, end_date=?, max_uses=?, current_uses=?, is_active=? WHERE id=?");
+    $stmt = $conn->prepare("UPDATE promo_codes SET code=?, description=?, discount_type=?, discount_value=?, min_purchase=?, end_date=? WHERE id=?");
     
     $stmt->bind_param(
-        "sssddssiiii",
+        "sssddsi",
         $code,
         $description,
         $discount_type,
         $discount_value,
         $min_purchase,
-        $start_date,
         $end_date,
-        $max_uses,
-        $current_uses,
-        $is_active,
         $promo_code_id
     );
 
@@ -100,34 +92,16 @@ if (isset($_GET['promo_code_id'])) {
                         </div>
                     </div>
                     <div class="row mb-3">
-                         <div class="col-md-4">
+                         <div class="col-md-12">
                             <label for="min_purchase" class="form-label">Minimum Purchase ($)</label>
                             <input type="number" step="0.01" class="form-control" id="min_purchase" name="min_purchase" value="<?php echo htmlspecialchars($promo_code['min_purchase']); ?>" required>
                         </div>
-                        <div class="col-md-4">
-                            <label for="max_uses" class="form-label">Max Uses</label>
-                            <input type="number" class="form-control" id="max_uses" name="max_uses" value="<?php echo htmlspecialchars($promo_code['max_uses']); ?>" required>
-                        </div>
-                        <div class="col-md-4">
-                            <label for="current_uses" class="form-label">Current Uses</label>
-                            <input type="number" class="form-control" id="current_uses" name="current_uses" value="<?php echo htmlspecialchars($promo_code['current_uses']); ?>" required>
-                        </div>
                     </div>
                      <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="start_date" class="form-label">Start Date (Optional)</label>
-                            <input type="datetime-local" class="form-control" id="start_date" name="start_date" value="<?php echo !empty($promo_code['start_date']) ? date('Y-m-d\TH:i', strtotime($promo_code['start_date'])) : ''; ?>">
-                        </div>
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <label for="end_date" class="form-label">End Date (Optional)</label>
                             <input type="datetime-local" class="form-control" id="end_date" name="end_date" value="<?php echo !empty($promo_code['end_date']) ? date('Y-m-d\TH:i', strtotime($promo_code['end_date'])) : ''; ?>">
                         </div>
-                    </div>
-                    <div class="form-check mb-3">
-                        <input class="form-check-input" type="checkbox" id="is_active" name="is_active" value="1" <?php if($promo_code['is_active']) echo 'checked'; ?>>
-                        <label class="form-check-label" for="is_active">
-                            Active
-                        </label>
                     </div>
                     <div class="mb-3">
                         <button type="submit" class="btn btn-primary" name="edit_promo_code_btn">Update Promo Code</button>

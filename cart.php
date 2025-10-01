@@ -26,8 +26,9 @@ function getProductById(mysqli $conn, int $id)
 function getPromoCode(mysqli $conn, string $code)
 {
   $stmt = $conn->prepare(
-    "SELECT code, discount_type, discount_value, min_purchase 
-     FROM promo_codes WHERE code = ? AND is_active = 1"
+    "SELECT code, discount_type, discount_value, min_purchase, end_date
+     FROM promo_codes 
+     WHERE code = ? AND is_active = 1 AND (end_date IS NULL OR end_date >= NOW())"
   );
   $stmt->bind_param("s", $code);
   $stmt->execute();
@@ -40,7 +41,7 @@ function getPromoCode(mysqli $conn, string $code)
 
 function calculateTotalCart()
 {
-  global $conn; 
+  global $conn;
 
   $total_price = 0.0;
   $total_quantity = 0;
@@ -64,22 +65,37 @@ function calculateTotalCart()
 
   if (isset($_SESSION['promo_data'])) {
     $promo = $_SESSION['promo_data'];
-    $min_purchase = (float) $promo['min_purchase'];
 
-    if ($total_price >= $min_purchase) {
-      $discount_value = (float) $promo['discount_value'];
-      $discount = 0.0;
+    $is_expired = false;
+    if (!empty($promo['end_date']) && strtotime($promo['end_date']) < time()) {
+      $is_expired = true;
+    }
 
-      if ($promo['discount_type'] === 'fixed') {
-        $discount = $discount_value;
-      } else if ($promo['discount_type'] === 'percent') {
-        $discount = ($total_price * $discount_value) / 100;
-      }
-      $_SESSION['promo_discount'] = $discount;
-    } else {
+    if ($is_expired) {
+      // If expired, remove it and inform the user
       unset($_SESSION['promo_data']);
-      $_SESSION['promo_message'] = "Promo code was removed as cart no longer meets the minimum purchase of $" . number_format($min_purchase, 2);
+      $_SESSION['promo_message'] = "Promo code was removed as it has expired.";
       $_SESSION['promo_message_type'] = "danger";
+
+    } else {
+      // If not expired, continue with minimum purchase validation
+      $min_purchase = (float) $promo['min_purchase'];
+
+      if ($total_price >= $min_purchase) {
+        $discount_value = (float) $promo['discount_value'];
+        $discount = 0.0;
+
+        if ($promo['discount_type'] === 'fixed') {
+          $discount = $discount_value;
+        } else if ($promo['discount_type'] === 'percent') {
+          $discount = ($total_price * $discount_value) / 100;
+        }
+        $_SESSION['promo_discount'] = $discount;
+      } else {
+        unset($_SESSION['promo_data']);
+        $_SESSION['promo_message'] = "Promo code was removed as cart no longer meets the minimum purchase of $" . number_format($min_purchase, 2);
+        $_SESSION['promo_message_type'] = "danger";
+      }
     }
   }
 
