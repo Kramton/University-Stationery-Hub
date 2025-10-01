@@ -78,8 +78,6 @@ if (!isset($_SESSION['admin_logged_in'])) {
 
 
                 <div class="form-group mt-2">
-                    <label for="">Color</label>
-                    <input type="text" class="form-control" id="product-color" name="color" placeholder="Color" required>
                 </div>
 
                 <div class="form-group mt-2">

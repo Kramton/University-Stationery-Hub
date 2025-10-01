@@ -12,7 +12,6 @@ if(isset($_POST['create_product'])) {
     $product_special_offer = $_POST['offer'];
     $product_stock = isset($_POST['stock']) ? max(0, (int)$_POST['stock']) : 0;
     $product_category = $_POST['category'];
-    $product_color = $_POST['color'];
 
     // This is the file of the image 
     $image1 = $_FILES['image1']['tmp_name'];
@@ -42,13 +41,12 @@ if(isset($_POST['create_product'])) {
         "INSERT INTO products
          (product_name, product_description, product_price, product_special_offer,
           product_image, product_image2, product_image3, product_image4,
-          product_category, product_color, product_stock)
-         VALUES (?,?,?,?,?,?,?,?,?,?,?)"
+          product_category, product_stock)
+         VALUES (?,?,?,?,?,?,?,?,?,?)"
     );
 
-   
     $stmt->bind_param(
-        "ssdissssssi",
+        "ssdisssssi",
         $product_name,
         $product_description,
         $product_price,          
@@ -58,7 +56,6 @@ if(isset($_POST['create_product'])) {
         $image_name3,
         $image_name4,
         $product_category,
-        $product_color,
         $product_stock           
     );
 
