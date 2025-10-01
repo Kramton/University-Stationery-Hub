@@ -131,6 +131,8 @@ $_SESSION['total'] = $amount;
 
 
 
+
+
     <!-- Order Summary card (RIGHT) -->
     <div class="card">
       <div class="head">Order Summary</div>
