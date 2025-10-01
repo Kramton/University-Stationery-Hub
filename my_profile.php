@@ -311,8 +311,8 @@ if (isset($_POST['save_all'])) {
 
         <!-- Bottom actions: Cancel, Save, Logout -->
         <div class="actions">
-          <a class="link-cancel" id="cancelBtn" href="my_profile.php" style="display:none;">Cancel</a>
           <button class="btn-primary" type="submit" name="save_all">Save Changes</button>
+          <a class="link-cancel" id="cancelBtn" href="my_profile.php" style="display:none;">Cancel</a>
         </div>
         <script>
         // Show Cancel button only if any input is changed
