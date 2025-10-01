@@ -62,49 +62,57 @@ $products = $stmt2->get_result();
     </main>
 
     <style>
-    /* Add New Product Button - Positioning */
-#add-new-product-btn {
-    background-color: #FF9F7F; /* Pale Orange */
-    color: black;
-    border-radius: 5px;
-    padding: 5px 15px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    text-decoration: none; /* Remove underline */
-    position: absolute; /* Position relative to the nearest positioned ancestor */
-    top: 90px; /* Adjust this to your preference (distance from the top) */
-    right: 30px; /* Distance from the right edge */
-    z-index: 10; /* Ensures the button appears above other elements */
-}
-
-#add-new-product-btn:hover {
-    background-color: #FF7F50; /* Slightly darker orange on hover */
-}
-
-/* Button to Add New Product, styled like the Sign-Out Button */
-    .btn-signout {
-        background-color: #FF9F7F; /* Pale Orange */
+      /* Add New Product Button - Positioning */
+      #add-new-product-btn {
+        background-color: #FF9F7F;
+        /* Pale Orange */
         color: black;
         border-radius: 5px;
         padding: 5px 15px;
         font-size: 0.9rem;
         font-weight: 500;
-        text-decoration: none; /* Remove underline */
-    }
+        text-decoration: none;
+        /* Remove underline */
+        position: absolute;
+        /* Position relative to the nearest positioned ancestor */
+        top: 90px;
+        /* Adjust this to your preference (distance from the top) */
+        right: 30px;
+        /* Distance from the right edge */
+        z-index: 10;
+        /* Ensures the button appears above other elements */
+      }
 
-    .btn-signout:hover {
-        background-color: #FF7F50; /* Slightly darker orange on hover */
-    }
+      #add-new-product-btn:hover {
+        background-color: #FF7F50;
+        /* Slightly darker orange on hover */
+      }
 
-    /* Ensure button is placed in the top right corner */
-    .btn-signout {
+      /* Button to Add New Product, styled like the Sign-Out Button */
+      .btn-signout {
+        background-color: #FF9F7F;
+        /* Pale Orange */
+        color: black;
+        border-radius: 5px;
+        padding: 5px 15px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        text-decoration: none;
+        /* Remove underline */
+      }
+
+      .btn-signout:hover {
+        background-color: #FF7F50;
+        /* Slightly darker orange on hover */
+      }
+
+      /* Ensure button is placed in the top right corner */
+      .btn-signout {
         position: absolute;
         top: 20px;
         right: 20px;
-    }
-
-
-</style>
+      }
+    </style>
 
 
     <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
@@ -112,8 +120,8 @@ $products = $stmt2->get_result();
       <h2>Products</h2>
 
       <a href="add_product.php" class="btn btn-signout" id="add-new-product-btn">
-    + Add New Product
-</a>
+        + Add New Product
+      </a>
 
 
       <!-- Edit product messages -->
@@ -176,8 +184,6 @@ $products = $stmt2->get_result();
               <th scope="col">Stock</th>
               <th scope="col">Product Offer</th>
               <th scope="col">Product Category</th>
-              <th scope="col">Product Color</th>
-              <th scope="col">Edit Images</th>
               <th scope="col">Edit</th>
               <th scope="col">Delete</th>
 
@@ -214,11 +220,6 @@ $products = $stmt2->get_result();
 
                 <td><?php echo $product['product_special_offer'] . "%"; ?></td>
                 <td><?php echo $product['product_category']; ?></td>
-                <td><?php echo $product['product_color']; ?></td>
-
-                <td><a class="btn btn-warning"
-                    href="<?php echo "edit_images.php?product_id=" . $product['product_id'] . "&product_name=" . $product['product_name']; ?>">Edit
-                    Images</a></td>
                 <td><a class="btn btn-primary"
                     href="edit_product.php?product_id=<?php echo $product['product_id']; ?>">Edit</a></td>
                 <td>
@@ -288,10 +289,11 @@ $products = $stmt2->get_result();
           top: 1rem;
         }
 
-        .modal-footer #cancelBtn, .modal-footer #confirmDeleteBtn {
+        .modal-footer #cancelBtn,
+        .modal-footer #confirmDeleteBtn {
           padding-left: 50px;
           padding-right: 50px;
-          
+
         }
       </style>
 

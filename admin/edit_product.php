@@ -16,23 +16,56 @@ if (isset($_GET['product_id'])) {
     $description = $_POST['description'];
     $price = $_POST['price'];
     $offer = $_POST['offer'];
-    $color = $_POST['color'];
     $category = $_POST['category'];
     $stock = isset($_POST['stock']) ? max(0, (int)$_POST['stock']) : 0;
-   
-   
-   $stmt = $conn->prepare("UPDATE products SET product_name=?, product_description=?, product_price=?,
-                                   product_special_offer=?, product_color=?, product_category=?, product_stock=? WHERE product_id=?");
-    $stmt->bind_param('ssssssii', $title, $description, $price, $offer, $color, $category,$stock, $product_id);
 
-    if ($stmt->execute()) {
+    // Update product details
+    $stmt = $conn->prepare("UPDATE products SET product_name=?, product_description=?, product_price=?,
+                                   product_special_offer=?, product_category=?, product_stock=? WHERE product_id=?");
+    $stmt->bind_param('ssssiii', $title, $description, $price, $offer, $category, $stock, $product_id);
+    $success = $stmt->execute();
+    $stmt->close();
+
+    // Handle image uploads if any
+    $image_fields = ['image1', 'image2', 'image3', 'image4'];
+    $image_names = [];
+    foreach ($image_fields as $idx => $field) {
+        if (isset($_FILES[$field]) && $_FILES[$field]['error'] === UPLOAD_ERR_OK) {
+            $ext = ".jpeg";
+            $img_name = $title . ($idx + 1) . $ext;
+            $dest = "../assets/imgs/" . $img_name;
+            move_uploaded_file($_FILES[$field]['tmp_name'], $dest);
+            $image_names[$field] = $img_name;
+        }
+    }
+    if (!empty($image_names)) {
+        // Only update the images that were uploaded
+        $set = [];
+        $params = [];
+        $types = '';
+        foreach ($image_names as $field => $img_name) {
+            $col = 'product_image' . ($field === 'image1' ? '' : substr($field, -1));
+            $set[] = "$col=?";
+            $params[] = $img_name;
+            $types .= 's';
+        }
+        $params[] = $product_id;
+        $types .= 'i';
+        $sql = "UPDATE products SET " . implode(',', $set) . " WHERE product_id=?";
+        $stmt_img = $conn->prepare($sql);
+        $stmt_img->bind_param($types, ...$params);
+        $stmt_img->execute();
+        $stmt_img->close();
+    }
+
+    if ($success) {
         header('location: products.php?edit_success_message=Product updated successfully.');
     } else {
         header('location: products.php?edit_failure_message=Error occured, please try again.');
     }
 
 } else {
-    header('products.php');
+    header('location: products.php');
     exit;
 }
 
@@ -44,7 +77,6 @@ if (isset($_GET['product_id'])) {
 
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items center pt-3 pb-2 mb-3">
-                <h1 class="h2">Dashboard</h1>
                 <div class="btn-toolbar mb-2 mb-md-0">
                     <div class="btn-group me-2">
 
@@ -56,7 +88,7 @@ if (isset($_GET['product_id'])) {
             <h2>Edit Product</h2>
             <div class="table-responsive">
                 <div class="mx-auto container">
-                    <form action="edit_product.php" method="POST" id="edit-form">
+                    <form action="edit_product.php" method="POST" id="edit-form" enctype="multipart/form-data">
                         <p style="color: red;"> <?php if (isset($_GET['error'])) {
                             echo $_GET['error'];
                         } ?> </p>
@@ -96,11 +128,6 @@ if (isset($_GET['product_id'])) {
                                 </select>
                             </div>
                             <div class="form-group mt-2">
-                                <label for="">Color</label>
-                                <input type="text" class="form-control" value="<?php echo $product['product_color']; ?>"
-                                    id="product-color" name="color" placeholder="Color" required>
-                            </div>
-                            <div class="form-group mt-2">
                                 <label for="">Special Offer/Sale</label>
                                 <input type="number" class="form-control"
                                     value="<?php echo $product['product_special_offer']; ?>" id="product-offer" name="offer"
@@ -113,25 +140,32 @@ if (isset($_GET['product_id'])) {
                                    value="<?php echo isset($product['product_stock']) ? (int)$product['product_stock'] : 0; ?>"
                                    name="stock" placeholder="Units in stock" min="0" step="1" required> </div>
 
-
-
-
-
-
-
-
-                            <div class="form-group mt-3">
-                                <input type="submit" class="btn btn-primary" name="edit_btn" value="Edit">
+                            <div class="form-group mt-2">
+                                <label for="image1">Image 1</label>
+                                <input type="file" class="form-control" id="image1" name="image1" placeholder="Image 1">
+                            </div>
+                            <div class="form-group mt-2">
+                                <label for="image2">Image 2</label>
+                                <input type="file" class="form-control" id="image2" name="image2" placeholder="Image 2">
+                            </div>
+                            <div class="form-group mt-2">
+                                <label for="image3">Image 3</label>
+                                <input type="file" class="form-control" id="image3" name="image3" placeholder="Image 3">
+                            </div>
+                            <div class="form-group mt-2">
+                                <label for="image4">Image 4</label>
+                                <input type="file" class="form-control" id="image4" name="image4" placeholder="Image 4">
+                            </div>
+                            <div class="form-group mt-3 d-flex gap-2">
+                                <input type="submit" class="btn btn-primary" name="edit_btn" value="Save">
+                                <a href="products.php" class="btn btn-secondary" style="background-color: #dc3545; color: #fff; border: none;">Cancel</a>
                             </div>
 
                         <?php } ?>
-
                     </form>
 
                 </div>
-
             </div>
-
         </main>
     </div>
 </div>
