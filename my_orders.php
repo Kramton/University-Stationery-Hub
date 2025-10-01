@@ -20,7 +20,6 @@ $orders = $stmt->get_result();
 <style>
 body {
     padding-top:110px;
-    font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif
 }
 .container-account {
     max-width:1120px;
