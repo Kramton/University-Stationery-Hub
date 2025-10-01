@@ -119,7 +119,6 @@ if (isset($_POST['save_all'])) {
 
   /* Sidebar (no borders; no logout) */
   .sidebar-title {
-    font-size: 14px;
     color: #7a7a7a;
     margin-bottom: 12px
   }
@@ -127,23 +126,15 @@ if (isset($_POST['save_all'])) {
   .navlink {
     display: block;
     padding: 6px 0;
-    color: #111;
+    color: coral;
     text-decoration: none
   }
 
-  .navlink.active {
-    color: #F15A29;
-    font-weight: 600
+  .navlink.order {
+    color: black;
   }
 
   /* Main content */
-  .section-title {
-    font-size: 16px;
-    font-weight: 600;
-    margin: 6px 0 12px;
-    color: #222
-  }
-
   .muted {
     color: #666;
     font-size: 13px;
@@ -251,19 +242,20 @@ if (isset($_POST['save_all'])) {
 <div class="container-account">
   <h2 class="page-title">Account</h2>
 
-  <?php if(isset($_GET['error'])): ?>
+  <?php if (isset($_GET['error'])): ?>
     <p class="err" style="text-align:center;"><?= htmlspecialchars($_GET['error']) ?></p>
   <?php endif; ?>
-  <?php if(isset($_GET['message'])): ?>
+  <?php if (isset($_GET['message'])): ?>
     <p class="msg" style="text-align:center;"><?= htmlspecialchars($_GET['message']) ?></p>
   <?php endif; ?>
 
   <div class="grid">
     <!-- Sidebar -->
     <aside>
-      <div class="sidebar-title">Manage My Account</div>
-      <a class="navlink active" href="my_profile.php">My Profile</a>
-      <a class="navlink" href="my_orders.php">My Orders</a>
+      <!-- <div class="sidebar-title">Manage My Account</div> -->
+      <h4 class="sidebar-title">Manage My Account</h4>
+      <a class="navlink profile" href="my_profile.php">My Profile</a>
+      <a class="navlink order" href="my_orders.php">My Orders</a>
     </aside>
 
     <!-- Main -->
@@ -271,7 +263,7 @@ if (isset($_POST['save_all'])) {
       <form method="POST" action="my_profile.php">
         <!-- Profile -->
         <section class="block">
-          <div class="section-title">Edit Your Profile</div>
+          <h4>Edit Your Profile</h4>
 
           <div class="row-2" style="margin-top:8px;">
             <div>
@@ -294,7 +286,7 @@ if (isset($_POST['save_all'])) {
 
         <!-- Password (single vertical stack) -->
         <section class="block">
-          <div class="section-title">Password Changes</div>
+          <h4>Password Changes</h4>
 
           <div style="margin:8px 0;">
             <input class="control" type="password" name="current_password" placeholder="Current Password">
@@ -315,21 +307,21 @@ if (isset($_POST['save_all'])) {
           <a class="link-cancel" id="cancelBtn" href="my_profile.php" style="display:none;">Cancel</a>
         </div>
         <script>
-        // Show Cancel button only if any input is changed
-        const cancelBtn = document.getElementById('cancelBtn');
-        const form = document.querySelector('form[action="my_profile.php"]');
-        const watchedFields = [
-          ...form.querySelectorAll('input[name="first_name"], input[name="last_name"], input[name="current_password"], input[name="new_password"], input[name="confirm_password"]')
-        ];
-        let pristine = true;
-        watchedFields.forEach(field => {
-          field.addEventListener('input', () => {
-            if (pristine && (field.value.trim() !== '')) {
-              cancelBtn.style.display = '';
-              pristine = false;
-            }
+          // Show Cancel button only if any input is changed
+          const cancelBtn = document.getElementById('cancelBtn');
+          const form = document.querySelector('form[action="my_profile.php"]');
+          const watchedFields = [
+            ...form.querySelectorAll('input[name="first_name"], input[name="last_name"], input[name="current_password"], input[name="new_password"], input[name="confirm_password"]')
+          ];
+          let pristine = true;
+          watchedFields.forEach(field => {
+            field.addEventListener('input', () => {
+              if (pristine && (field.value.trim() !== '')) {
+                cancelBtn.style.display = '';
+                pristine = false;
+              }
+            });
           });
-        });
         </script>
         <div style="margin-top:100px;">
           <a class="btn-secondary" href="my_profile.php?logout=1">Logout</a>

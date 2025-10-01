@@ -16,60 +16,97 @@ $stmt->execute();
 $orders = $stmt->get_result();
 ?>
 
+
 <style>
-/* Keep content below fixed navbar */
-body { padding-top: 110px; font-family: 'Poppins', sans-serif; }
-
-/* Match profile page wrapper + sidebar */
-.account-container { max-width: 1200px; margin: auto; }
-.account-title { font-size: 40px; font-weight: 600; text-align: center; margin-bottom: 40px; }
-
-.sidebar { padding-right: 20px; }
-.sidebar h5 { margin-bottom: 20px; font-weight: 500; }
-.sidebar a { display: block; padding: 8px 0; color: #000; text-decoration: none; }
-.sidebar a.active { color: #F15A29; font-weight: 600; }
-
-/* Card */
+body {
+    padding-top:110px;
+    font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif
+}
+.container-account {
+    max-width:1120px;
+    margin:0 auto;
+    padding:0 16px
+}
+.account-title {
+    font-size:36px;
+    font-weight:700;
+    text-align:center;
+    margin:6px 0 26px
+}
+.grid {
+    display:grid;
+    grid-template-columns:220px 1fr;
+    gap:40px;
+    align-items:start
+}
+@media(max-width:992px) {
+    .grid{grid-template-columns:1fr}
+}
+.sidebar-title{
+    color:#7a7a7a;
+    margin-bottom:12px
+}
+.navlink{
+    display:block;
+    padding:6px 0;
+    color:black;
+    text-decoration:none
+}
+.navlink.active {
+    color: coral;
+}
 .content-box {
-    background:#fff; padding:30px; border-radius:6px;
-    box-shadow:0 4px 10px rgba(0,0,0,0.05);
+    background:#fff;
+    padding:30px;
+    border-radius:6px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.05)
 }
-.content-box h5 { color:#F15A29; font-weight:500; margin-bottom: 12px; }
-.content-box hr { border:0; height:2px; background:#F15A29; width:40px; margin:0 0 20px; }
-
-/* Minimal orders table (like your reference) */
-.order-table { width:100%; border-collapse:collapse; }
+.order-table {
+    width:100%;
+    border-collapse:collapse
+}
 .order-table thead th {
-    font-weight:500; font-size:14px; color:#000; text-align:left; padding:12px 14px;
-    border-bottom:1px solid #e0e0e0;
+    font-weight:500;
+    font-size:14px;
+    color:#000;
+    text-align:left;
+    padding:12px 14px;
+    border-bottom:1px solid #e0e0e0
 }
-.order-table tbody td {
-    font-size:14px; color:#333; padding:16px 14px; border-bottom:1px solid #eee;
+.order-table tbody td { 
+    font-size:14px;
+    color:#333;
+    padding:16px 14px;
+    border-bottom:1px solid #eee
 }
-.order-table tbody tr:last-child td { border-bottom:none; }
-
-/* “View Order” as a simple link */
-.view-link { color:#000; font-weight:500; text-decoration:none; }
-.view-link:hover { text-decoration:underline; }
+.order-table tbody tr:last-child td {
+    border-bottom: none
+}
+.view-link {
+    color:#000;
+    font-weight:500;
+    text-decoration:none
+}
+.view-link:hover{
+    text-decoration:underline 
+}
 </style>
 
-<section class="account-container">
+
+<div class="container-account">
     <h2 class="account-title">Account</h2>
-
-    <div class="row">
-        <!-- Sidebar (identical to profile page) -->
-        <div class="col-md-3 sidebar">
-            <h5>Manage My Account</h5>
-            <a href="my_profile.php">My Profile</a>
-            <a href="my_orders.php" class="active">My Orders</a>
-        </div>
-
-        <!-- Orders -->
-        <div class="col-md-9">
-            <div class="content-box">
-                <h5>My Orders</h5>
-                <hr>
-
+    <div class="grid">
+        <!-- Sidebar -->
+        <aside>
+            <!-- <div class="sidebar-title">Manage My Account</div> -->
+            <h4 class="sidebar-title">Manage My Account</h4>
+            <a class="navlink" href="my_profile.php">My Profile</a>
+            <a class="navlink active" href="my_orders.php">My Orders</a>
+        </aside>
+        <!-- Main -->
+        <main>
+            <div class="">
+                <h4>My Orders</h4>
                 <table class="order-table">
                     <thead>
                         <tr>
@@ -101,8 +138,8 @@ body { padding-top: 110px; font-family: 'Poppins', sans-serif; }
                     </tbody>
                 </table>
             </div>
-        </div>
+        </main>
     </div>
-</section>
+</div>
 
 <?php include('layouts/footer.php'); ?>
