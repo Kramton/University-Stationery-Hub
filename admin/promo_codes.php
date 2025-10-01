@@ -93,8 +93,6 @@ $promo_codes = $stmt2->get_result();
               <th scope="col">Code</th>
               <th scope="col">Discount</th>
               <th scope="col">Min. Purchase</th>
-              <th scope="col">Status</th>
-              <th scope="col">Usage</th>
               <th scope="col">Expires On</th>
               <th scope="col">Edit</th>
               <th scope="col">Delete</th>
@@ -113,27 +111,6 @@ $promo_codes = $stmt2->get_result();
                   } ?>
                 </td>
                 <td><?php echo "$" . number_format($promo_code['min_purchase'], 2); ?></td>
-                <td>
-                  <?php
-                    $is_active = $promo_code['is_active'];
-                    $end_date = $promo_code['end_date'];
-                    $status = '';
-                    $badge_class = '';
-
-                    if (!$is_active) {
-                        $status = 'Inactive';
-                        $badge_class = 'bg-secondary';
-                    } elseif ($end_date && strtotime($end_date) < time()) {
-                        $status = 'Expired';
-                        $badge_class = 'bg-danger';
-                    } else {
-                        $status = 'Active';
-                        $badge_class = 'bg-success';
-                    }
-                  ?>
-                  <span class="badge <?php echo $badge_class; ?>"><?php echo $status; ?></span>
-                </td>
-                <td><?php echo $promo_code['current_uses'] . ' / ' . $promo_code['max_uses']; ?></td>
                 <td><?php echo $promo_code['end_date'] ? date('M j, Y', strtotime($promo_code['end_date'])) : 'N/A'; ?></td>
                 <td>
                   <a class="btn btn-primary" href="edit_promo_code.php?promo_code_id=<?php echo $promo_code['id']; ?>">Edit</a>

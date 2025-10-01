@@ -12,26 +12,20 @@ if (isset($_POST['add_promo_code_btn'])) {
     $discount_type = $_POST['discount_type'];
     $discount_value = $_POST['discount_value'];
     $min_purchase = $_POST['min_purchase'];
-    $max_uses = $_POST['max_uses'];
     
-    $start_date = !empty($_POST['start_date']) ? $_POST['start_date'] : null;
     $end_date = !empty($_POST['end_date']) ? $_POST['end_date'] : null;
-    $is_active = isset($_POST['is_active']) ? 1 : 0;
 
-    $stmt = $conn->prepare("INSERT INTO promo_codes (code, description, discount_type, discount_value, min_purchase, start_date, end_date, max_uses, is_active) 
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO promo_codes (code, description, discount_type, discount_value, min_purchase, end_date) 
+                            VALUES (?, ?, ?, ?, ?, ?)");
     
     $stmt->bind_param(
-        "sssddssii",
+        "sssdds",
         $code,
         $description,
         $discount_type,
         $discount_value,
         $min_purchase,
-        $start_date,
-        $end_date,
-        $max_uses,
-        $is_active
+        $end_date
     );
 
     if ($stmt->execute()) {
@@ -77,30 +71,16 @@ if (isset($_POST['add_promo_code_btn'])) {
                         </div>
                     </div>
                     <div class="row mb-3">
-                         <div class="col-md-6">
+                         <div class="col-md-12">
                             <label for="min_purchase" class="form-label">Minimum Purchase ($)</label>
                             <input type="number" step="0.01" class="form-control" id="min_purchase" name="min_purchase" value="0.00" required>
                         </div>
-                        <div class="col-md-6">
-                            <label for="max_uses" class="form-label">Max Uses</label>
-                            <input type="number" class="form-control" id="max_uses" name="max_uses" value="1000" required>
-                        </div>
                     </div>
                      <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="start_date" class="form-label">Start Date (Optional)</label>
-                            <input type="datetime-local" class="form-control" id="start_date" name="start_date">
-                        </div>
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <label for="end_date" class="form-label">End Date (Optional)</label>
                             <input type="datetime-local" class="form-control" id="end_date" name="end_date">
                         </div>
-                    </div>
-                    <div class="form-check mb-3">
-                        <input class="form-check-input" type="checkbox" id="is_active" name="is_active" value="1" checked>
-                        <label class="form-check-label" for="is_active">
-                            Active
-                        </label>
                     </div>
                     <div class="mb-3">
                         <button type="submit" class="btn btn-primary" name="add_promo_code_btn">Add Promo Code</button>
