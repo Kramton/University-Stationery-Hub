@@ -147,8 +147,8 @@ function calculateTotalOrderPrice($order_details)
         </div>
         <div id="cancelModal"
             style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:#fff; padding:32px 28px; border-radius:8px; box-shadow:0 8px 32px rgba(0,0,0,0.18); z-index:9999; min-width:320px; text-align:center;">
-            <h4 style="margin-bottom:18px;">Cancel Order?</h4>
-            <p style="margin-bottom:24px; color:#555;">Are you sure you want to cancel this order?</p>
+            <h4 style="margin-bottom:18px;">Cancel & Delete Order?</h4>
+            <p style="margin-bottom:24px; color:#555;">Are you sure you want to cancel this order? This cannot be undone.</p>
             <form method="POST" action="server/cancel_order.php" style="display:inline;">
                 <input type="hidden" name="order_id" value="<?php echo $order_id; ?>">
                 <button type="submit" name="cancel_order_btn" class="btn btn-danger"
