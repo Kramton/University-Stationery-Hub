@@ -16,8 +16,8 @@ $payment_date = date('Y-m-d H:i:s');
 // Simulate a transaction id (in production you’d get this from a payment gateway)
 $transaction_id = 'SIM-' . strtoupper(bin2hex(random_bytes(6)));
 
-// Mark order as paid
-$stmt = $conn->prepare("UPDATE orders SET order_status = 'paid' WHERE order_id = ?");
+// Mark order as closed
+$stmt = $conn->prepare("UPDATE orders SET order_status = 'Closed' WHERE order_id = ?");
 $stmt->bind_param('i', $order_id);
 $stmt->execute();
 $stmt->close();

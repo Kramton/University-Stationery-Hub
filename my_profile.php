@@ -88,7 +88,6 @@ if (isset($_POST['save_all'])) {
 <style>
   body {
     padding-top: 110px;
-    font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif
   }
 
   .container-account {

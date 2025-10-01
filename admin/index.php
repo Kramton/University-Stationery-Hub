@@ -43,7 +43,9 @@ $adjacents = 2; // Number of adjacent pages on either side of the current page
 
 $total_no_of_pages = ceil($total_records / $total_records_per_page);
 
-$stmt2 = $conn->prepare("SELECT * FROM orders LIMIT $offset, $total_records_per_page");
+
+// Join orders with users to get user_name
+$stmt2 = $conn->prepare("SELECT o.*, u.user_name FROM orders o LEFT JOIN users u ON o.user_id = u.user_id LIMIT $offset, $total_records_per_page");
 $stmt2->execute();
 $orders = $stmt2->get_result();
 
@@ -68,11 +70,9 @@ $orders = $stmt2->get_result();
               <th scope="col">Order ID</th>
               <th scope="col">Order Status</th>
               <th scope="col">User ID</th>
+              <th scope="col">Name</th>
+              <th scope="col">Price</th>
               <th scope="col">Order Date</th>
-              <th scope="col">User Phone</th>
-              <th scope="col">User Address</th>
-              <th scope="col">Edit</th>
-              <th scope="col">Delete</th>
             </tr>
           </thead>
           <tbody>
@@ -80,20 +80,29 @@ $orders = $stmt2->get_result();
             <?php foreach($orders as $order) { ?>
             <tr>
               <td><?php echo $order['order_id']; ?></td>
-              <td><?php echo $order['order_status']; ?></td>
+              <td>
+                <select class="form-select order-status-dropdown" data-order-id="<?php echo $order['order_id']; ?>">
+                  <option value="Open" <?php if($order['order_status']==='Open') echo 'selected'; ?>>Open</option>
+                  <option value="Closed" <?php if($order['order_status']==='Closed') echo 'selected'; ?>>Closed</option>
+                </select>
+              </td>
               <td><?php echo $order['user_id']; ?></td>
+              <td><?php echo htmlspecialchars($order['user_name'] ?? ''); ?></td>
+              <td>$<?php echo number_format($order['order_cost'], 2); ?></td>
               <td><?php echo $order['order_date']; ?></td>
-              <td><?php echo $order['user_phone']; ?></td>
-              <td><?php echo $order['user_address']; ?></td>
-
-              <td><a class="btn btn-primary" href="">Edit</a></td>
-              <td><a class="btn btn-danger" href="">Delete</a></td>
             </tr>
-
             <?php } ?>
             
           </tbody>
         </table>
+        <style>
+.order-status-dropdown {
+  width: fit-content !important;
+  min-width: 90px;
+  display: inline-block;
+  padding-right: 24px; /* ensures dropdown arrow is visible */
+}
+</style>
 
 
         <nav aria-label="Page navigation example" class="mx-auto">

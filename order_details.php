@@ -1,7 +1,5 @@
-<?php include('layouts/header.php') ?>
-
 <?php
-
+include('layouts/header.php');
 include('server/connection.php');
 
 
@@ -75,9 +73,11 @@ function calculateTotalOrderPrice($order_details)
     <div class="container mt-5">
         <h2 class="font-weight-bold text-center">Order Details</h2>
         <hr class="mx-auto" />
-        <p class="text-center" style="font-size:18px; color:#555; margin-bottom:0;">Order ID: <strong><?php echo htmlspecialchars($order_id); ?></strong></p>
+        <p class="text-center" style="font-size:18px; color:#555; margin-bottom:0;">Order ID:
+            <strong><?php echo htmlspecialchars($order_id); ?></strong></p>
         <?php if (!empty($order_date)): ?>
-            <p class="text-center" style="font-size:16px; color:#888; margin-bottom:0;">Order Date: <strong><?php echo date('d M Y, h:i A', strtotime($order_date)); ?></strong></p>
+            <p class="text-center" style="font-size:16px; color:#888; margin-bottom:0;">Order Date:
+                <strong><?php echo date('d M Y, h:i A', strtotime($order_date)); ?></strong></p>
         <?php endif; ?>
     </div>
 
@@ -89,7 +89,7 @@ function calculateTotalOrderPrice($order_details)
             <th>Quantity</th>
         </tr>
 
-        <?php foreach($order_details as $row) { ?>
+        <?php foreach ($order_details as $row) { ?>
             <tr>
                 <td>
                     <div class="product-info">
@@ -111,15 +111,15 @@ function calculateTotalOrderPrice($order_details)
 
 
 
-    <?php if ($order_status == "not paid") { ?>
+    <?php if ($order_status == "Open") { ?>
         <?php
         // Prepare last_order session for payment.php
         $order_items = [];
         foreach ($order_details as $row) {
             $order_items[] = [
                 'name' => $row['product_name'],
-                'quantity' => (int)$row['product_quantity'],
-                'subtotal' => (float)$row['product_price'] * (int)$row['product_quantity']
+                'quantity' => (int) $row['product_quantity'],
+                'subtotal' => (float) $row['product_price'] * (int) $row['product_quantity']
             ];
         }
         $_SESSION['last_order'] = [
@@ -130,7 +130,7 @@ function calculateTotalOrderPrice($order_details)
             'total' => $order_total_price
         ];
         ?>
-    <form style="float: right; margin-left:10px;" method="POST" action="payment.php">
+        <form style="float: right; margin-left:10px;" method="POST" action="payment.php">
             <input type="hidden" name="order_id" value="<?php echo $order_id; ?>">
             <input type="hidden" name="order_total_price" value="<?php echo $order_total_price; ?>">
             <input type="hidden" name="order_status" value="<?php echo $order_status; ?>">
@@ -138,38 +138,44 @@ function calculateTotalOrderPrice($order_details)
         </form>
 
         <!-- Cancel Order button triggers modal -->
-    <button type="button" class="btn btn-danger" style="float: right; margin-right:10px; text-transform:capitalize;" onclick="showCancelModal()">Cancel Order</button>
+        <button type="button" class="btn btn-danger" style="float: right; margin-right:10px; text-transform:capitalize;"
+            onclick="showCancelModal()">Cancel Order</button>
 
         <!-- Modal and overlay -->
-        <div id="cancelModalOverlay" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.6); z-index:9998;"></div>
-        <div id="cancelModal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:#fff; padding:32px 28px; border-radius:8px; box-shadow:0 8px 32px rgba(0,0,0,0.18); z-index:9999; min-width:320px; text-align:center;">
+        <div id="cancelModalOverlay"
+            style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.6); z-index:9998;">
+        </div>
+        <div id="cancelModal"
+            style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:#fff; padding:32px 28px; border-radius:8px; box-shadow:0 8px 32px rgba(0,0,0,0.18); z-index:9999; min-width:320px; text-align:center;">
             <h4 style="margin-bottom:18px;">Cancel Order?</h4>
             <p style="margin-bottom:24px; color:#555;">Are you sure you want to cancel this order?</p>
             <form method="POST" action="server/cancel_order.php" style="display:inline;">
                 <input type="hidden" name="order_id" value="<?php echo $order_id; ?>">
-                <button type="submit" name="cancel_order_btn" class="btn btn-danger" style="margin-right:10px; text-transform:capitalize;">Yes, Cancel</button>
+                <button type="submit" name="cancel_order_btn" class="btn btn-danger"
+                    style="margin-right:10px; text-transform:capitalize;">Yes, Cancel</button>
             </form>
             <button type="button" class="btn btn-secondary" onclick="hideCancelModal()">No, Go Back</button>
         </div>
 
         <script>
-        function showCancelModal() {
-            document.getElementById('cancelModalOverlay').style.display = 'block';
-            document.getElementById('cancelModal').style.display = 'block';
-        }
-        function hideCancelModal() {
-            document.getElementById('cancelModalOverlay').style.display = 'none';
-            document.getElementById('cancelModal').style.display = 'none';
-        }
-        // Hide modal if overlay is clicked
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('cancelModalOverlay').onclick = hideCancelModal;
-        });
+            function showCancelModal() {
+                document.getElementById('cancelModalOverlay').style.display = 'block';
+                document.getElementById('cancelModal').style.display = 'block';
+            }
+            function hideCancelModal() {
+                document.getElementById('cancelModalOverlay').style.display = 'none';
+                document.getElementById('cancelModal').style.display = 'none';
+            }
+            // Hide modal if overlay is clicked
+            document.addEventListener('DOMContentLoaded', function () {
+                document.getElementById('cancelModalOverlay').onclick = hideCancelModal;
+            });
         </script>
     <?php } ?>
 
     <!-- Back to My Orders button -->
-        <a href="my_orders.php" class="btn btn-secondary" style="float: left; background-color: #FF7F50; color: #fff; border: none;">Back to My Orders</a>
+    <a href="my_orders.php" class="btn btn-secondary"
+        style="float: left; background-color: #FF7F50; color: #fff; border: none;">Back to My Orders</a>
 
 </section>
 

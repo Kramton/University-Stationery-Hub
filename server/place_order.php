@@ -77,7 +77,7 @@ if (isset($_POST['place_order'])) {
   $_SESSION['subtotal'] = $computed_total;
   $_SESSION['total']    = $order_cost;
 
-  $order_status = 'not paid';
+  $order_status = 'Open';
   $user_id      = (int)($_SESSION['user_id'] ?? 0);
   $order_date   = date('Y-m-d H:i:s');
 
