@@ -182,7 +182,7 @@ $products = $stmt2->get_result();
               <th scope="col">Product Name</th>
               <th scope="col">Product Price</th>
               <th scope="col">Stock</th>
-              <th scope="col">Product Offer</th>
+              <th scope="col">Market Price</th>
               <th scope="col">Product Category</th>
               <th scope="col">Edit</th>
               <th scope="col">Delete</th>
@@ -218,7 +218,7 @@ $products = $stmt2->get_result();
 
 
 
-                <td><?php echo $product['product_special_offer'] . "%"; ?></td>
+                <td><?php echo isset($product['market_price']) ? "$" . number_format($product['market_price'], 2) : '-'; ?></td>
                 <td><?php echo $product['product_category']; ?></td>
                 <td><a class="btn btn-primary"
                     href="edit_product.php?product_id=<?php echo $product['product_id']; ?>">Edit</a></td>

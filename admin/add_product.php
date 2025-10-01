@@ -43,11 +43,15 @@ if (!isset($_SESSION['admin_logged_in'])) {
                 </div>
                 <div class="form-group mt-2">
                     <label for="">Price</label>
-                    <input type="text" class="form-control" id="product-price" name="price" placeholder="Price" required>
+                    <input type="text" class="form-control" id="product-price" name="price" placeholder="e.g. $10" required>
                 </div>
-                <div class="form-group mt-2">
+                <!-- <div class="form-group mt-2">
                     <label for="">Special Offer/Sale</label>
                     <input type="text" class="form-control" id="product-offer" name="offer" placeholder="Offer" required>
+                </div> -->
+                <div class="form-group mt-2">
+                    <label for="">Market Price</label>
+                    <input type="number" step="0.01" class="form-control" id="market-price" name="market_price" placeholder="e.g. $12" required>
                 </div>
            
              <div class="form-group mt-2">

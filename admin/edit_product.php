@@ -15,19 +15,19 @@ if (isset($_GET['product_id'])) {
     $title = $_POST['title'];
     $description = $_POST['description'];
     $price = $_POST['price'];
-    $offer = $_POST['offer'];
+    $market_price = $_POST['market_price'];
     $category = $_POST['category'];
     $stock = isset($_POST['stock']) ? max(0, (int)$_POST['stock']) : 0;
 
     // Update product details
     $stmt = $conn->prepare("UPDATE products SET product_name=?, product_description=?, product_price=?,
-                                   product_special_offer=?, product_category=?, product_stock=? WHERE product_id=?");
+                                   market_price=?, product_category=?, product_stock=? WHERE product_id=?");
     // Assign type-casted values to variables for bind_param
     $price_f = (float)$price;
-    $offer_i = (int)$offer;
+    $market_price_f = (float)$market_price;
     $stock_i = (int)$stock;
     $product_id_i = (int)$product_id;
-    $stmt->bind_param('ssdisii', $title, $description, $price_f, $offer_i, $category, $stock_i, $product_id_i);
+    $stmt->bind_param('ssddsii', $title, $description, $price_f, $market_price_f, $category, $stock_i, $product_id_i);
     $success = $stmt->execute();
     $stmt->close();
 
@@ -149,10 +149,10 @@ if (isset($_GET['product_id'])) {
                                 </select>
                             </div>
                             <div class="form-group mt-2">
-                                <label for="">Special Offer/Sale</label>
-                                <input type="number" class="form-control"
-                                    value="<?php echo htmlspecialchars($product['product_special_offer']); ?>" id="product-offer" name="offer"
-                                    placeholder="Sale %" required>
+                                <label for="">Market Price</label>
+                                <input type="number" step="0.01" class="form-control"
+                                    value="<?php echo htmlspecialchars($product['market_price']); ?>" id="market-price" name="market_price"
+                                    placeholder="Market Price" required>
                             </div>
                            
                             <div class="form-group mt-2">
