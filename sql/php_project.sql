@@ -291,7 +291,7 @@ CREATE TABLE `users` (
   `reset_token_hash` varchar(64) DEFAULT NULL,
   `reset_token_expires_at` datetime DEFAULT NULL,
   `verification_token` varchar(255) DEFAULT NULL,
-  `is_verified` tinyint(1) NOT NULL,
+  `is_verified` tinyint(1) NOT NULL DEFAULT 0,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
