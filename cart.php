@@ -1,5 +1,15 @@
 <?php include('layouts/header.php'); ?>
 <?php
+// Show message only if user clicks Check Out and is not logged in
+$showLoginMsg = false;
+if (isset($_POST['checkout'])) {
+  if (!isset($_SESSION['logged_in']) || !$_SESSION['logged_in']) {
+    $showLoginMsg = true;
+  } else {
+    header('Location: checkout.php');
+    exit;
+  }
+}
 include('server/connection.php');
 
 // Ensure cart array exists
@@ -539,8 +549,24 @@ calculateTotalCart();
         </tbody>
       </table>
       <div class="checkout-container">
-        <form method="POST" action="checkout.php">
-          <button type="submit" name="checkout" class="checkout-btn">Check Out</button>
+        <form method="POST">
+          <?php if ($showLoginMsg): ?>
+            <div style="background:#ffe5dd;border:1.5px solid coral;border-radius:10px;padding:18px 18px 12px 18px;margin-bottom:16px;box-shadow:0 2px 8px rgba(255,127,80,0.07);text-align:center;">
+              <div style="font-size:2.1rem;color:coral;margin-bottom:6px;">
+                <i class="fa fa-exclamation-circle"></i>
+              </div>
+              <div style="font-size:1.1rem;font-weight:600;color:coral;margin-bottom:10px;">
+                Please log in or register to place an order!
+              </div>
+              <div style="display:flex;gap:12px;justify-content:center;">
+                <a href="login.php" class="btn-primary" style="background:coral;color:#fff;padding:10px 28px;border-radius:8px;font-weight:700;text-decoration:none;">Login</a>
+                <a href="register.php" class="btn-primary" style="background:#fff;color:coral;border:2px solid coral;padding:10px 28px;border-radius:8px;font-weight:700;text-decoration:none;">Register</a>
+              </div>
+            </div>
+          <?php endif; ?>
+          <div style="display:flex;justify-content:center;">
+            <button type="submit" name="checkout" class="checkout-btn" style="min-width:180px;">Check Out</button>
+          </div>
         </form>
       </div>
     </div>
