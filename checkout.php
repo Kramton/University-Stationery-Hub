@@ -100,14 +100,9 @@ $_SESSION['total'] = $amount;
       <!-- Editable pickup address (prefilled, but user can change it) -->
       <div class="row">
         <label for="pickup-address">Address</label>
-        <input
-          type="text"
-          id="pickup-address"
-          name="address"
-          value="55 Wellesley Street East, Auckland Central, Auckland 1010"
-          placeholder="Enter pickup address"
-          required
-        />
+        <select id="pickup-address" name="address" required style="width:100%;padding:12px 14px;border:1px solid #e2e2e2;border-radius:10px">
+          <option value="55 Wellesley Street East, Auckland Central, Auckland 1010">55 Wellesley Street East, Auckland Central, Auckland 1010</option>
+        </select>
       </div>
 
       <p>Enter details of person collecting this order:</p>
