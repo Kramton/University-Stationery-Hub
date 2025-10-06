@@ -61,6 +61,9 @@ CREATE TABLE `orders` (
   `order_date` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
+-- Add ready_for_pickup column for admin dashboard checkbox
+ALTER TABLE `orders` ADD COLUMN `ready_for_pickup` TINYINT(1) NOT NULL DEFAULT 0;
+
 --
 -- Dumping data for table `orders`
 --
