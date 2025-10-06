@@ -68,6 +68,7 @@ $orders = $stmt2->get_result();
             <tr>
               <th scope="col">Order ID</th>
               <th scope="col">Order Status</th>
+              <th scope="col">Ready for Pickup</th>
               <th scope="col">User ID</th>
               <th scope="col">Name</th>
               <th scope="col">Price</th>
@@ -81,11 +82,12 @@ $orders = $stmt2->get_result();
                 <td><?php echo $order['order_id']; ?></td>
                 <td>
                   <select class="form-select order-status-dropdown" data-order-id="<?php echo $order['order_id']; ?>">
-                    <option value="Open" <?php if ($order['order_status'] === 'Open')
-                      echo 'selected'; ?>>Open</option>
-                    <option value="Closed" <?php if ($order['order_status'] === 'Closed')
-                      echo 'selected'; ?>>Closed</option>
+                    <option value="Open" <?php if ($order['order_status'] === 'Open') echo 'selected'; ?>>Open</option>
+                    <option value="Closed" <?php if ($order['order_status'] === 'Closed') echo 'selected'; ?>>Closed</option>
                   </select>
+                </td>
+                <td style="text-align:left;vertical-align:middle;">
+                  <input type="checkbox" class="ready-checkbox" data-order-id="<?php echo $order['order_id']; ?>" <?php if (!empty($order['ready_for_pickup'])) echo 'checked'; ?> <?php if (strtolower($order['order_status']) !== 'closed') echo 'disabled'; ?> />
                 </td>
                 <td><?php echo $order['user_id']; ?></td>
                 <td><?php echo htmlspecialchars($order['user_name'] ?? ''); ?></td>
@@ -161,3 +163,23 @@ $orders = $stmt2->get_result();
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"
   integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha" crossorigin="anonymous"></script>
 <script src="dashboard.js"></script>
+<script>
+document.querySelectorAll('.ready-checkbox').forEach(function(checkbox) {
+  checkbox.addEventListener('change', function() {
+    var orderId = this.getAttribute('data-order-id');
+    var ready = this.checked ? 1 : 0;
+    fetch('update_order_ready.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: 'order_id=' + encodeURIComponent(orderId) + '&ready=' + ready
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (!data.success) {
+        alert('Failed to update ready status.');
+        this.checked = !this.checked;
+      }
+    });
+  });
+});
+</script>
