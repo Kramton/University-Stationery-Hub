@@ -87,31 +87,6 @@ $products = $stmt2->get_result();
         background-color: #FF7F50;
         /* Slightly darker orange on hover */
       }
-
-      /* Button to Add New Product, styled like the Sign-Out Button */
-      .btn-signout {
-        background-color: #FF9F7F;
-        /* Pale Orange */
-        color: black;
-        border-radius: 5px;
-        padding: 5px 15px;
-        font-size: 0.9rem;
-        font-weight: 500;
-        text-decoration: none;
-        /* Remove underline */
-      }
-
-      .btn-signout:hover {
-        background-color: #FF7F50;
-        /* Slightly darker orange on hover */
-      }
-
-      /* Ensure button is placed in the top right corner */
-      .btn-signout {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-      }
     </style>
 
 
@@ -218,7 +193,9 @@ $products = $stmt2->get_result();
 
 
 
-                <td><?php echo isset($product['market_price']) ? "$" . number_format($product['market_price'], 2) : '-'; ?></td>
+                <td>
+                  <?php echo isset($product['market_price']) ? "$" . number_format($product['market_price'], 2) : '-'; ?>
+                </td>
                 <td><?php echo $product['product_category']; ?></td>
                 <td><a class="btn btn-primary"
                     href="edit_product.php?product_id=<?php echo $product['product_id']; ?>">Edit</a></td>

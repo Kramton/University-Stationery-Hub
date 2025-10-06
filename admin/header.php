@@ -77,6 +77,27 @@
             margin-top: 70px;
         }
 
+        /* Button to Add New Product, styled like the Sign-Out Button */
+        .btn-signout {
+            background-color: #FF9F7F;
+            /* Pale Orange */
+            color: black;
+            border-radius: 5px;
+            padding: 5px 15px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-decoration: none;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            /* Remove underline */
+        }
+
+        .btn-signout:hover {
+            background-color: #FF7F50;
+            /* Slightly darker orange on hover */
+        }
+
         @media (max-width: 992px) {
             .navbar-toggler {
                 border-color: transparent;
@@ -87,7 +108,7 @@
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-white py-3 fixed-top">
-        <div class="container">
+        <div class="container-fluid">
             <a class="navbar-brand" href="#">
                 <img class="logo" src="../assets/imgs/1.png" alt="University Stationery Hub Logo" />
                 University Stationery Hub
@@ -98,14 +119,15 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                    <?php if(isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in']): ?>
-                    <li class="nav-item">
-                        <a class="btn btn-signout" href="logout.php?logout=1">Sign Out</a>
-                    </li>
+                    <?php if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in']): ?>
+                        <li class="nav-item">
+                            <a class="btn btn-signout" href="logout.php?logout=1">Sign Out</a>
+                        </li>
                     <?php endif; ?>
                 </ul>
             </div>
         </div>
     </nav>
 </body>
+
 </html>

@@ -58,7 +58,7 @@ $orders = $stmt2->get_result();
   <div class="row">
 
     <?php include('sidemenu.php'); ?>
-    
+
     <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
       <br>
       <h2>Orders</h2>
@@ -76,32 +76,35 @@ $orders = $stmt2->get_result();
           </thead>
           <tbody>
 
-            <?php foreach($orders as $order) { ?>
-            <tr>
-              <td><?php echo $order['order_id']; ?></td>
-              <td>
-                <select class="form-select order-status-dropdown" data-order-id="<?php echo $order['order_id']; ?>">
-                  <option value="Open" <?php if($order['order_status']==='Open') echo 'selected'; ?>>Open</option>
-                  <option value="Closed" <?php if($order['order_status']==='Closed') echo 'selected'; ?>>Closed</option>
-                </select>
-              </td>
-              <td><?php echo $order['user_id']; ?></td>
-              <td><?php echo htmlspecialchars($order['user_name'] ?? ''); ?></td>
-              <td>$<?php echo number_format($order['order_cost'], 2); ?></td>
-              <td><?php echo $order['order_date']; ?></td>
-            </tr>
+            <?php foreach ($orders as $order) { ?>
+              <tr>
+                <td><?php echo $order['order_id']; ?></td>
+                <td>
+                  <select class="form-select order-status-dropdown" data-order-id="<?php echo $order['order_id']; ?>">
+                    <option value="Open" <?php if ($order['order_status'] === 'Open')
+                      echo 'selected'; ?>>Open</option>
+                    <option value="Closed" <?php if ($order['order_status'] === 'Closed')
+                      echo 'selected'; ?>>Closed</option>
+                  </select>
+                </td>
+                <td><?php echo $order['user_id']; ?></td>
+                <td><?php echo htmlspecialchars($order['user_name'] ?? ''); ?></td>
+                <td>$<?php echo number_format($order['order_cost'], 2); ?></td>
+                <td><?php echo $order['order_date']; ?></td>
+              </tr>
             <?php } ?>
-            
+
           </tbody>
         </table>
         <style>
-.order-status-dropdown {
-  width: fit-content !important;
-  min-width: 90px;
-  display: inline-block;
-  padding-right: 24px; /* ensures dropdown arrow is visible */
-}
-</style>
+          .order-status-dropdown {
+            width: fit-content !important;
+            min-width: 90px;
+            display: inline-block;
+            padding-right: 24px;
+            /* ensures dropdown arrow is visible */
+          }
+        </style>
 
 
         <nav aria-label="Page navigation example" class="mx-auto">
