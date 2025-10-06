@@ -79,7 +79,7 @@ $orders = $stmt2->get_result();
 
             <?php foreach ($orders as $order) { ?>
               <tr>
-                <td><?php echo $order['order_id']; ?></td>
+                <td><?php echo '#USH' . str_pad($order['order_id'], 4, '0', STR_PAD_LEFT); ?></td>
                 <td>
                   <select class="form-select order-status-dropdown" data-order-id="<?php echo $order['order_id']; ?>">
                     <option value="Open" <?php if ($order['order_status'] === 'Open') echo 'selected'; ?>>Open</option>
