@@ -136,7 +136,7 @@ $orders = $stmt->get_result();
                         <?php if ($orders->num_rows > 0): ?>
                             <?php while ($row = $orders->fetch_assoc()): ?>
                                 <tr>
-                                    <td><?php echo $row['order_id']; ?></td>
+                                    <td><?php echo '#USH' . str_pad($row['order_id'], 4, '0', STR_PAD_LEFT); ?></td>
                                     <td><?php echo date('d-m-Y', strtotime($row['order_date'])); ?></td>
                                     <td>$<?php echo number_format((float) $row['order_cost'], 2); ?></td>
                                     <td><?php echo ucfirst($row['order_status']); ?></td>

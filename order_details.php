@@ -74,7 +74,7 @@ function calculateTotalOrderPrice($order_details)
         <h2 class="font-weight-bold text-center">Order Details</h2>
         <hr class="mx-auto" />
         <p class="text-center" style="font-size:18px; color:#555; margin-bottom:0;">Order ID:
-            <strong><?php echo htmlspecialchars($order_id); ?></strong></p>
+            <strong><?php echo '#USH' . str_pad($order_id, 4, '0', STR_PAD_LEFT); ?></strong></p>
         <?php if (!empty($order_date)): ?>
             <p class="text-center" style="font-size:16px; color:#888; margin-bottom:0;">Order Date:
                 <strong><?php echo date('d M Y, h:i A', strtotime($order_date)); ?></strong></p>
