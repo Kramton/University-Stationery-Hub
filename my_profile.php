@@ -88,7 +88,7 @@ if (isset($_POST['save_all'])) {
 <style>
   body {
     padding-top: 110px;
-    overflow: hidden;
+    /* overflow: hidden; */
   }
 
   .container-account {
