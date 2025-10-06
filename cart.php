@@ -411,7 +411,7 @@ calculateTotalCart();
 
 
 <!-- Cart -->
-<section class="cart">
+<section class="cart" style="padding-top: 130px;">
   <div class="container">
     <h2 class="cart-title">Your Cart</h2>
   </div>
@@ -444,10 +444,15 @@ calculateTotalCart();
             <td>$<?php echo number_format((float) $value['product_price'], 2); ?></td>
 
             <td class="quantity-column">
-              <?php if ($live_stock == 1): ?>
-                <span class="stock-status">last stock</span>
+
+              <?php if ($live_stock <= 0): ?>
+                <span class="stock-status" style="color:#b42318;">Out of stock</span>
+              <?php elseif ($live_stock == 1): ?>
+                <span class="stock-status" style="color:#f97316;">Last stock</span>
               <?php elseif ($live_stock > 1 && $live_stock <= 10): ?>
-                <span class="stock-status"><?php echo $live_stock; ?> stock left</span>
+                <span class="stock-status" style="color:#f97316;"><?php echo $live_stock; ?> stock left</span>
+              <?php else: ?>
+                <span class="stock-status" style="color:#1a7f37;">In stock</span>
               <?php endif; ?>
 
               <div class="quantity-selector">
