@@ -1,6 +1,7 @@
 <?php session_start(); ?>
 <?php include('../server/connection.php'); ?>
 
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -97,9 +98,11 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <?php if(isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in']): ?>
                     <li class="nav-item">
                         <a class="btn btn-signout" href="logout.php?logout=1">Sign Out</a>
                     </li>
+                    <?php endif; ?>
                 </ul>
             </div>
         </div>
