@@ -44,8 +44,7 @@ $adjacents = 2; // Number of adjacent pages on either side of the current page
 $total_no_of_pages = ceil($total_records / $total_records_per_page);
 
 
-// Join orders with users to get user_name
-$stmt2 = $conn->prepare("SELECT o.*, u.user_name FROM orders o LEFT JOIN users u ON o.user_id = u.user_id LIMIT $offset, $total_records_per_page");
+$stmt2 = $conn->prepare("SELECT o.*, u.user_name FROM orders o LEFT JOIN users u ON o.user_id = u.user_id ORDER BY o.order_date DESC LIMIT $offset, $total_records_per_page");
 $stmt2->execute();
 $orders = $stmt2->get_result();
 
