@@ -145,8 +145,11 @@ if (isset($_POST['place_order'])) {
       'order_date' => $order_date,
     ];
 
-    header('Location: ../payment.php?order_status=Order+placed+successfully');
-    exit;
+  // Clear cart and promo data after successful order
+  unset($_SESSION['cart'], $_SESSION['promo_data'], $_SESSION['promo_discount'], $_SESSION['subtotal'], $_SESSION['total'], $_SESSION['quantity']);
+
+  header('Location: ../payment.php?order_status=Order+placed+successfully');
+  exit;
 
   } catch (Throwable $e) {
     $conn->rollback();
