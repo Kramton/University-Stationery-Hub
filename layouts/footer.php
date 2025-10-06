@@ -29,7 +29,7 @@
           </div>
           <div>
             <h6 class="text-uppercase">Email</h6>
-            <p>info@mail.com</p>
+            <p>universitystationeryhub@gmail.com</p>
           </div>
         </div>
 
@@ -43,7 +43,7 @@
             <img src="assets/imgs/1.png" alt="" />
           </div>
           <div class="col-lg-3 col-md-6 col-sm-12 mb-4 mb-2">
-            <p>University Stationary Hub © 2025 All Right Reserved</p>
+            <p>University Stationery Hub © 2025 All Right Reserved</p>
           </div>
           <div class="col-lg-3 col-md-6 col-sm-12 mb-4">
             <a href=""><i class="fa fa-facebook"></i></a>
