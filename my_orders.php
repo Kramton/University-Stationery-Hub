@@ -99,11 +99,16 @@ $orders = $stmt->get_result();
     .view-link {
         color: #000;
         font-weight: 500;
-        text-decoration: none
+        text-decoration: none;
+        padding: 4px 10px;
+        border-radius: 4px;
+        transition: background 0.2s;
     }
 
     .view-link:hover {
-        text-decoration: underline
+        background: coral;
+        color: #fff;
+        text-decoration: none;
     }
 </style>
 
