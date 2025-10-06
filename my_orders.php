@@ -18,77 +18,93 @@ $orders = $stmt->get_result();
 
 
 <style>
-body {
-    padding-top:110px;
-}
-.container-account {
-    max-width:1120px;
-    margin:0 auto;
-    padding:0 16px
-}
-.account-title {
-    font-size:36px;
-    font-weight:700;
-    text-align:center;
-    margin:6px 0 26px
-}
-.grid {
-    display:grid;
-    grid-template-columns:220px 1fr;
-    gap:40px;
-    align-items:start
-}
-@media(max-width:992px) {
-    .grid{grid-template-columns:1fr}
-}
-.sidebar-title{
-    color:#7a7a7a;
-    margin-bottom:12px
-}
-.navlink{
-    display:block;
-    padding:6px 0;
-    color:black;
-    text-decoration:none
-}
-.navlink.active {
-    color: coral;
-}
-.content-box {
-    background:#fff;
-    padding:30px;
-    border-radius:6px;
-    box-shadow:0 4px 10px rgba(0,0,0,0.05)
-}
-.order-table {
-    width:100%;
-    border-collapse:collapse
-}
-.order-table thead th {
-    font-weight:500;
-    font-size:14px;
-    color:#000;
-    text-align:left;
-    padding:12px 14px;
-    border-bottom:1px solid #e0e0e0
-}
-.order-table tbody td { 
-    font-size:14px;
-    color:#333;
-    padding:16px 14px;
-    border-bottom:1px solid #eee
-}
-.order-table tbody tr:last-child td {
-    border-bottom: none
-}
-.view-link {
-    color:#000;
-    font-weight:500;
-    text-decoration:none
-}
-.view-link:hover{
-    text-decoration:underline 
-}
+    body {
+        padding-top: 110px;
+    }
+
+    .container-account {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 0 16px
+    }
+
+    .account-title {
+        font-size: 36px;
+        font-weight: 700;
+        text-align: center;
+        margin: 6px 0 26px
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: 220px 1fr;
+        gap: 40px;
+        align-items: start
+    }
+
+    @media(max-width:992px) {
+        .grid {
+            grid-template-columns: 1fr
+        }
+    }
+
+    .sidebar-title {
+        color: #7a7a7a;
+        margin-bottom: 12px
+    }
+
+    .navlink {
+        display: block;
+        padding: 6px 0;
+        color: black;
+        text-decoration: none
+    }
+
+    .navlink.active {
+        color: coral;
+    }
+
+    .content-box {
+        background: #fff;
+        padding: 30px;
+        border-radius: 6px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05)
+    }
+
+    .order-table {
+        width: 100%;
+        border-collapse: collapse
+    }
+
+    .order-table thead th {
+        font-weight: 500;
+        font-size: 14px;
+        color: #000;
+        text-align: left;
+        padding: 12px 14px;
+        border-bottom: 1px solid #e0e0e0
+    }
+
+    .order-table tbody td {
+        font-size: 14px;
+        color: #333;
+        padding: 16px 14px;
+        border-bottom: 1px solid #eee
+    }
+
+    .order-table tbody tr:last-child td {
+        border-bottom: none
+    }
+
+    .view-link {
+        color: #000;
+        font-weight: 500;
+        text-decoration: none
+    }
+
+    .view-link:hover {
+        text-decoration: underline
+    }
 </style>
 
 
@@ -122,7 +138,7 @@ body {
                                 <tr>
                                     <td><?php echo $row['order_id']; ?></td>
                                     <td><?php echo date('d-m-Y', strtotime($row['order_date'])); ?></td>
-                                    <td>$<?php echo number_format((float)$row['order_cost'], 2); ?></td>
+                                    <td>$<?php echo number_format((float) $row['order_cost'], 2); ?></td>
                                     <td><?php echo ucfirst($row['order_status']); ?></td>
                                     <td style="text-align:left; vertical-align:middle;">
                                         <a class="view-link" href="order_details.php?order_id=<?php echo $row['order_id']; ?>">
@@ -132,7 +148,11 @@ body {
                                 </tr>
                             <?php endwhile; ?>
                         <?php else: ?>
-                            <tr><td colspan="5" style="padding:18px 14px;">No orders found.</td></tr>
+                            <tr>
+                                <td colspan="5"
+                                    style="padding:32px 14px; text-align:center; vertical-align:middle; font-size:16px; color:#888;">
+                                    No orders found.</td>
+                            </tr>
                         <?php endif; ?>
                     </tbody>
                 </table>
