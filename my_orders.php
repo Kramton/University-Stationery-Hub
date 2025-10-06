@@ -10,7 +10,7 @@ if (!isset($_SESSION['logged_in'])) {
 $user_id = $_SESSION['user_id'];
 
 // Fetch this user's orders (newest first)
-$stmt = $conn->prepare("SELECT order_id, order_cost, order_status, order_date FROM orders WHERE user_id=? ORDER BY order_date DESC");
+$stmt = $conn->prepare("SELECT order_id, order_cost, order_status, order_date, ready_for_pickup FROM orders WHERE user_id=? ORDER BY order_date DESC");
 $stmt->bind_param('i', $user_id);
 $stmt->execute();
 $orders = $stmt->get_result();
@@ -134,6 +134,7 @@ $orders = $stmt->get_result();
                             <th>Date</th>
                             <th>Payment</th>
                             <th>Status</th>
+                            <th>Ready for Pickup</th>
                             <th style="text-align:left;">Actions</th>
                         </tr>
                     </thead>
@@ -145,6 +146,13 @@ $orders = $stmt->get_result();
                                     <td><?php echo date('d-m-Y', strtotime($row['order_date'])); ?></td>
                                     <td>$<?php echo number_format((float) $row['order_cost'], 2); ?></td>
                                     <td><?php echo ucfirst($row['order_status']); ?></td>
+                                    <td>
+                                        <?php if (!empty($row['ready_for_pickup'])): ?>
+                                            <span style="color: #fff; background: #28a745; padding: 4px 10px; border-radius: 4px; font-size: 13px;">Ready</span>
+                                        <?php else: ?>
+                                            <span style="color: #fff; background: #aaa; padding: 4px 10px; border-radius: 4px; font-size: 13px;">Not Ready</span>
+                                        <?php endif; ?>
+                                    </td>
                                     <td style="text-align:left; vertical-align:middle;">
                                         <a class="view-link" href="order_details.php?order_id=<?php echo $row['order_id']; ?>">
                                             View Order
