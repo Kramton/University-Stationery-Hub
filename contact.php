@@ -7,7 +7,7 @@
         <hr class="mx-auto" />
         <p class="w-50 mx-auto">Phone number: <span>123 456 7890</span></p>
         <p class="w-50 mx-auto">
-          Email Address: <span>universitystationaryhub@mail.com</span>
+          Email Address: <span>universitystationeryhub@gmail.com</span>
         </p>
         <p class="w-50 mx-auto">
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate
