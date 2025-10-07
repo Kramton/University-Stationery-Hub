@@ -72,8 +72,22 @@ $orders = $stmt->get_result();
     }
 
     .order-table {
+        border-collapse: collapse;
+        min-width: 720px;
+    }
+
+    /* mobile-only horizontal scroll for the order table */
+    .order-table-wrap {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        margin-bottom: 24px;
         width: 100%;
-        border-collapse: collapse
+        max-width: 100vw;
+    }
+    @media (max-width: 700px) {
+        .order-table {
+            min-width: 480px;
+        }
     }
 
     .order-table thead th {
@@ -82,18 +96,20 @@ $orders = $stmt->get_result();
         color: #000;
         text-align: left;
         padding: 12px 14px;
-        border-bottom: 1px solid #e0e0e0
+        border-bottom: 1px solid #e0e0e0;
+        white-space: nowrap;
     }
 
     .order-table tbody td {
         font-size: 14px;
         color: #333;
         padding: 16px 14px;
-        border-bottom: 1px solid #eee
+        border-bottom: 1px solid #eee;
+        white-space: nowrap;
     }
 
     .order-table tbody tr:last-child td {
-        border-bottom: none
+        border-bottom: none;
     }
 
     .view-link {
@@ -125,8 +141,8 @@ $orders = $stmt->get_result();
         </aside>
         <!-- Main -->
         <main>
-            <div class="">
-                <h4>My Orders</h4>
+            <h4>My Orders</h4>
+            <div class="order-table-wrap" tabindex="0" aria-label="Scroll horizontally to view more columns">
                 <table class="order-table">
                     <thead>
                         <tr>
@@ -148,9 +164,12 @@ $orders = $stmt->get_result();
                                     <td><?php echo ucfirst($row['order_status']); ?></td>
                                     <td>
                                         <?php if (!empty($row['ready_for_pickup'])): ?>
-                                            <span style="color: #fff; background: #28a745; padding: 4px 10px; border-radius: 4px; font-size: 13px;">Ready</span>
+                                            <span
+                                                style="color: #fff; background: #28a745; padding: 4px 10px; border-radius: 4px; font-size: 13px;">Ready</span>
                                         <?php else: ?>
-                                            <span style="color: #fff; background: #aaa; padding: 4px 10px; border-radius: 4px; font-size: 13px;">Not Ready</span>
+                                            <span
+                                                style="color: #fff; background: #aaa; padding: 4px 10px; border-radius: 4px; font-size: 13px;">Not
+                                                Ready</span>
                                         <?php endif; ?>
                                     </td>
                                     <td style="text-align:left; vertical-align:middle;">
@@ -162,7 +181,7 @@ $orders = $stmt->get_result();
                             <?php endwhile; ?>
                         <?php else: ?>
                             <tr>
-                                <td colspan="5"
+                                <td colspan="6"
                                     style="padding:32px 14px; text-align:center; vertical-align:middle; font-size:16px; color:#888;">
                                     No orders found.</td>
                             </tr>
