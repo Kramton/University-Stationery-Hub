@@ -1,6 +1,6 @@
 <?php
 // payment.php
-if (session_status() === PHP_SESSION_NONE) { session_start(); }
+// session_start() is already called in header.php
 require_once __DIR__ . '/layouts/header.php';
 
 /* ------- Helpers ------- */
