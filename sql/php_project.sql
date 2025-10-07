@@ -58,6 +58,7 @@ CREATE TABLE `orders` (
   `user_phone` varchar(255) NOT NULL,
   `user_city` varchar(255) NOT NULL,
   `user_address` varchar(255) NOT NULL,
+  `pickup_name` varchar(255) NOT NULL,
   `order_date` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 

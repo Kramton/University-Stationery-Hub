@@ -24,7 +24,7 @@ function to_float($v) {
 if (isset($_POST['place_order'])) {
 
   // Basic form fields
-  $name    = trim($_POST['name']    ?? '');
+  $pickup_name = trim($_POST['name']    ?? '');
   $phone   = trim($_POST['phone']   ?? '');
   $address = trim($_POST['address'] ?? '');
 
@@ -33,8 +33,8 @@ if (isset($_POST['place_order'])) {
   $city    = trim($_POST['city']    ?? '');
 
   if ($name === '' || $phone === '' || $address === '') {
-    header('Location: ../checkout.php?message=Please+fill+all+fields');
-    exit;
+  header('Location: ../checkout.php?message=Please+fill+all+fields');
+  exit;
   }
 
   // Must have a cart
@@ -87,17 +87,18 @@ if (isset($_POST['place_order'])) {
     // Insert order (removed NOT NULL requirement for email/city)
     $stmt = $conn->prepare(
       "INSERT INTO orders
-        (order_cost, order_status, user_id, user_phone, user_city, user_address, order_date)
-       VALUES (?, ?, ?, ?, ?, ?, ?)"
+        (order_cost, order_status, user_id, user_phone, user_city, user_address, pickup_name, order_date)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
     );
     $stmt->bind_param(
-      'dsissss',
+      'dsisssss',
       $order_cost,      // d
       $order_status,    // s
       $user_id,         // i
       $phone,           // s
       $city,            // s (can be empty string)
       $address,         // s
+      $pickup_name,     // s
       $order_date       // s
     );
     if (!$stmt->execute()) {

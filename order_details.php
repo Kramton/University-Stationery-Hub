@@ -78,6 +78,28 @@ function calculateTotalOrderPrice($order_details)
         <?php if (!empty($order_date)): ?>
             <p class="text-center" style="font-size:16px; color:#888; margin-bottom:0;">Order Date:
                 <strong><?php echo date('d M Y, h:i A', strtotime($order_date)); ?></strong></p>
+        <?php
+        // Fetch pickup name and address for display
+        $pickup_name = '';
+        $pickup_address = '';
+        $pickup_phone = '';
+        $stmt_addr = $conn->prepare("SELECT user_address, user_phone, pickup_name FROM orders WHERE order_id = ? LIMIT 1");
+        $stmt_addr->bind_param('i', $order_id);
+        $stmt_addr->execute();
+        $result_addr = $stmt_addr->get_result();
+        if ($row_addr = $result_addr->fetch_assoc()) {
+            $pickup_address = $row_addr['user_address'];
+            $pickup_phone = $row_addr['user_phone'];
+            $pickup_name = $row_addr['pickup_name'];
+        }
+        $stmt_addr->close();
+        ?>
+        <?php if ($pickup_name || $pickup_address): ?>
+            <p class="text-center" style="font-size:15px; color:#444; margin-bottom:0;">
+                <strong>Pickup Name:</strong> <?= htmlspecialchars($pickup_name ?: 'Not provided') ?><br>
+                <strong>Pickup Address:</strong> <?= htmlspecialchars($pickup_address ?: 'Not provided') ?>
+            </p>
+        <?php endif; ?>
         <?php endif; ?>
     </div>
 
@@ -122,8 +144,27 @@ function calculateTotalOrderPrice($order_details)
                 'subtotal' => (float) $row['product_price'] * (int) $row['product_quantity']
             ];
         }
+        // Fetch pickup name, address, phone from orders table
+        $stmt_addr = $conn->prepare("SELECT user_address, user_phone, pickup_name FROM orders WHERE order_id = ? LIMIT 1");
+        $stmt_addr->bind_param('i', $order_id);
+        $stmt_addr->execute();
+        $result_addr = $stmt_addr->get_result();
+        $address = '';
+        $name = '';
+        $phone = '';
+        if ($row_addr = $result_addr->fetch_assoc()) {
+            $address = $row_addr['user_address'];
+            $phone = $row_addr['user_phone'];
+            $name = $row_addr['pickup_name'];
+        }
+        $stmt_addr->close();
         $_SESSION['last_order'] = [
             'order_id' => $order_id,
+            'customer' => [
+                'name' => $name,
+                'phone' => $phone,
+                'address' => $address
+            ],
             'items' => $order_items,
             'subtotal' => $order_total_price,
             'discount' => 0.0,
