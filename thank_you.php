@@ -94,6 +94,7 @@ $pickupTime = isset($order['order_date'])
 </style>
 
 <div class="wrap">
+  <br>
   <h1 class="title">Thank you for your Order!</h1>
   <div class="order-id">Order ID: #<?= htmlspecialchars($prettyId) ?></div>
 
@@ -101,14 +102,14 @@ $pickupTime = isset($order['order_date'])
     <!-- LEFT: simple Pick up block -->
     <div class="pickup">
       <h2>Pick up</h2>
-      <p>Please pick up your order at:<br><?= htmlspecialchars($pickupAddress) ?></p>
+  <p>Please pick up your order at:<br><strong><?= htmlspecialchars($pickupAddress) ?></strong></p>
         <?php if (!empty($pickupName)): ?>
           <p>To be picked up by: <strong><?= htmlspecialchars($pickupName) ?></strong></p>
         <?php endif; ?>
       <?php if (!empty($customer['phone'])): ?>
         <p>Contact number: <strong><?= htmlspecialchars($customer['phone']) ?></strong></p>
       <?php endif; ?>
-      <p>Time: <?= htmlspecialchars($pickupTime) ?></p>
+  <p>Time: <strong><?= htmlspecialchars($pickupTime) ?></strong></p>
       <a href="index.php" class="btn">Return to home</a>
     </div>
 
