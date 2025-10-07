@@ -35,18 +35,20 @@ $orders = $stmt->get_result();
         margin: 6px 0 26px
     }
 
+    /* Remove fixed grid-template-columns for .grid, use Bootstrap row/col for layout */
+    /*
     .grid {
         display: grid;
         grid-template-columns: 220px 1fr;
         gap: 40px;
-        align-items: start
+        align-items: start;
     }
-
     @media(max-width:992px) {
         .grid {
-            grid-template-columns: 1fr
+            grid-template-columns: 1fr;
         }
     }
+    */
 
     .sidebar-title {
         color: #7a7a7a;
@@ -131,16 +133,16 @@ $orders = $stmt->get_result();
 
 <div class="container-account">
     <h2 class="account-title">Account</h2>
-    <div class="grid">
+    <div class="row">
         <!-- Sidebar -->
-        <aside>
+        <aside class="col-md-3">
             <!-- <div class="sidebar-title">Manage My Account</div> -->
             <h4 class="sidebar-title">Manage My Account</h4>
             <a class="navlink" href="my_profile.php">My Profile</a>
-            <a class="navlink active" href="my_orders.php">My Orders</a>
+            <a class="navlink active mb-5" href="my_orders.php">My Orders</a>
         </aside>
         <!-- Main -->
-        <main>
+        <main class="col-md-9">
             <h4>My Orders</h4>
             <div class="order-table-wrap" tabindex="0" aria-label="Scroll horizontally to view more columns">
                 <table class="order-table">
