@@ -1,7 +1,8 @@
-<?php 
+<?php
 $current_page = basename($_SERVER['PHP_SELF']); // This code gets the current page name
 
-function setActiveClass($page, $current_page) {
+function setActiveClass($page, $current_page)
+{
     if (is_array($page)) {
         return in_array($current_page, $page) ? 'active' : '';
     }
@@ -16,7 +17,7 @@ function setActiveClass($page, $current_page) {
             <div class="user-name" style="font-weight: 600; font-size: 1rem;">
                 <?php
                 // Fetch user info (Assuming session has user data, replace with actual logic)
-                echo $_SESSION['admin_name']; 
+                echo $_SESSION['admin_name'];
                 ?>
             </div>
             <div class="user-email" style="font-size: 0.875rem; color: #666;">
@@ -29,30 +30,41 @@ function setActiveClass($page, $current_page) {
             <!-- Dashboard - Not clickable -->
             <li class="nav-item">
                 <a class="nav-link disabled" href="#" style="color: #000; background-color: #f1f1f1;">
-                    <span data-feather="home"></span>
-                    Dashboard
+                    <!-- <span data-feather="home"></span> -->
+                    <h5>Admin Dashboard</h5>
                 </a>
             </li>
             <!-- Other Sidebar Links -->
             <li class="nav-item">
-                <a class="nav-link <?php echo setActiveClass('index.php', $current_page); ?>" href="index.php" id="orders-btn">
+                <a class="nav-link <?php echo setActiveClass('index.php', $current_page); ?>" href="index.php"
+                    id="orders-btn">
                     <span data-feather="file"></span>
                     Orders
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link <?php echo setActiveClass(['products.php', 'add_product.php', 'edit_product.php', 'edit_images.php'], $current_page); ?>" href="products.php" id="products-btn">
+                <a class="nav-link <?php echo setActiveClass(['products.php', 'add_product.php', 'edit_product.php', 'edit_images.php'], $current_page); ?>"
+                    href="products.php" id="products-btn">
 
                     <span data-feather="shopping-cart"></span>
                     Products
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link <?php echo setActiveClass(['promo_codes.php', 'add_promo_code.php', 'edit_promo_code.php'], $current_page); ?>" href="promo_codes.php" id="promo-codes-btn">
-            <span data-feather="tag"></span>
-            Promo Codes
-        </a>
-    </li>
+                <a class="nav-link <?php echo setActiveClass(['promo_codes.php', 'add_promo_code.php', 'edit_promo_code.php'], $current_page); ?>"
+                    href="promo_codes.php" id="promo-codes-btn">
+                    <span data-feather="tag"></span>
+                    Promo Codes
+                </a>
+            </li>
+            <!-- Users Section -->
+            <li class="nav-item">
+                <a class="nav-link <?php echo setActiveClass('users.php', $current_page); ?>" href="users.php"
+                    id="users-btn">
+                    <span data-feather="users"></span>
+                    Users
+                </a>
+            </li>
         </ul>
     </div>
 </nav>
@@ -74,7 +86,8 @@ function setActiveClass($page, $current_page) {
         transition: background-color 0.3s ease;
     }
 
-    .nav-link:hover, .nav-link:focus {
+    .nav-link:hover,
+    .nav-link:focus {
         background-color: #FF9F7F;
         text-decoration: none;
         color: black;
@@ -113,5 +126,4 @@ function setActiveClass($page, $current_page) {
         background-color: #FF7F50;
         color: white;
     }
-
 </style>
