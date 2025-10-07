@@ -17,7 +17,7 @@ $stmt1->close();
 $total_no_of_pages = ceil($total_records / $total_records_per_page);
 
 // Get users for current page
-$stmt2 = $conn->prepare("SELECT user_id, user_name, user_email FROM users ORDER BY user_id DESC LIMIT ?, ?");
+$stmt2 = $conn->prepare("SELECT user_id, user_name, user_email FROM users ORDER BY user_id ASC LIMIT ?, ?");
 $stmt2->bind_param('ii', $offset, $total_records_per_page);
 $stmt2->execute();
 $users = $stmt2->get_result();
