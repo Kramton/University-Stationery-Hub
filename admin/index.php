@@ -90,7 +90,7 @@ $orders = $stmt2->get_result();
                   <input type="checkbox" class="ready-checkbox" data-order-id="<?php echo $order['order_id']; ?>" <?php if (!empty($order['ready_for_pickup'])) echo 'checked'; ?> <?php if (strtolower($order['order_status']) !== 'closed') echo 'disabled'; ?> />
                 </td>
                 <td><?php echo $order['user_id']; ?></td>
-                <td><?php echo htmlspecialchars($order['user_name'] ?? ''); ?></td>
+                <td><?php echo htmlspecialchars($order['pickup_name'] ?? ''); ?></td>
                 <td>$<?php echo number_format($order['order_cost'], 2); ?></td>
                 <td><?php echo $order['order_date']; ?></td>
               </tr>
