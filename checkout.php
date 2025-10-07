@@ -114,7 +114,7 @@ $_SESSION['total'] = $amount;
 
       <div class="row">
         <label for="checkout-phone">Phone Number</label>
-        <input type="tel" id="checkout-phone" name="phone" placeholder="123 456 7890" required />
+        <input type="tel" id="checkout-phone" name="phone" placeholder="021 123 4567" required pattern="^(0[2-9]|\+64[2-9])[0-9]{1,2}[ ]?[0-9]{3}[ ]?[0-9]{3,4}$" title="Please enter a valid New Zealand phone number (e.g. 021 123 4567 or +64 21 123 4567)" />
       </div>
 
       <div class="row">
