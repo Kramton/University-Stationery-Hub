@@ -42,6 +42,8 @@ $order['total']    = $order['total'] ?? max(0, $order['subtotal'] - $order['disc
 /* Pull customer details saved in place_order.php */
 $customer       = $order['customer'] ?? [];
 $pickupAddress  = $customer['address'] ?? 'Not provided';
+// Prefer pickup_name from DB if present
+$pickupName = $order['pickup_name'] ?? ($customer['name'] ?? '');
 
 /* Order ID + pickup time */
 $prettyId   = sprintf('USH%04d', (int)($order['order_id'] ?? 0));
@@ -100,6 +102,12 @@ $pickupTime = isset($order['order_date'])
     <div class="pickup">
       <h2>Pick up</h2>
       <p>Please pick up your order at:<br><?= htmlspecialchars($pickupAddress) ?></p>
+        <?php if (!empty($pickupName)): ?>
+          <p>To be picked up by: <strong><?= htmlspecialchars($pickupName) ?></strong></p>
+        <?php endif; ?>
+      <?php if (!empty($customer['phone'])): ?>
+        <p>Contact number: <strong><?= htmlspecialchars($customer['phone']) ?></strong></p>
+      <?php endif; ?>
       <p>Time: <?= htmlspecialchars($pickupTime) ?></p>
       <a href="index.php" class="btn">Return to home</a>
     </div>

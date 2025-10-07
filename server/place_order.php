@@ -32,9 +32,9 @@ if (isset($_POST['place_order'])) {
   $email   = trim($_POST['email']   ?? '');
   $city    = trim($_POST['city']    ?? '');
 
-  if ($name === '' || $phone === '' || $address === '') {
-  header('Location: ../checkout.php?message=Please+fill+all+fields');
-  exit;
+  if ($pickup_name === '' || $phone === '' || $address === '') {
+    header('Location: ../checkout.php?message=Please+fill+all+fields');
+    exit;
   }
 
   // Must have a cart
@@ -138,7 +138,11 @@ if (isset($_POST['place_order'])) {
     $_SESSION['order_id']   = $order_id;
     $_SESSION['last_order'] = [
       'order_id'   => $order_id,
-      'customer'   => compact('name','phone','address'),
+      'customer'   => [
+        'name' => $pickup_name,
+        'phone' => $phone,
+        'address' => $address
+      ],
       'items'      => $items_snapshot,
       'subtotal'   => $computed_total,
       'discount'   => $discount,
