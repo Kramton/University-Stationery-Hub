@@ -118,7 +118,7 @@ $order_id = (int)($order['order_id'] ?? ($_SESSION['order_id'] ?? 0));
     <div class="card">
       <div class="head">Payment</div>
       <div class="body">
-  <form method="POST" action="server/complete_payment.php">
+  <form method="POST" action="server/complete_payment.php" id="payment-form">
           <input type="hidden" name="order_id" value="<?= $order_id ?>">
           <div class="row">
             <div>
@@ -133,7 +133,7 @@ $order_id = (int)($order['order_id'] ?? ($_SESSION['order_id'] ?? 0));
           <div class="row">
             <div>
               <label>Expiration (MM/YY)</label>
-              <input type="text" name="card_exp" placeholder="MM/YY" required pattern="^(0[1-9]|1[0-2])\/(\d{2})$" title="Please enter a valid expiration date (MM/YY)" maxlength="5" />
+              <input type="text" name="card_exp" id="card-exp" placeholder="MM/YY" required pattern="^(0[1-9]|1[0-2])\/(\d{2})$" title="Please enter a valid expiration date (MM/YY)" maxlength="5" />
             </div>
             <div>
               <label for="card-cvv">CVV</label>
@@ -182,3 +182,31 @@ $order_id = (int)($order['order_id'] ?? ($_SESSION['order_id'] ?? 0));
 </div>
 
 <?php require_once __DIR__ . '/layouts/footer.php'; ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Credit card: allow only numbers and spaces
+  var cardInput = document.getElementById('card-number');
+  if (cardInput) {
+    cardInput.addEventListener('input', function() {
+      this.value = this.value.replace(/[^0-9 ]/g, '');
+    });
+  }
+
+  // CVV: allow only numbers
+  var cvvInput = document.getElementById('card-cvv');
+  if (cvvInput) {
+    cvvInput.addEventListener('input', function() {
+      this.value = this.value.replace(/[^0-9]/g, '');
+    });
+  }
+
+  // Expiration: allow only numbers and slash
+  var expInput = document.getElementById('card-exp');
+  if (expInput) {
+    expInput.addEventListener('input', function(e) {
+      this.value = this.value.replace(/[^0-9\/]/g, '');
+      this.value = this.value.slice(0,5); // MMYY or MM/YY
+    });
+  }
+});
+</script>
