@@ -5,8 +5,8 @@
       <div class="container text-center mt-5">
         <h3>Contact Us</h3>
         <hr class="mx-auto" />
-        <p class="w-50 mx-auto">Phone number: <span>123 456 7890</span></p>
-        <p class="w-50 mx-auto">
+        <p class="mx-auto">Phone number: <span>123 456 7890</span></p>
+        <p class="mx-auto">
           Email Address: <span>universitystationeryhub@gmail.com</span>
         </p>
         <p class="w-50 mx-auto">
