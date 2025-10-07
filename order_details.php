@@ -73,11 +73,15 @@ function calculateTotalOrderPrice($order_details)
     <div class="container mt-5">
         <h2 class="font-weight-bold text-center">Order Details</h2>
         <hr class="mx-auto" />
-        <p class="text-center" style="font-size:18px; color:#555; margin-bottom:0;">Order ID:
-            <strong><?php echo '#USH' . str_pad($order_id, 4, '0', STR_PAD_LEFT); ?></strong></p>
+    <p style="font-size:16px; margin-bottom:0; text-align:left;">
+            <span style="font-weight:bold;">Order ID:</span>
+            <span style="font-weight:normal;"> <?php echo '#USH' . str_pad($order_id, 4, '0', STR_PAD_LEFT); ?></span>
+        </p>
         <?php if (!empty($order_date)): ?>
-            <p class="text-center" style="font-size:16px; color:#888; margin-bottom:0;">Order Date:
-                <strong><?php echo date('d M Y, h:i A', strtotime($order_date)); ?></strong></p>
+            <p style="font-size:16px; margin-bottom:0; text-align:left;">
+                <span style="font-weight:bold;">Order Date:</span>
+                <span style="font-weight:normal;"> <?php echo date('d M Y, h:i A', strtotime($order_date)); ?></span>
+            </p>
         <?php
         // Fetch pickup name and address for display
         $pickup_name = '';
@@ -94,11 +98,13 @@ function calculateTotalOrderPrice($order_details)
         }
         $stmt_addr->close();
         ?>
-        <?php if ($pickup_name || $pickup_address): ?>
-            <p class="text-center" style="font-size:15px; color:#444; margin-bottom:0;">
-                <strong>Pickup Name:</strong> <?= htmlspecialchars($pickup_name ?: 'Not provided') ?><br>
-                <strong>Pickup Address:</strong> <?= htmlspecialchars($pickup_address ?: 'Not provided') ?>
-            </p>
+            <!-- Add gap between order date and pickup info -->
+            <div style="height:18px;"></div>
+            <?php if ($pickup_name || $pickup_address): ?>
+                <p style="font-size:16px; margin-bottom:0; text-align:left;">
+                    <strong>To Be Picked Up By:</strong> <?= htmlspecialchars($pickup_name ?: 'Not provided') ?><br>
+                    <strong>Pickup Address:</strong> <?= htmlspecialchars($pickup_address ?: 'Not provided') ?>
+                </p>
         <?php endif; ?>
         <?php endif; ?>
     </div>
