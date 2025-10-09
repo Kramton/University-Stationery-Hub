@@ -79,8 +79,8 @@ session_start();
         <div class="d-flex align-items-center ms-lg-3 position-relative">
           <a href="cart.php" class="me-3 position-relative">
             <i class="fa fa-shopping-cart" aria-hidden="true"></i>
-            <?php if (!empty($_SESSION['quantity'])) { ?>
-              <span class="cart-quantity"><?php echo (int) $_SESSION['quantity']; ?></span>
+            <?php if (!empty($_SESSION['cart'])) { ?>
+              <span class="cart-quantity"><?php echo count($_SESSION['cart']); ?></span>
             <?php } ?>
           </a>
 
