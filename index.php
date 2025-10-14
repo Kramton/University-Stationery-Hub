@@ -67,10 +67,10 @@ $groups = array_chunk($items, 4);
                           <?php
                           $marketPrice = isset($r['market_price']) && $r['market_price'] !== '' ? (float) $r['market_price'] : null;
                           if ($marketPrice !== null && $marketPrice > 0 && $marketPrice != $r['product_price']): ?>
-                            <div class="mb-1" style="color: #d32f2f; font-size: 1.1rem; font-weight: 500;">Market Price:
+                            <div class="mb-1" style="color: #d32f2f; font-size: 1rem; font-weight: 500;">Market Price:
                               $<?php echo number_format($marketPrice, 2); ?></div>
                           <?php endif; ?>
-                          <p class="card-text fw-bold mb-0">$<?php echo number_format((float) $r['product_price'], 2); ?></p>
+                          <p class="card-text fw-bold mb-0" style="font-size:1.5rem;">$<?php echo number_format((float) $r['product_price'], 2); ?></p>
                         </div>
                       </a>
                     </div>
@@ -229,17 +229,17 @@ $sale_products = $sale_stmt->get_result();
                   <?php
                   $marketPrice = isset($row['market_price']) && $row['market_price'] !== '' ? (float) $row['market_price'] : null;
                   if ($marketPrice !== null && $marketPrice > 0 && $marketPrice != $price): ?>
-                    <div class="mb-1" style="color: #d32f2f; font-size: 1.1rem; font-weight: 500;">Market Price:
+                    <div class="mb-1" style="color: #d32f2f; font-size: 1rem; font-weight: 500;">Market Price:
                       $<?php echo number_format($marketPrice, 2); ?></div>
                   <?php endif; ?>
                   <?php if ($hasPromo): ?>
                     <div class="price-wrap">
-                      <span class="new-price">$<?php echo number_format($promoPrice, 2); ?></span>
-                      <span class="old-price">$<?php echo number_format($price, 2); ?></span>
+                      <span class="new-price" style="font-size:1.5rem;">$<?php echo number_format($promoPrice, 2); ?></span>
+                      <span class="old-price" style="font-size:1.5rem;">$<?php echo number_format($price, 2); ?></span>
                     </div>
                     <div class="save-chip">You save $<?php echo number_format($saveAmt, 2); ?></div>
                   <?php else: ?>
-                    <p class="card-text fw-bold mb-0">
+                    <p class="card-text fw-bold mb-0" style="font-size:1.5rem;">
                       $<?php echo number_format($price, 2); ?>
                     </p>
                   <?php endif; ?>
