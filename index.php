@@ -5,30 +5,30 @@
 
 
 
-    <!-- Home -->
+<!-- Home -->
 <section id="home" class="hero-parallax">
   <div class="hero-bg"></div>
-    <div class="container hero-content">
+  <div class="container hero-content">
 
-        <!-- <h5>NEW ARRIVALS</h5>
+    <!-- <h5>NEW ARRIVALS</h5>
         <h1><span>Best Prices</span> This Season</h1>
         <p>
           University Stationary Hub offers the best products for the most
           affordable prices
         </p>
         <button>Shop Now</button>-->
-      </div>
-    </section>
+  </div>
+</section>
 
 
-  
 
 
-    <!-- Random Picks-->
+
+<!-- Random Picks-->
 
 <?php
 $random_stmt = $conn->prepare("
-  SELECT product_id, product_name, product_price, product_image
+  SELECT product_id, product_name, product_price, product_image, market_price
   FROM products
   ORDER BY RAND()
   LIMIT 12
@@ -55,23 +55,30 @@ $groups = array_chunk($items, 4);
               <div class="row g-3">
                 <?php foreach ($group as $r): ?>
                   <div class="col-lg-3 col-md-6 col-sm-12">
-<div class="card product-card h-100">
-<a href="<?php echo 'single_product.php?product_id='.(int)$r['product_id']; ?>" class="text-decoration-none text-dark">
-<div class="img-wrap">
-      <img
-    src="assets/imgs/<?php echo htmlspecialchars($r['product_image'] ?: 'placeholder.png'); ?>"
-    class="card-img-top"
-    alt="<?php echo htmlspecialchars($r['product_name']); ?>"
-  />
-</div>
-<div class="card-body">
-  <h6 class="card-title mb-1 text-truncate"><?php echo htmlspecialchars($r['product_name']); ?></h6>
-  <p class="card-text fw-bold mb-0">$<?php echo number_format((float)$r['product_price'], 2); ?></p>
-</div></a></div> </div>
-      <?php endforeach; ?>
-         </div>
-        </div>
-         <?php endforeach; ?>
+                    <div class="card product-card h-100">
+                      <a href="<?php echo 'single_product.php?product_id=' . (int) $r['product_id']; ?>"
+                        class="text-decoration-none text-dark">
+                        <div class="img-wrap">
+                          <img src="assets/imgs/<?php echo htmlspecialchars($r['product_image'] ?: 'placeholder.png'); ?>"
+                            class="card-img-top" alt="<?php echo htmlspecialchars($r['product_name']); ?>" />
+                        </div>
+                        <div class="card-body">
+                          <h6 class="card-title mb-1 text-truncate"><?php echo htmlspecialchars($r['product_name']); ?></h6>
+                          <?php
+                          $marketPrice = isset($r['market_price']) && $r['market_price'] !== '' ? (float) $r['market_price'] : null;
+                          if ($marketPrice !== null && $marketPrice > 0 && $marketPrice != $r['product_price']): ?>
+                            <div class="mb-1" style="color: #d32f2f; font-size: 1.1rem; font-weight: 500;">Market Price:
+                              $<?php echo number_format($marketPrice, 2); ?></div>
+                          <?php endif; ?>
+                          <p class="card-text fw-bold mb-0">$<?php echo number_format((float) $r['product_price'], 2); ?></p>
+                        </div>
+                      </a>
+                    </div>
+                  </div>
+                <?php endforeach; ?>
+              </div>
+            </div>
+          <?php endforeach; ?>
         </div>
 
 
@@ -93,47 +100,44 @@ $groups = array_chunk($items, 4);
 </section>
 
 
-    <!-- categories strip  -->
+<!-- categories strip  -->
 <section id="categories" class="my-5">
   <div class="container-xxl px-e">
-<div class="section-header d-flex align-items-center justify-content-between mb-4">
+    <div class="section-header d-flex align-items-center justify-content-between mb-4">
       <h3 class="mb-0">Browse by Category</h3>
-     
+
     </div>
 
     <?php
     $categories = [
       ['name' => 'Writing Essentials', 'img' => 'assets/imgs/WritingEssentialsIcon.png'],
-      ['name' => 'Notebooks & Paper',  'img' => 'assets/imgs/Notebooks&Paper.png'],
-      ['name' => 'Desk Accessories',   'img' => 'assets/imgs/DeskAccessories.png'],
-      ['name' => 'Creative Supplies',  'img' => 'assets/imgs/CreativeSupplies.png'],
-      ['name' => 'Study Tools',        'img' => 'assets/imgs/StudyTools.png'],
+      ['name' => 'Notebooks & Paper', 'img' => 'assets/imgs/Notebooks&Paper.png'],
+      ['name' => 'Desk Accessories', 'img' => 'assets/imgs/DeskAccessories.png'],
+      ['name' => 'Creative Supplies', 'img' => 'assets/imgs/CreativeSupplies.png'],
+      ['name' => 'Study Tools', 'img' => 'assets/imgs/StudyTools.png'],
     ];
     ?>
 
-<div class="row g-4 justify-content-center"> 
-  <?php foreach ($categories as $c): ?>
-    <div class="col-12 col-sm-6 col-md-4">
-      <div class="card product-card h-100">
-        <a href="shop.php?cat=<?php echo urlencode($c['name']); ?>" class="text-decoration-none text-dark">
-          <div class="img-wrap">
-            <img
-              src="<?php echo htmlspecialchars($c['img']); ?>"
-              class="card-img-top"
-              alt="<?php echo htmlspecialchars($c['name']); ?>"
-            />
+    <div class="row g-4 justify-content-center">
+      <?php foreach ($categories as $c): ?>
+        <div class="col-12 col-sm-6 col-md-4">
+          <div class="card product-card h-100">
+            <a href="shop.php?cat=<?php echo urlencode($c['name']); ?>" class="text-decoration-none text-dark">
+              <div class="img-wrap">
+                <img src="<?php echo htmlspecialchars($c['img']); ?>" class="card-img-top"
+                  alt="<?php echo htmlspecialchars($c['name']); ?>" />
+              </div>
+              <div class="card-body">
+                <h6 class="card-title mb-1 text-truncate">
+                  <?php echo htmlspecialchars($c['name']); ?>
+                </h6>
+                <p class="card-text fw-bold mb-0">Explore Now</p>
+              </div>
+            </a>
           </div>
-          <div class="card-body">
-            <h6 class="card-title mb-1 text-truncate">
-              <?php echo htmlspecialchars($c['name']); ?>
-            </h6>
-            <p class="card-text fw-bold mb-0">Explore Now</p>
-          </div>
-        </a>
-      </div>
+        </div>
+      <?php endforeach; ?>
     </div>
-  <?php endforeach; ?>
-</div>
 
 
   </div>
@@ -147,23 +151,23 @@ $groups = array_chunk($items, 4);
 
 
 
-    <!-- Banner 2 for sale  -->
-    <section id="banner" class="my-5 py-5">
-      <div class="container">
-         <!-- <h4>ON SALE</h4> -->
-        <h1>
-          Stationary <br />
-          UP to 30% OFF
-        </h1>
-        <!-- <button class="text-uppercase">Shop Now</button>-->
-      </div>
-    </section>
+<!-- Banner 2 for sale  -->
+<section id="banner" class="my-5 py-5">
+  <div class="container">
+    <!-- <h4>ON SALE</h4> -->
+    <h1>
+      Stationary <br />
+      UP to 30% OFF
+    </h1>
+    <!-- <button class="text-uppercase">Shop Now</button>-->
+  </div>
+</section>
 
- <?php
+<?php
 
 $sale_stmt = $conn->prepare("
   SELECT 
-    product_id, product_name, product_price, product_image,
+    product_id, product_name, product_price, product_image, market_price,
     /* optional columns if they exist in your DB: */
     IFNULL(product_special_offer, NULL) AS product_special_offer,
     IFNULL(product_special_offer, NULL) AS product_special_offer
@@ -184,59 +188,66 @@ $sale_products = $sale_stmt->get_result();
 <section id="sale" class="my-5">
   <div class="container-xxl px-4">
     <div class="section-header d-flex align-items-center justify-content-between mb-4">
-<h3 class="mb-0">On Sale</h3>
+      <h3 class="mb-0">On Sale</h3>
     </div>
 
     <?php if ($sale_products && $sale_products->num_rows > 0): ?>
       <div class="row g-4">
         <?php while ($row = $sale_products->fetch_assoc()):
-          $price = (float)$row['product_price'];
+          $price = (float) $row['product_price'];
 
           $promoPrice = null;
-          
-          if (!empty($row['product_promo_price']) && (float)$row['product_promo_price'] > 0) 
-            {
-            $promoPrice = (float)$row['product_promo_price'];
-          }
 
-          elseif (!empty($row['product_special_offer']) && $row['product_special_offer'] !== '0') 
-            {
-            $offerVal = (float)$row['product_special_offer'];
+          if (!empty($row['product_promo_price']) && (float) $row['product_promo_price'] > 0) {
+            $promoPrice = (float) $row['product_promo_price'];
+          } elseif (!empty($row['product_special_offer']) && $row['product_special_offer'] !== '0') {
+            $offerVal = (float) $row['product_special_offer'];
             if ($offerVal > 0 && $offerVal <= 90) {
               $promoPrice = round($price * (1 - $offerVal / 100), 2);
             }
           }
 
           $hasPromo = ($promoPrice !== null && $promoPrice > 0 && $promoPrice < $price);
-          $saveAmt  = $hasPromo ? max(0, $price - $promoPrice) : 0;
-        ?>
+          $saveAmt = $hasPromo ? max(0, $price - $promoPrice) : 0;
+          ?>
           <div class="col-lg-3 col-md-4 col-sm-6">
             <div class="card product-card h-100 position-relative">
               <?php if ($hasPromo): ?><span class="sale-badge">SALE</span><?php endif; ?>
 
-              <a href="<?php echo 'single_product.php?product_id='.(int)$row['product_id']; ?>"
-                 class="text-decoration-none text-dark">
+              <a href="<?php echo 'single_product.php?product_id=' . (int) $row['product_id']; ?>"
+                class="text-decoration-none text-dark">
                 <div class="img-wrap">
                   <img src="assets/imgs/<?php echo htmlspecialchars($row['product_image'] ?: 'placeholder.png'); ?>"
-class="card-img-top" alt="<?php echo htmlspecialchars($row['product_name']); ?>" /> </div>
+                    class="card-img-top" alt="<?php echo htmlspecialchars($row['product_name']); ?>" />
+                </div>
 
-   <div class="card-body">
-    <h6 class="card-title mb-1 text-truncate">
-     <?php echo htmlspecialchars($row['product_name']); ?>
+                <div class="card-body">
+                  <h6 class="card-title mb-1 text-truncate">
+                    <?php echo htmlspecialchars($row['product_name']); ?>
                   </h6>
 
-                  <?php if ($hasPromo): ?>
-   <div class="price-wrap">
-    <span class="new-price">$<?php echo number_format($promoPrice, 2); ?></span>
-     <span class="old-price">$<?php echo number_format($price, 2); ?></span> </div>
-    <div class="save-chip">You save $<?php echo number_format($saveAmt, 2); ?></div>
-                  <?php else: ?>
- <p class="card-text fw-bold mb-0">
-   $<?php echo number_format($price, 2); ?>
-        </p>
+                  <?php
+                  $marketPrice = isset($row['market_price']) && $row['market_price'] !== '' ? (float) $row['market_price'] : null;
+                  if ($marketPrice !== null && $marketPrice > 0 && $marketPrice != $price): ?>
+                    <div class="mb-1" style="color: #d32f2f; font-size: 1.1rem; font-weight: 500;">Market Price:
+                      $<?php echo number_format($marketPrice, 2); ?></div>
                   <?php endif; ?>
-                </div> </a> </div> </div>
-      <?php endwhile; ?>
+                  <?php if ($hasPromo): ?>
+                    <div class="price-wrap">
+                      <span class="new-price">$<?php echo number_format($promoPrice, 2); ?></span>
+                      <span class="old-price">$<?php echo number_format($price, 2); ?></span>
+                    </div>
+                    <div class="save-chip">You save $<?php echo number_format($saveAmt, 2); ?></div>
+                  <?php else: ?>
+                    <p class="card-text fw-bold mb-0">
+                      $<?php echo number_format($price, 2); ?>
+                    </p>
+                  <?php endif; ?>
+                </div>
+              </a>
+            </div>
+          </div>
+        <?php endwhile; ?>
       </div>
     <?php else: ?>
       <p class="text-muted mb-0">No promo items yet. Check back soon!</p>
@@ -246,4 +257,3 @@ class="card-img-top" alt="<?php echo htmlspecialchars($row['product_name']); ?>"
 
 
 <?php include('layouts/footer.php') ?>
-
