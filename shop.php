@@ -278,6 +278,7 @@ $stmt2 = $conn->prepare("SELECT *, market_price FROM products
 
 
         <!-- Pagination -->
+        <?php if ($total_records > 8): ?>
         <nav aria-label="Page navigation" class="d-flex justify-content-center mt-4">
           <ul class="pagination">
             <!-- Previous Button -->
@@ -314,6 +315,7 @@ $stmt2 = $conn->prepare("SELECT *, market_price FROM products
             </li>
           </ul>
         </nav>
+        <?php endif; ?>
 
       </div>
     </div>
