@@ -46,10 +46,10 @@ if (isset($_POST['search'])) {
   $total_no_of_pages = ceil($total_records / $total_records_per_page);
 
   if ($isAll) {
-    $stmt2 = $conn->prepare("SELECT * FROM products WHERE product_price <= ? LIMIT $offset, $total_records_per_page");
+  $stmt2 = $conn->prepare("SELECT *, market_price FROM products WHERE product_price <= ? LIMIT $offset, $total_records_per_page");
     $stmt2->bind_param("i", $price); } 
     else {
-       $stmt2 = $conn->prepare("SELECT * FROM products WHERE product_category = ? AND product_price <= ? LIMIT $offset, $total_records_per_page");
+  $stmt2 = $conn->prepare("SELECT *, market_price FROM products WHERE product_category = ? AND product_price <= ? LIMIT $offset, $total_records_per_page");
     $stmt2->bind_param("si", $category, $price);
     }
   
@@ -92,7 +92,7 @@ if (isset($_POST['search'])) {
   $total_no_of_pages = ceil($total_records / $total_records_per_page);
 
 
-$stmt2 = $conn->prepare("SELECT * FROM products
+$stmt2 = $conn->prepare("SELECT *, market_price FROM products
                            WHERE product_category = ? AND product_price <= ?
                            LIMIT $offset, $total_records_per_page");
   $stmt2->bind_param("si", $category, $price);
@@ -133,7 +133,7 @@ $stmt2 = $conn->prepare("SELECT * FROM products
 
   $total_no_of_pages = ceil($total_records / $total_records_per_page);
 
-  $stmt2 = $conn->prepare("SELECT * FROM products LIMIT $offset, $total_records_per_page");
+  $stmt2 = $conn->prepare("SELECT *, market_price FROM products LIMIT $offset, $total_records_per_page");
   $stmt2->execute();
   $products = $stmt2->get_result();
 
@@ -257,6 +257,11 @@ $stmt2 = $conn->prepare("SELECT * FROM products
                 <!-- Name and price -->
                 <div class="p-info">
                   <h5 class="p-name"><?php echo $row['product_name']; ?></h5>
+                  <?php 
+                    $marketPrice = isset($row['market_price']) && $row['market_price'] !== '' ? (float)$row['market_price'] : null;
+                    if ($marketPrice !== null && $marketPrice > 0 && $marketPrice != $row['product_price']): ?>
+                      <div class="mb-1" style="color: #d32f2f; font-size: 1.1rem; font-weight: 500;">Market Price: $<?php echo number_format($marketPrice, 2); ?></div>
+                  <?php endif; ?>
                   <h4 class="p-price">$<?php echo $row['product_price']; ?></h4>
                 </div>
 
