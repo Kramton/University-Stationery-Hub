@@ -260,9 +260,9 @@ $stmt2 = $conn->prepare("SELECT *, market_price FROM products
                   <?php 
                     $marketPrice = isset($row['market_price']) && $row['market_price'] !== '' ? (float)$row['market_price'] : null;
                     if ($marketPrice !== null && $marketPrice > 0 && $marketPrice != $row['product_price']): ?>
-                      <div class="mb-1" style="color: #d32f2f; font-size: 1.1rem; font-weight: 500;">Market Price: $<?php echo number_format($marketPrice, 2); ?></div>
+                      <div class="mb-1" style="color: #d32f2f; font-size: 1rem; font-weight: 500;">Market Price: $<?php echo number_format($marketPrice, 2); ?></div>
                   <?php endif; ?>
-                  <h4 class="p-price">$<?php echo $row['product_price']; ?></h4>
+                  <h4 class="p-price" style="font-size: 1.5rem;">$<?php echo $row['product_price']; ?></h4>
                 </div>
 
                 <!-- Button at bottom -->
