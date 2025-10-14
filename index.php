@@ -6,7 +6,7 @@
 
 
 <!-- Home -->
- <a href="shop.php">
+ <a href="shop.php" class="text-decoration-none d-block">
    <section id="home" class="hero-parallax">
      <div class="hero-bg"></div>
      <div class="container hero-content">
@@ -150,6 +150,7 @@ $groups = array_chunk($items, 4);
 
 
 <!-- Banner 2 for sale  -->
+ <a href="shop.php" class="text-decoration-none">
 <section id="banner" class="my-5 py-5">
   <div class="container">
     <!-- <h4>ON SALE</h4> -->
