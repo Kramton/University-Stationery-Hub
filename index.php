@@ -6,19 +6,22 @@
 
 
 <!-- Home -->
-<section id="home" class="hero-parallax">
-  <div class="hero-bg"></div>
-  <div class="container hero-content">
+ <a href="shop.php">
+   <section id="home" class="hero-parallax">
+     <div class="hero-bg"></div>
+     <div class="container hero-content">
+   
+       <!-- <h5>NEW ARRIVALS</h5>
+           <h1><span>Best Prices</span> This Season</h1>
+           <p>
+             University Stationary Hub offers the best products for the most
+             affordable prices
+           </p>
+           <button>Shop Now</button>-->
+     </div>
+   </section>
 
-    <!-- <h5>NEW ARRIVALS</h5>
-        <h1><span>Best Prices</span> This Season</h1>
-        <p>
-          University Stationary Hub offers the best products for the most
-          affordable prices
-        </p>
-        <button>Shop Now</button>-->
-  </div>
-</section>
+ </a>
 
 
 
