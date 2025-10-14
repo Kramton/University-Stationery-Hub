@@ -360,7 +360,8 @@ button:hover {
 
 .product .p-name {
   margin-bottom: 0.25rem;
-  font-size: 1rem;
+  font-size: 1.2rem;
+  font-weight: bold;
 }
 
 .product .p-price {

@@ -20,12 +20,7 @@
            <button>Shop Now</button>-->
      </div>
    </section>
-
  </a>
-
-
-
-
 
 <!-- Random Picks-->
 
@@ -66,7 +61,7 @@ $groups = array_chunk($items, 4);
                             class="card-img-top" alt="<?php echo htmlspecialchars($r['product_name']); ?>" />
                         </div>
                         <div class="card-body">
-                          <h6 class="card-title mb-1 text-truncate"><?php echo htmlspecialchars($r['product_name']); ?></h6>
+                          <h6 class="card-title mb-1 text-truncate" style="font-size:1.2rem;"><strong><?php echo htmlspecialchars($r['product_name']); ?></strong></h6>
                           <?php
                           $marketPrice = isset($r['market_price']) && $r['market_price'] !== '' ? (float) $r['market_price'] : null;
                           if ($marketPrice !== null && $marketPrice > 0 && $marketPrice != $r['product_price']): ?>
@@ -225,8 +220,8 @@ $sale_products = $sale_stmt->get_result();
                 </div>
 
                 <div class="card-body">
-                  <h6 class="card-title mb-1 text-truncate">
-                    <?php echo htmlspecialchars($row['product_name']); ?>
+                  <h6 class="card-title mb-1 text-truncate" style="font-size:1.2rem;">
+                    <strong><?php echo htmlspecialchars($row['product_name']); ?></strong>
                   </h6>
 
                   <?php
