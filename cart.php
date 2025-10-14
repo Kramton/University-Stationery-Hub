@@ -36,7 +36,7 @@ function getProductById(mysqli $conn, int $id)
 function getPromoCode(mysqli $conn, string $code)
 {
   $stmt = $conn->prepare(
-    "SELECT code, discount_type, discount_value, min_purchase, end_date
+    "SELECT id, code, discount_type, discount_value, min_purchase, end_date
      FROM promo_codes 
      WHERE code = ? AND is_active = 1 AND (end_date IS NULL OR end_date >= NOW())"
   );
@@ -215,33 +215,60 @@ if (isset($_POST['add_to_cart'])) {
 
 } else if (isset($_POST['apply_promo'])) {
   $promo_code_input = trim($_POST['promo_code']);
+
+  // 1. User must be logged in
+  if (!isset($_SESSION['logged_in']) || !$_SESSION['logged_in']) {
+      $_SESSION['promo_message'] = "You must be logged in to apply a promo code.";
+      $_SESSION['promo_message_type'] = "danger";
+      header('Location: cart.php');
+      exit();
+  }
+
+  // 2. Check if promo code exists and is valid
   $promo_data = getPromoCode($conn, $promo_code_input);
 
   if ($promo_data) {
-    $min_purchase = (float) $promo_data['min_purchase'];
-    
-    $current_subtotal = 0.0;
-    if (!empty($_SESSION['cart'])) {
-        foreach ($_SESSION['cart'] as $line) {
-            $current_subtotal += (float)$line['product_price'] * (int)$line['product_quantity'];
-        }
-    }
+      $user_id = $_SESSION['user_id'];
+      $promo_code_id = $promo_data['id'];
 
-    if ($current_subtotal >= $min_purchase) {
-      $_SESSION['promo_data'] = $promo_data;
-      $_SESSION['promo_message'] = "Promo code <b>" . htmlspecialchars($promo_data['code']) . "</b> applied!";
-      $_SESSION['promo_message_type'] = "success";
-    } else {
-      unset($_SESSION['promo_data']); 
-      $_SESSION['promo_message'] = "This code requires a minimum purchase of $" . number_format($min_purchase, 2) . ".";
-      $_SESSION['promo_message_type'] = "danger";
-    }
+      // 3. Check if this user has already used this code
+      $stmt_usage = $conn->prepare("SELECT id FROM user_promo_code_usage WHERE user_id = ? AND promo_code_id = ?");
+      $stmt_usage->bind_param('ii', $user_id, $promo_code_id);
+      $stmt_usage->execute();
+      $usage_result = $stmt_usage->get_result();
+      $stmt_usage->close();
 
+      if ($usage_result->num_rows > 0) {
+          // User has already used this code
+          unset($_SESSION['promo_data']);
+          $_SESSION['promo_message'] = "You have already used this promo code.";
+          $_SESSION['promo_message_type'] = "danger";
+      } else {
+          // User has NOT used this code, proceed with minimum purchase check
+          $min_purchase = (float) $promo_data['min_purchase'];
+          
+          $current_subtotal = 0.0;
+          if (!empty($_SESSION['cart'])) {
+              foreach ($_SESSION['cart'] as $line) {
+                  $current_subtotal += (float)$line['product_price'] * (int)$line['product_quantity'];
+              }
+          }
+
+          if ($current_subtotal >= $min_purchase) {
+              $_SESSION['promo_data'] = $promo_data;
+              $_SESSION['promo_message'] = "Promo code <b>" . htmlspecialchars($promo_data['code']) . "</b> applied!";
+              $_SESSION['promo_message_type'] = "success";
+          } else {
+              unset($_SESSION['promo_data']); 
+              $_SESSION['promo_message'] = "This code requires a minimum purchase of $" . number_format($min_purchase, 2) . ".";
+              $_SESSION['promo_message_type'] = "danger";
+          }
+      }
   } else {
-    // Invalid or inactive code
-    unset($_SESSION['promo_data']);
-    $_SESSION['promo_message'] = "Promo code <b>" . htmlspecialchars($promo_code_input) . "</b> is not valid.";
-    $_SESSION['promo_message_type'] = "danger";
+      // Invalid or inactive code
+      unset($_SESSION['promo_data']);
+      $_SESSION['promo_message'] = "Promo code <b>" . htmlspecialchars($promo_code_input) . "</b> is not valid.";
+      $_SESSION['promo_message_type'] = "danger";
   }
 
   calculateTotalCart(); 

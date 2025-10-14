@@ -257,7 +257,7 @@ INSERT INTO `products` (`product_id`, `product_name`, `product_category`, `produ
 --
 
 CREATE TABLE `promo_codes` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `code` varchar(50) NOT NULL,
   `description` varchar(255) DEFAULT NULL,
   `discount_type` enum('fixed','percent') NOT NULL,
@@ -265,11 +265,13 @@ CREATE TABLE `promo_codes` (
   `min_purchase` decimal(10,2) NOT NULL DEFAULT 0.00,
   `start_date` datetime DEFAULT NULL,
   `end_date` datetime DEFAULT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
   `max_uses` int(11) NOT NULL DEFAULT 1000,
   `current_uses` int(11) NOT NULL DEFAULT 0,
-  `is_active` tinyint(1) NOT NULL DEFAULT 1,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`), 
+  UNIQUE KEY `code` (`code`) 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -288,7 +290,7 @@ INSERT INTO `promo_codes` (`id`, `code`, `description`, `discount_type`, `discou
 --
 
 CREATE TABLE `users` (
-  `user_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL AUTO_INCREMENT,
   `user_name` varchar(100) NOT NULL,
   `user_email` varchar(100) NOT NULL,
   `user_password` varchar(100) NOT NULL,
@@ -296,8 +298,35 @@ CREATE TABLE `users` (
   `reset_token_expires_at` datetime DEFAULT NULL,
   `verification_token` varchar(255) DEFAULT NULL,
   `is_verified` tinyint(1) NOT NULL DEFAULT 0,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`user_id`), 
+  UNIQUE KEY `UK_constraint` (`user_email`), 
+  UNIQUE KEY `reset_token_hash` (`reset_token_hash`) 
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+
+--
+-- Table structure for table 'user_promo_code_usage'
+--
+
+CREATE TABLE `user_promo_code_usage` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `user_id` INT(11) NOT NULL,
+  `promo_code_id` INT(11) NOT NULL,
+  `used_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  PRIMARY KEY (`id`),
+  CONSTRAINT `fk_user`
+    FOREIGN KEY (`user_id`)
+    REFERENCES `users` (`user_id`)
+    ON DELETE CASCADE,
+  CONSTRAINT `fk_promo_code`
+    FOREIGN KEY (`promo_code_id`)
+    REFERENCES `promo_codes` (`id`)
+    ON DELETE CASCADE,
+  CONSTRAINT `unique_user_promo_code`
+    UNIQUE (`user_id`, `promo_code_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 
 --
 -- Dumping data for table `users`
@@ -352,21 +381,6 @@ ALTER TABLE `payment_info`
 --
 ALTER TABLE `products`
   ADD PRIMARY KEY (`product_id`);
-
---
--- Indexes for table `promo_codes`
---
-ALTER TABLE `promo_codes`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `code` (`code`);
-
---
--- Indexes for table `users`
---
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`user_id`),
-  ADD UNIQUE KEY `UK_constraint` (`user_email`),
-  ADD UNIQUE KEY `reset_token_hash` (`reset_token_hash`);
 
 --
 -- AUTO_INCREMENT for dumped tables

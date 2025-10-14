@@ -12,20 +12,22 @@ if (isset($_POST['add_promo_code_btn'])) {
     $discount_type = $_POST['discount_type'];
     $discount_value = $_POST['discount_value'];
     $min_purchase = $_POST['min_purchase'];
+    $is_active = isset($_POST['is_active']) ? 1 : 0;
     
     $end_date = !empty($_POST['end_date']) ? $_POST['end_date'] : null;
 
-    $stmt = $conn->prepare("INSERT INTO promo_codes (code, description, discount_type, discount_value, min_purchase, end_date) 
-                            VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO promo_codes (code, description, discount_type, discount_value, min_purchase, end_date, is_active) 
+                            VALUES (?, ?, ?, ?, ?, ?, ?)");
     
     $stmt->bind_param(
-        "sssdds",
+        "sssddsi",
         $code,
         $description,
         $discount_type,
         $discount_value,
         $min_purchase,
-        $end_date
+        $end_date,
+        $is_active
     );
 
     if ($stmt->execute()) {
@@ -37,6 +39,54 @@ if (isset($_POST['add_promo_code_btn'])) {
     exit();
 }
 ?>
+
+<style>
+  /* Toggle Switch Styles */
+  .toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+  }
+
+  .toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 24px;
+  }
+
+  .toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+  }
+
+  input:checked + .toggle-slider {
+    background-color: #28a745;
+  }
+
+  input:checked + .toggle-slider:before {
+    transform: translateX(26px);
+  }
+</style>
 
 <div class="container-fluid">
     <div class="row">
@@ -81,6 +131,14 @@ if (isset($_POST['add_promo_code_btn'])) {
                             <label for="end_date" class="form-label">End Date (Optional)</label>
                             <input type="datetime-local" class="form-control" id="end_date" name="end_date">
                         </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label d-block">Status</label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="is_active" name="is_active" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <span class="ms-2">Active (Promo code will be immediately available for use)</span>
                     </div>
                     <div class="mb-3">
                         <button type="submit" class="btn btn-primary" name="add_promo_code_btn">Add Promo Code</button>

@@ -74,6 +74,18 @@ $stmt2->bind_param(
 $stmt2->execute();
 $stmt2->close();
 
+// After a successful payment, log the promo code usage for this user.
+if (isset($_SESSION['promo_data'])) {
+    $promo_code_id = $_SESSION['promo_data']['id'];
+
+    // Prepare and execute the insert statement to log the usage
+    $stmt_log_usage = $conn->prepare("INSERT INTO user_promo_code_usage (user_id, promo_code_id) VALUES (?, ?)");
+    $stmt_log_usage->bind_param('ii', $user_id, $promo_code_id);
+    $stmt_log_usage->execute();
+    $stmt_log_usage->close();
+}
+
+
 // Decrement product stock for each item in the order
 $stmt_items = $conn->prepare("SELECT product_id, product_quantity FROM order_items WHERE order_id = ?");
 $stmt_items->bind_param('i', $order_id);
@@ -95,8 +107,8 @@ if (isset($_SESSION['last_order']) && $_SESSION['last_order']['order_id'] == $or
   $_SESSION['recent_order']['transaction_id'] = $transaction_id;
 }
 
-// Clear the cart
-unset($_SESSION['cart'], $_SESSION['subtotal'], $_SESSION['total'], $_SESSION['promo_code'], $_SESSION['promo_discount']);
+// Clear the cart & promo code data from the session
+unset($_SESSION['cart'], $_SESSION['subtotal'], $_SESSION['total'], $_SESSION['promo_data'], $_SESSION['promo_discount']);
 
 // Redirect to thank you page
 header("Location: ../thank_you.php");
