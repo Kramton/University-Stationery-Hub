@@ -106,7 +106,7 @@ if ($stock <= 0): ?>
   <?php 
      $marketPrice = isset($row['market_price']) && $row['market_price'] !== '' ? (float)$row['market_price'] : null;
      if ($marketPrice !== null && $marketPrice > 0 && $marketPrice != $price): ?>
-     <div class="mb-1" style="color: #d32f2f; font-size: 1rem; font-weight: 500;">Market Price: $<?= number_format($marketPrice, 2) ?></div>
+     <div class="mb-1" style="color: #d32f2f; font-size: 1.5rem; font-weight: 500;">Market Price: $<?= number_format($marketPrice, 2) ?></div>
    <?php endif; ?>
 
   <div class="price-main mb-1">$<?= number_format($price, 2) ?></div>
