@@ -1,3 +1,15 @@
+/* Prevent navbar link text wrapping on mobile */
+.navbar-nav .nav-link, .login-link {
+  white-space: nowrap;
+}
+
+@media (max-width: 991.98px) {
+  .navbar-nav .nav-link, .login-link {
+    white-space: nowrap;
+    display: inline-block;
+    width: auto;
+  }
+}
 /* Navbar Toggler and Mobile Navbar Improvements */
 .navbar-toggler {
   border: none;
