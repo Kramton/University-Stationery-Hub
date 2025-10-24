@@ -80,7 +80,7 @@ $stmt->execute();
         <div class="row justify-content-center">
             <div class="col-12 col-md-4">
                 <div class="d-grid gap-2">
-                    <a href="http://localhost/UniversityStationaryHub/University-Stationary-Hub/login.php" class="return-to-page-btn">Continue</a>
+                    <a href="http://localhost/University-Stationery-Hub/login.php" class="return-to-page-btn">Continue</a>
                 </div>
             </div>
         </div>
