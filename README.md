@@ -20,8 +20,8 @@ This project assumes it lives at this path and URL by default:
 1) Place the project in your XAMPP htdocs
 
 - C:\\xampp\\htdocs
-# If you cloned elsewhere, move/copy the folder here
-# Ensure the folder name is exactly: University-Stationery-Hub
+- If you cloned elsewhere, move/copy the folder here
+- Ensure the folder name is exactly: University-Stationery-Hub
 
 2) Start Apache and MySQL
 
