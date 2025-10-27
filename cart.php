@@ -1,5 +1,15 @@
 <?php include('layouts/header.php'); ?>
 <?php
+// Show message only if user clicks Check Out and is not logged in
+$showLoginMsg = false;
+if (isset($_POST['checkout'])) {
+  if (!isset($_SESSION['logged_in']) || !$_SESSION['logged_in']) {
+    $showLoginMsg = true;
+  } else {
+    header('Location: checkout.php');
+    exit;
+  }
+}
 include('server/connection.php');
 
 // Ensure cart array exists
@@ -26,8 +36,9 @@ function getProductById(mysqli $conn, int $id)
 function getPromoCode(mysqli $conn, string $code)
 {
   $stmt = $conn->prepare(
-    "SELECT code, discount_type, discount_value, min_purchase 
-     FROM promo_codes WHERE code = ? AND is_active = 1"
+    "SELECT id, code, discount_type, discount_value, min_purchase, end_date
+     FROM promo_codes 
+     WHERE code = ? AND is_active = 1 AND (end_date IS NULL OR end_date >= NOW())"
   );
   $stmt->bind_param("s", $code);
   $stmt->execute();
@@ -40,7 +51,7 @@ function getPromoCode(mysqli $conn, string $code)
 
 function calculateTotalCart()
 {
-  global $conn; 
+  global $conn;
 
   $total_price = 0.0;
   $total_quantity = 0;
@@ -64,22 +75,37 @@ function calculateTotalCart()
 
   if (isset($_SESSION['promo_data'])) {
     $promo = $_SESSION['promo_data'];
-    $min_purchase = (float) $promo['min_purchase'];
 
-    if ($total_price >= $min_purchase) {
-      $discount_value = (float) $promo['discount_value'];
-      $discount = 0.0;
+    $is_expired = false;
+    if (!empty($promo['end_date']) && strtotime($promo['end_date']) < time()) {
+      $is_expired = true;
+    }
 
-      if ($promo['discount_type'] === 'fixed') {
-        $discount = $discount_value;
-      } else if ($promo['discount_type'] === 'percent') {
-        $discount = ($total_price * $discount_value) / 100;
-      }
-      $_SESSION['promo_discount'] = $discount;
-    } else {
+    if ($is_expired) {
+      // If expired, remove it and inform the user
       unset($_SESSION['promo_data']);
-      $_SESSION['promo_message'] = "Promo code was removed as cart no longer meets the minimum purchase of $" . number_format($min_purchase, 2);
+      $_SESSION['promo_message'] = "Promo code was removed as it has expired.";
       $_SESSION['promo_message_type'] = "danger";
+
+    } else {
+      // If not expired, continue with minimum purchase validation
+      $min_purchase = (float) $promo['min_purchase'];
+
+      if ($total_price >= $min_purchase) {
+        $discount_value = (float) $promo['discount_value'];
+        $discount = 0.0;
+
+        if ($promo['discount_type'] === 'fixed') {
+          $discount = $discount_value;
+        } else if ($promo['discount_type'] === 'percent') {
+          $discount = ($total_price * $discount_value) / 100;
+        }
+        $_SESSION['promo_discount'] = $discount;
+      } else {
+        unset($_SESSION['promo_data']);
+        $_SESSION['promo_message'] = "Promo code was removed as cart no longer meets the minimum purchase of $" . number_format($min_purchase, 2);
+        $_SESSION['promo_message_type'] = "danger";
+      }
     }
   }
 
@@ -189,33 +215,60 @@ if (isset($_POST['add_to_cart'])) {
 
 } else if (isset($_POST['apply_promo'])) {
   $promo_code_input = trim($_POST['promo_code']);
+
+  // 1. User must be logged in
+  if (!isset($_SESSION['logged_in']) || !$_SESSION['logged_in']) {
+      $_SESSION['promo_message'] = "You must be logged in to apply a promo code.";
+      $_SESSION['promo_message_type'] = "danger";
+      header('Location: cart.php');
+      exit();
+  }
+
+  // 2. Check if promo code exists and is valid
   $promo_data = getPromoCode($conn, $promo_code_input);
 
   if ($promo_data) {
-    $min_purchase = (float) $promo_data['min_purchase'];
-    
-    $current_subtotal = 0.0;
-    if (!empty($_SESSION['cart'])) {
-        foreach ($_SESSION['cart'] as $line) {
-            $current_subtotal += (float)$line['product_price'] * (int)$line['product_quantity'];
-        }
-    }
+      $user_id = $_SESSION['user_id'];
+      $promo_code_id = $promo_data['id'];
 
-    if ($current_subtotal >= $min_purchase) {
-      $_SESSION['promo_data'] = $promo_data;
-      $_SESSION['promo_message'] = "Promo code <b>" . htmlspecialchars($promo_data['code']) . "</b> applied!";
-      $_SESSION['promo_message_type'] = "success";
-    } else {
-      unset($_SESSION['promo_data']); 
-      $_SESSION['promo_message'] = "This code requires a minimum purchase of $" . number_format($min_purchase, 2) . ".";
-      $_SESSION['promo_message_type'] = "danger";
-    }
+      // 3. Check if this user has already used this code
+      $stmt_usage = $conn->prepare("SELECT id FROM user_promo_code_usage WHERE user_id = ? AND promo_code_id = ?");
+      $stmt_usage->bind_param('ii', $user_id, $promo_code_id);
+      $stmt_usage->execute();
+      $usage_result = $stmt_usage->get_result();
+      $stmt_usage->close();
 
+      if ($usage_result->num_rows > 0) {
+          // User has already used this code
+          unset($_SESSION['promo_data']);
+          $_SESSION['promo_message'] = "You have already used this promo code.";
+          $_SESSION['promo_message_type'] = "danger";
+      } else {
+          // User has NOT used this code, proceed with minimum purchase check
+          $min_purchase = (float) $promo_data['min_purchase'];
+          
+          $current_subtotal = 0.0;
+          if (!empty($_SESSION['cart'])) {
+              foreach ($_SESSION['cart'] as $line) {
+                  $current_subtotal += (float)$line['product_price'] * (int)$line['product_quantity'];
+              }
+          }
+
+          if ($current_subtotal >= $min_purchase) {
+              $_SESSION['promo_data'] = $promo_data;
+              $_SESSION['promo_message'] = "Promo code <b>" . htmlspecialchars($promo_data['code']) . "</b> applied!";
+              $_SESSION['promo_message_type'] = "success";
+          } else {
+              unset($_SESSION['promo_data']); 
+              $_SESSION['promo_message'] = "This code requires a minimum purchase of $" . number_format($min_purchase, 2) . ".";
+              $_SESSION['promo_message_type'] = "danger";
+          }
+      }
   } else {
-    // Invalid or inactive code
-    unset($_SESSION['promo_data']);
-    $_SESSION['promo_message'] = "Promo code <b>" . htmlspecialchars($promo_code_input) . "</b> is not valid.";
-    $_SESSION['promo_message_type'] = "danger";
+      // Invalid or inactive code
+      unset($_SESSION['promo_data']);
+      $_SESSION['promo_message'] = "Promo code <b>" . htmlspecialchars($promo_code_input) . "</b> is not valid.";
+      $_SESSION['promo_message_type'] = "danger";
   }
 
   calculateTotalCart(); 
@@ -238,7 +291,7 @@ calculateTotalCart();
   .cart {
     max-width: 1100px;
     margin: 0 auto;
-    padding: 2rem 1rem;
+    padding: 2rem 0;
   }
 
   .cart-title {
@@ -395,7 +448,7 @@ calculateTotalCart();
 
 
 <!-- Cart -->
-<section class="cart">
+<section class="cart" style="padding-top: 130px;">
   <div class="container">
     <h2 class="cart-title">Your Cart</h2>
   </div>
@@ -428,10 +481,15 @@ calculateTotalCart();
             <td>$<?php echo number_format((float) $value['product_price'], 2); ?></td>
 
             <td class="quantity-column">
-              <?php if ($live_stock == 1): ?>
-                <span class="stock-status">last stock</span>
+
+              <?php if ($live_stock <= 0): ?>
+                <span class="stock-status" style="color:#b42318;">Out of stock</span>
+              <?php elseif ($live_stock == 1): ?>
+                <span class="stock-status" style="color:#f97316;">Last stock</span>
               <?php elseif ($live_stock > 1 && $live_stock <= 10): ?>
-                <span class="stock-status"><?php echo $live_stock; ?> stock left</span>
+                <span class="stock-status" style="color:#f97316;"><?php echo $live_stock; ?> stock left</span>
+              <?php else: ?>
+                <span class="stock-status" style="color:#1a7f37;">In stock</span>
               <?php endif; ?>
 
               <div class="quantity-selector">
@@ -518,8 +576,24 @@ calculateTotalCart();
         </tbody>
       </table>
       <div class="checkout-container">
-        <form method="POST" action="checkout.php">
-          <button type="submit" name="checkout" class="checkout-btn">Check Out</button>
+        <form method="POST">
+          <?php if ($showLoginMsg): ?>
+            <div style="background:#ffe5dd;border:1.5px solid coral;border-radius:10px;padding:18px 18px 12px 18px;margin-bottom:16px;box-shadow:0 2px 8px rgba(255,127,80,0.07);text-align:center;">
+              <div style="font-size:2.1rem;color:coral;margin-bottom:6px;">
+                <i class="fa fa-exclamation-circle"></i>
+              </div>
+              <div style="font-size:1.1rem;font-weight:600;color:coral;margin-bottom:10px;">
+                Please log in or register to place an order!
+              </div>
+              <div style="display:flex;gap:12px;justify-content:center;">
+                <a href="login.php" class="btn-primary" style="background:coral;color:#fff;padding:10px 28px;border-radius:8px;font-weight:700;text-decoration:none;">Login</a>
+                <a href="register.php" class="btn-primary" style="background:#fff;color:coral;border:2px solid coral;padding:10px 28px;border-radius:8px;font-weight:700;text-decoration:none;">Register</a>
+              </div>
+            </div>
+          <?php endif; ?>
+          <div style="display:flex;justify-content:center;">
+            <button type="submit" name="checkout" class="checkout-btn" style="min-width:180px;">Check Out</button>
+          </div>
         </form>
       </div>
     </div>

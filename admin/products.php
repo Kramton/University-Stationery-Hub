@@ -62,49 +62,32 @@ $products = $stmt2->get_result();
     </main>
 
     <style>
-    /* Add New Product Button - Positioning */
-#add-new-product-btn {
-    background-color: #FF9F7F; /* Pale Orange */
-    color: black;
-    border-radius: 5px;
-    padding: 5px 15px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    text-decoration: none; /* Remove underline */
-    position: absolute; /* Position relative to the nearest positioned ancestor */
-    top: 90px; /* Adjust this to your preference (distance from the top) */
-    right: 30px; /* Distance from the right edge */
-    z-index: 10; /* Ensures the button appears above other elements */
-}
-
-#add-new-product-btn:hover {
-    background-color: #FF7F50; /* Slightly darker orange on hover */
-}
-
-/* Button to Add New Product, styled like the Sign-Out Button */
-    .btn-signout {
-        background-color: #FF9F7F; /* Pale Orange */
+      /* Add New Product Button - Positioning */
+      #add-new-product-btn {
+        background-color: #FF9F7F;
+        /* Pale Orange */
         color: black;
         border-radius: 5px;
         padding: 5px 15px;
         font-size: 0.9rem;
         font-weight: 500;
-        text-decoration: none; /* Remove underline */
-    }
-
-    .btn-signout:hover {
-        background-color: #FF7F50; /* Slightly darker orange on hover */
-    }
-
-    /* Ensure button is placed in the top right corner */
-    .btn-signout {
+        text-decoration: none;
+        /* Remove underline */
         position: absolute;
-        top: 20px;
-        right: 20px;
-    }
+        /* Position relative to the nearest positioned ancestor */
+        top: 90px;
+        /* Adjust this to your preference (distance from the top) */
+        right: 30px;
+        /* Distance from the right edge */
+        z-index: 10;
+        /* Ensures the button appears above other elements */
+      }
 
-
-</style>
+      #add-new-product-btn:hover {
+        background-color: #FF7F50;
+        /* Slightly darker orange on hover */
+      }
+    </style>
 
 
     <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
@@ -112,8 +95,8 @@ $products = $stmt2->get_result();
       <h2>Products</h2>
 
       <a href="add_product.php" class="btn btn-signout" id="add-new-product-btn">
-    + Add New Product
-</a>
+        + Add New Product
+      </a>
 
 
       <!-- Edit product messages -->
@@ -174,10 +157,8 @@ $products = $stmt2->get_result();
               <th scope="col">Product Name</th>
               <th scope="col">Product Price</th>
               <th scope="col">Stock</th>
-              <th scope="col">Product Offer</th>
+              <th scope="col">Market Price</th>
               <th scope="col">Product Category</th>
-              <th scope="col">Product Color</th>
-              <th scope="col">Edit Images</th>
               <th scope="col">Edit</th>
               <th scope="col">Delete</th>
 
@@ -212,13 +193,10 @@ $products = $stmt2->get_result();
 
 
 
-                <td><?php echo $product['product_special_offer'] . "%"; ?></td>
+                <td>
+                  <?php echo isset($product['market_price']) ? "$" . number_format($product['market_price'], 2) : '-'; ?>
+                </td>
                 <td><?php echo $product['product_category']; ?></td>
-                <td><?php echo $product['product_color']; ?></td>
-
-                <td><a class="btn btn-warning"
-                    href="<?php echo "edit_images.php?product_id=" . $product['product_id'] . "&product_name=" . $product['product_name']; ?>">Edit
-                    Images</a></td>
                 <td><a class="btn btn-primary"
                     href="edit_product.php?product_id=<?php echo $product['product_id']; ?>">Edit</a></td>
                 <td>
@@ -250,25 +228,31 @@ $products = $stmt2->get_result();
               } ?>">Previous</a>
             </li>
 
-            <!-- Page Numbers -->
-            <li class="page-item"><a class="page-link" href="?page_no=1">1</a></li>
-            <li class="page-item"><a class="page-link" href="?page_no=2">2</a></li>
-
-            <?php if ($page_no >= 3) { ?>
-              <li class="page-item"><a class="page-link" href="#">...</a></li>
-              <li class="page-item"><a class="page-link"
-                  href="<?php echo "?page_no=" . $page_no; ?>"><?php echo $page_no; ?></a></li>
-            <?php } ?>
+              <!-- Dynamic Page Numbers -->
+              <?php
+              // Show first page
+              if ($total_no_of_pages > 0) {
+                for ($i = 1; $i <= $total_no_of_pages; $i++) {
+                  // Only show page numbers if there are products
+                  $active = ($i == $page_no) ? 'active' : '';
+                  echo '<li class="page-item ' . $active . '"><a class="page-link" href="?page_no=' . $i . '">' . $i . '</a></li>';
+                }
+              }
+              ?>
 
             <!-- Next Button -->
-            <li class="page-item <?php if ($page_no >= $total_no_of_pages)
-              echo 'disabled'; ?>">
-              <a class="page-link" href="<?php if ($page_no >= $total_no_of_pages) {
-                echo '#';
-              } else {
-                echo "?page_no=" . ($page_no + 1);
-              } ?>">Next</a>
-            </li>
+              <?php
+              // Check if next page has products
+              $next_offset = $page_no * $total_records_per_page;
+              $show_next = ($next_offset < $total_records);
+              ?>
+              <li class="page-item <?php if (!$show_next) echo 'disabled'; ?>">
+                <a class="page-link" href="<?php if (!$show_next) {
+                  echo '#';
+                } else {
+                  echo "?page_no=" . ($page_no + 1);
+                } ?>">Next</a>
+              </li>
 
           </ul>
         </nav>
@@ -288,10 +272,11 @@ $products = $stmt2->get_result();
           top: 1rem;
         }
 
-        .modal-footer #cancelBtn, .modal-footer #confirmDeleteBtn {
+        .modal-footer #cancelBtn,
+        .modal-footer #confirmDeleteBtn {
           padding-left: 50px;
           padding-right: 50px;
-          
+
         }
       </style>
 

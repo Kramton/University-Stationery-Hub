@@ -10,66 +10,141 @@ if (!isset($_SESSION['logged_in'])) {
 $user_id = $_SESSION['user_id'];
 
 // Fetch this user's orders (newest first)
-$stmt = $conn->prepare("SELECT order_id, order_cost, order_status, order_date FROM orders WHERE user_id=? ORDER BY order_date DESC");
+$stmt = $conn->prepare("SELECT order_id, order_cost, order_status, order_date, ready_for_pickup FROM orders WHERE user_id=? ORDER BY order_date DESC");
 $stmt->bind_param('i', $user_id);
 $stmt->execute();
 $orders = $stmt->get_result();
 ?>
 
+
 <style>
-/* Keep content below fixed navbar */
-body { padding-top: 110px; font-family: 'Poppins', sans-serif; }
+    body {
+        padding-top: 110px;
+    }
 
-/* Match profile page wrapper + sidebar */
-.account-container { max-width: 1200px; margin: auto; }
-.account-title { font-size: 40px; font-weight: 600; text-align: center; margin-bottom: 40px; }
+    .container-account {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 0 16px
+    }
 
-.sidebar { padding-right: 20px; }
-.sidebar h5 { margin-bottom: 20px; font-weight: 500; }
-.sidebar a { display: block; padding: 8px 0; color: #000; text-decoration: none; }
-.sidebar a.active { color: #F15A29; font-weight: 600; }
+    .account-title {
+        font-size: 36px;
+        font-weight: 700;
+        text-align: center;
+        margin: 6px 0 26px
+    }
 
-/* Card */
-.content-box {
-    background:#fff; padding:30px; border-radius:6px;
-    box-shadow:0 4px 10px rgba(0,0,0,0.05);
-}
-.content-box h5 { color:#F15A29; font-weight:500; margin-bottom: 12px; }
-.content-box hr { border:0; height:2px; background:#F15A29; width:40px; margin:0 0 20px; }
+    /* Remove fixed grid-template-columns for .grid, use Bootstrap row/col for layout */
+    /*
+    .grid {
+        display: grid;
+        grid-template-columns: 220px 1fr;
+        gap: 40px;
+        align-items: start;
+    }
+    @media(max-width:992px) {
+        .grid {
+            grid-template-columns: 1fr;
+        }
+    }
+    */
 
-/* Minimal orders table (like your reference) */
-.order-table { width:100%; border-collapse:collapse; }
-.order-table thead th {
-    font-weight:500; font-size:14px; color:#000; text-align:left; padding:12px 14px;
-    border-bottom:1px solid #e0e0e0;
-}
-.order-table tbody td {
-    font-size:14px; color:#333; padding:16px 14px; border-bottom:1px solid #eee;
-}
-.order-table tbody tr:last-child td { border-bottom:none; }
+    .sidebar-title {
+        color: #7a7a7a;
+        margin-bottom: 12px
+    }
 
-/* “View Order” as a simple link */
-.view-link { color:#000; font-weight:500; text-decoration:none; }
-.view-link:hover { text-decoration:underline; }
+    .navlink {
+        display: block;
+        padding: 6px 0;
+        color: black;
+        text-decoration: none
+    }
+
+    .navlink.active {
+        color: coral;
+    }
+
+    .content-box {
+        background: #fff;
+        padding: 30px;
+        border-radius: 6px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05)
+    }
+
+    .order-table {
+        border-collapse: collapse;
+        min-width: 720px;
+    }
+
+    /* mobile-only horizontal scroll for the order table */
+    .order-table-wrap {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        margin-bottom: 24px;
+        width: 100%;
+        max-width: 100vw;
+    }
+    @media (max-width: 700px) {
+        .order-table {
+            min-width: 480px;
+        }
+    }
+
+    .order-table thead th {
+        font-weight: 500;
+        font-size: 14px;
+        color: #000;
+        text-align: left;
+        padding: 12px 14px;
+        border-bottom: 1px solid #e0e0e0;
+        white-space: nowrap;
+    }
+
+    .order-table tbody td {
+        font-size: 14px;
+        color: #333;
+        padding: 16px 14px;
+        border-bottom: 1px solid #eee;
+        white-space: nowrap;
+    }
+
+    .order-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .view-link {
+        color: #000;
+        font-weight: 500;
+        text-decoration: none;
+        padding: 4px 10px;
+        border-radius: 4px;
+        transition: background 0.2s;
+    }
+
+    .view-link:hover {
+        background: coral;
+        color: #fff;
+        text-decoration: none;
+    }
 </style>
 
-<section class="account-container">
+
+<div class="container-account">
     <h2 class="account-title">Account</h2>
-
     <div class="row">
-        <!-- Sidebar (identical to profile page) -->
-        <div class="col-md-3 sidebar">
-            <h5>Manage My Account</h5>
-            <a href="my_profile.php">My Profile</a>
-            <a href="my_orders.php" class="active">My Orders</a>
-        </div>
-
-        <!-- Orders -->
-        <div class="col-md-9">
-            <div class="content-box">
-                <h5>My Orders</h5>
-                <hr>
-
+        <!-- Sidebar -->
+        <aside class="col-md-3">
+            <!-- <div class="sidebar-title">Manage My Account</div> -->
+            <h4 class="sidebar-title">Manage My Account</h4>
+            <a class="navlink" href="my_profile.php">My Profile</a>
+            <a class="navlink active mb-5" href="my_orders.php">My Orders</a>
+        </aside>
+        <!-- Main -->
+        <main class="col-md-9">
+            <h4>My Orders</h4>
+            <div class="order-table-wrap" tabindex="0" aria-label="Scroll horizontally to view more columns">
                 <table class="order-table">
                     <thead>
                         <tr>
@@ -77,6 +152,7 @@ body { padding-top: 110px; font-family: 'Poppins', sans-serif; }
                             <th>Date</th>
                             <th>Payment</th>
                             <th>Status</th>
+                            <th>Ready for Pickup</th>
                             <th style="text-align:left;">Actions</th>
                         </tr>
                     </thead>
@@ -84,10 +160,20 @@ body { padding-top: 110px; font-family: 'Poppins', sans-serif; }
                         <?php if ($orders->num_rows > 0): ?>
                             <?php while ($row = $orders->fetch_assoc()): ?>
                                 <tr>
-                                    <td><?php echo $row['order_id']; ?></td>
+                                    <td><?php echo '#USH' . str_pad($row['order_id'], 4, '0', STR_PAD_LEFT); ?></td>
                                     <td><?php echo date('d-m-Y', strtotime($row['order_date'])); ?></td>
-                                    <td>$<?php echo number_format((float)$row['order_cost'], 2); ?></td>
+                                    <td>$<?php echo number_format((float) $row['order_cost'], 2); ?></td>
                                     <td><?php echo ucfirst($row['order_status']); ?></td>
+                                    <td>
+                                        <?php if (!empty($row['ready_for_pickup'])): ?>
+                                            <span
+                                                style="color: #fff; background: #28a745; padding: 4px 10px; border-radius: 4px; font-size: 13px;">Ready</span>
+                                        <?php else: ?>
+                                            <span
+                                                style="color: #fff; background: #aaa; padding: 4px 10px; border-radius: 4px; font-size: 13px;">Not
+                                                Ready</span>
+                                        <?php endif; ?>
+                                    </td>
                                     <td style="text-align:left; vertical-align:middle;">
                                         <a class="view-link" href="order_details.php?order_id=<?php echo $row['order_id']; ?>">
                                             View Order
@@ -96,13 +182,17 @@ body { padding-top: 110px; font-family: 'Poppins', sans-serif; }
                                 </tr>
                             <?php endwhile; ?>
                         <?php else: ?>
-                            <tr><td colspan="5" style="padding:18px 14px;">No orders found.</td></tr>
+                            <tr>
+                                <td colspan="6"
+                                    style="padding:32px 14px; text-align:center; vertical-align:middle; font-size:16px; color:#888;">
+                                    No orders found.</td>
+                            </tr>
                         <?php endif; ?>
                     </tbody>
                 </table>
             </div>
-        </div>
+        </main>
     </div>
-</section>
+</div>
 
 <?php include('layouts/footer.php'); ?>

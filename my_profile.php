@@ -8,7 +8,8 @@ if (!isset($_SESSION['logged_in'])) {
 }
 
 /* ---- Helpers ---- */
-function split_name($full) {
+function split_name($full)
+{
   $parts = preg_split('/\s+/', trim($full ?? ''), 2);
   return [$parts[0] ?? '', $parts[1] ?? ''];
 }
@@ -23,24 +24,25 @@ if (isset($_GET['logout']) && $_GET['logout'] === '1') {
 
 /* ---- Submit: profile (and optional password) ---- */
 if (isset($_POST['save_all'])) {
-  $email      = $_SESSION['user_email'];
+  $email = $_SESSION['user_email'];
   $first_name = trim($_POST['first_name'] ?? '');
-  $last_name  = trim($_POST['last_name'] ?? '');
+  $last_name = trim($_POST['last_name'] ?? '');
 
   // Update profile
   if ($first_name !== '' || $last_name !== '') {
-    $stmt = $conn->prepare("UPDATE users SET first_name=?, last_name=? WHERE user_email=?");
-    $stmt->bind_param('sss', $first_name, $last_name, $email);
+    $full_name = trim($first_name . ' ' . $last_name);
+    $stmt = $conn->prepare("UPDATE users SET user_name=? WHERE user_email=?");
+    $stmt->bind_param('ss', $full_name, $email);
     $stmt->execute();
     $stmt->close();
-    $_SESSION['user_name'] = trim($first_name.' '.$last_name);
+    $_SESSION['user_name'] = $full_name;
   }
 
   // Optional password change (only if any field provided)
   $current_pass = $_POST['current_password'] ?? '';
-  $new_pass     = $_POST['new_password'] ?? '';
+  $new_pass = $_POST['new_password'] ?? '';
   $confirm_pass = $_POST['confirm_password'] ?? '';
-  $changing     = ($current_pass !== '' || $new_pass !== '' || $confirm_pass !== '');
+  $changing = ($current_pass !== '' || $new_pass !== '' || $confirm_pass !== '');
 
   if ($changing) {
     if ($current_pass === '' || $new_pass === '' || $confirm_pass === '') {
@@ -84,58 +86,176 @@ if (isset($_POST['save_all'])) {
 ?>
 
 <style>
-  body{padding-top:110px;font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-  .container-account{max-width:1120px;margin:0 auto;padding:0 16px}
-  .page-title{font-size:36px;font-weight:700;text-align:center;margin:6px 0 26px}
+  body {
+    padding-top: 110px;
+    /* overflow: hidden; */
+  }
 
-  .grid{display:grid;grid-template-columns:220px 1fr;gap:40px;align-items:start}
-  @media(max-width:992px){.grid{grid-template-columns:1fr}}
+  .container-account {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 16px
+  }
+
+  .page-title {
+    font-size: 36px;
+    font-weight: 700;
+    text-align: center;
+    margin: 6px 0 26px
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 40px;
+    align-items: start
+  }
+
+  @media(max-width:992px) {
+    .grid {
+      grid-template-columns: 1fr
+    }
+  }
 
   /* Sidebar (no borders; no logout) */
-  .sidebar-title{font-size:14px;color:#7a7a7a;margin-bottom:12px}
-  .navlink{display:block;padding:6px 0;color:#111;text-decoration:none}
-  .navlink.active{color:#F15A29;font-weight:600}
+  .sidebar-title {
+    color: #7a7a7a;
+    margin-bottom: 12px
+  }
+
+  .navlink {
+    display: block;
+    padding: 6px 0;
+    color: coral;
+    text-decoration: none
+  }
+
+  .navlink.order {
+    color: black;
+  }
 
   /* Main content */
-  .section-title{font-size:16px;font-weight:600;margin:6px 0 12px;color:#222}
-  .muted{color:#666;font-size:13px;margin-bottom:10px}
-  .row-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-  @media(max-width:576px){.row-2{grid-template-columns:1fr}}
+  .muted {
+    color: #666;
+    font-size: 13px;
+    margin-bottom: 10px
+  }
+
+  .row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px
+  }
+
+  @media(max-width:576px) {
+    .row-2 {
+      grid-template-columns: 1fr
+    }
+  }
 
   /* Inputs (flat, light placeholders) */
-  .control{width:100%;padding:12px 14px;border:none;border-radius:6px;background:#f5f5f5;color:#111;font-size:14px}
-  .control::placeholder{color:#9d9d9d}
-  .control[disabled]{background:#e9e9e9;color:#666}
+  .control {
+    width: 100%;
+    padding: 12px 14px;
+    border: none;
+    border-radius: 6px;
+    background: #f5f5f5;
+    color: #111;
+    font-size: 14px
+  }
 
-  .block{margin-bottom:28px}
-  .msg,.err{margin:0 0 14px;font-size:14px}
-  .msg{color:#1a7f37}.err{color:#b42318}
+  .control::placeholder {
+    color: #9d9d9d
+  }
 
-  .actions{display:flex;align-items:center;gap:14px;margin-top:12px;flex-wrap:wrap}
-  .link-cancel{color:#666;text-decoration:none;font-weight:500}
-  .link-cancel:hover{text-decoration:underline;color:#333}
-  .btn-primary{background:#F15A29;color:#fff;border:none;border-radius:6px;padding:10px 16px;font-weight:600;cursor:pointer}
-  .btn-primary:hover{background:#e14e1e}
-  .btn-secondary{background:#efefef;color:#111;border:none;border-radius:6px;padding:10px 16px;font-weight:600;cursor:pointer}
-  .btn-secondary:hover{background:#e6e6e6}
+  .control[disabled] {
+    background: #e9e9e9;
+    color: #666
+  }
+
+  .block {
+    margin-bottom: 28px
+  }
+
+  .msg,
+  .err {
+    margin: 0 0 14px;
+    font-size: 14px
+  }
+
+  .msg {
+    color: #1a7f37
+  }
+
+  .err {
+    color: #b42318
+  }
+
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 12px;
+    flex-wrap: wrap
+  }
+
+  .link-cancel {
+    color: #666;
+    text-decoration: none;
+    font-weight: 500
+  }
+
+  .link-cancel:hover {
+    text-decoration: underline;
+    color: #333
+  }
+
+  .btn-primary {
+    background: #F15A29;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 16px;
+    font-weight: 600;
+    cursor: pointer
+  }
+
+  .btn-primary:hover {
+    background: #e14e1e
+  }
+
+  .btn-secondary {
+    background: #efefef;
+    color: #111;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 16px;
+    font-weight: 600;
+    cursor: pointer
+  }
+
+  .btn-secondary:hover {
+    background: #e6e6e6
+  }
 </style>
 
 <div class="container-account">
   <h2 class="page-title">Account</h2>
 
-  <?php if(isset($_GET['error'])): ?>
-    <p class="err"><?= htmlspecialchars($_GET['error']) ?></p>
+  <?php if (isset($_GET['error'])): ?>
+    <p class="err" style="text-align:center;"><?= htmlspecialchars($_GET['error']) ?></p>
   <?php endif; ?>
-  <?php if(isset($_GET['message'])): ?>
-    <p class="msg"><?= htmlspecialchars($_GET['message']) ?></p>
+  <?php if (isset($_GET['message'])): ?>
+    <p class="msg" style="text-align:center;"><?= htmlspecialchars($_GET['message']) ?></p>
   <?php endif; ?>
 
   <div class="grid">
     <!-- Sidebar -->
     <aside>
-      <div class="sidebar-title">Manage My Account</div>
-      <a class="navlink active" href="my_profile.php">My Profile</a>
-      <a class="navlink" href="my_orders.php">My Orders</a>
+      <!-- <div class="sidebar-title">Manage My Account</div> -->
+      <h4 class="sidebar-title">Manage My Account</h4>
+      <a class="navlink profile" href="my_profile.php">My Profile</a>
+      <a class="navlink order" href="my_orders.php">My Orders</a>
     </aside>
 
     <!-- Main -->
@@ -143,18 +263,18 @@ if (isset($_POST['save_all'])) {
       <form method="POST" action="my_profile.php">
         <!-- Profile -->
         <section class="block">
-          <div class="section-title">Edit Your Profile</div>
+          <h4>Edit Your Profile</h4>
 
           <div class="row-2" style="margin-top:8px;">
             <div>
               <label class="muted">First Name</label>
-              <input class="control" type="text" name="first_name"
-                     value="<?= htmlspecialchars($firstNamePrefill) ?>" required>
+              <input class="control" type="text" name="first_name" value="<?= htmlspecialchars($firstNamePrefill) ?>"
+                required>
             </div>
             <div>
               <label class="muted">Last Name</label>
-              <input class="control" type="text" name="last_name"
-                     value="<?= htmlspecialchars($lastNamePrefill) ?>" required>
+              <input class="control" type="text" name="last_name" value="<?= htmlspecialchars($lastNamePrefill) ?>"
+                required>
             </div>
           </div>
 
@@ -166,28 +286,44 @@ if (isset($_POST['save_all'])) {
 
         <!-- Password (single vertical stack) -->
         <section class="block">
-          <div class="section-title">Password Changes</div>
+          <h4>Password Changes</h4>
 
           <div style="margin:8px 0;">
-            <input class="control" type="password" name="current_password"
-                   placeholder="Current Password">
+            <input class="control" type="password" name="current_password" placeholder="Current Password">
           </div>
 
           <div style="margin:8px 0;">
-            <input class="control" type="password" name="new_password"
-                   placeholder="New Password">
+            <input class="control" type="password" name="new_password" placeholder="New Password">
           </div>
 
           <div style="margin:8px 0;">
-            <input class="control" type="password" name="confirm_password"
-                   placeholder="Confirm New Password">
+            <input class="control" type="password" name="confirm_password" placeholder="Confirm New Password">
           </div>
         </section>
 
         <!-- Bottom actions: Cancel, Save, Logout -->
         <div class="actions">
-          <a class="link-cancel" href="my_profile.php">Cancel</a>
           <button class="btn-primary" type="submit" name="save_all">Save Changes</button>
+          <a class="link-cancel" id="cancelBtn" href="my_profile.php" style="display:none;">Cancel</a>
+        </div>
+        <script>
+          // Show Cancel button only if any input is changed
+          const cancelBtn = document.getElementById('cancelBtn');
+          const form = document.querySelector('form[action="my_profile.php"]');
+          const watchedFields = [
+            ...form.querySelectorAll('input[name="first_name"], input[name="last_name"], input[name="current_password"], input[name="new_password"], input[name="confirm_password"]')
+          ];
+          let pristine = true;
+          watchedFields.forEach(field => {
+            field.addEventListener('input', () => {
+              if (pristine && (field.value.trim() !== '')) {
+                cancelBtn.style.display = '';
+                pristine = false;
+              }
+            });
+          });
+        </script>
+        <div style="margin-top:100px;">
           <a class="btn-secondary" href="my_profile.php?logout=1">Logout</a>
         </div>
       </form>

@@ -1,11 +1,10 @@
-<?php include('layouts/header.php') ?>
-
 <?php
-
+session_start();
 include('server/connection.php');
 
-if (isset($_SESSION['logged_in'])) {
-  header('location: my_profile.php');
+// If user is already logged in, redirect them to their profile page and stop the script.
+if (!empty($_SESSION['logged_in'])) {
+  header('Location: my_profile.php');
   exit;
 }
 
@@ -13,7 +12,8 @@ if (isset($_POST['login_btn'])) {
   $email = $_POST['email'];
   $password = $_POST['password'];
 
-  $stmt = $conn->prepare("SELECT user_id, user_name, user_email, user_password, is_verified FROM users WHERE user_email = ? LIMIT 1");
+  $stmt = $conn->prepare("SELECT user_id, user_name, user_email, user_password, is_verified 
+                          FROM users WHERE user_email = ? LIMIT 1");
   $stmt->bind_param('s', $email);
   $stmt->execute();
   $result = $stmt->get_result();
@@ -22,29 +22,35 @@ if (isset($_POST['login_btn'])) {
     $user = $result->fetch_assoc();
 
     if (password_verify($password, $user['user_password'])) {
-
+      
+      // Check if the user's email is verified
       if ($user['is_verified'] == 1) {
         $_SESSION['user_id'] = $user['user_id'];
         $_SESSION['user_name'] = $user['user_name'];
         $_SESSION['user_email'] = $user['user_email'];
         $_SESSION['logged_in'] = true;
 
-        header('location: my_profile.php?login_success=Logged in successfully');
+        // Redirect to the profile page with a success message
+        header('Location: my_profile.php?login_success=Logged in successfully');
         exit;
       } else {
-        header('location: login.php?error=Please verify your email address before logging in.');
+        // User exists but is not verified
+        header('Location: login.php?error=Please verify your email address before logging in.');
         exit;
       }
-
     } else {
-      header('location: login.php?error=Invalid credentials');
+      // Password was incorrect
+      header('Location: login.php?error=Invalid credentials');
       exit;
     }
   } else {
-    header('location: login.php?error=Invalid credentials');
+    // No user found with that email
+    header('Location: login.php?error=Invalid credentials');
     exit;
   }
 }
+
+include('layouts/header.php'); 
 ?>
 
 <!-- Login -->
@@ -59,16 +65,16 @@ if (isset($_POST['login_btn'])) {
       </div>
 
       <p style="color: red;" class="text-center"><?php if (isset($_GET['error'])) {
-                                                  echo $_GET['error'];
+                                                  echo htmlspecialchars($_GET['error']); // Added htmlspecialchars for security
                                                 } ?></p>
 
       <div class="form-group">
-        <label for="">Email:</label>
+        <label for="login-email">Email:</label>
         <input type="text" class="form-control" id="login-email" name="email" placeholder="Email" required />
       </div>
 
       <div class="form-group">
-        <label for="">Password:</label>
+        <label for="login-password">Password:</label>
         <input type="password" class="form-control" id="login-password" name="password" placeholder="Password" required />
       </div>
 

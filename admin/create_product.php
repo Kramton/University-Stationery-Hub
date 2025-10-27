@@ -9,10 +9,9 @@ if(isset($_POST['create_product'])) {
     $product_name = $_POST['name'];
     $product_description = $_POST['description'];
     $product_price = $_POST['price'];
-    $product_special_offer = $_POST['offer'];
+    $market_price = $_POST['market_price'];
     $product_stock = isset($_POST['stock']) ? max(0, (int)$_POST['stock']) : 0;
     $product_category = $_POST['category'];
-    $product_color = $_POST['color'];
 
     // This is the file of the image 
     $image1 = $_FILES['image1']['tmp_name'];
@@ -40,25 +39,23 @@ if(isset($_POST['create_product'])) {
     // ---- Insert including product_stock ----
     $stmt = $conn->prepare(
         "INSERT INTO products
-         (product_name, product_description, product_price, product_special_offer,
+         (product_name, product_description, product_price, market_price,
           product_image, product_image2, product_image3, product_image4,
-          product_category, product_color, product_stock)
-         VALUES (?,?,?,?,?,?,?,?,?,?,?)"
+          product_category, product_stock)
+         VALUES (?,?,?,?,?,?,?,?,?,?)"
     );
 
-   
     $stmt->bind_param(
-        "ssdissssssi",
+        "ssdisssssi",
         $product_name,
         $product_description,
         $product_price,          
-        $product_special_offer,   
+        $market_price,   
         $image_name1,
         $image_name2,
         $image_name3,
         $image_name4,
         $product_category,
-        $product_color,
         $product_stock           
     );
 

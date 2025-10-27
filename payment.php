@@ -1,6 +1,6 @@
 <?php
 // payment.php
-if (session_status() === PHP_SESSION_NONE) { session_start(); }
+// session_start() is already called in header.php
 require_once __DIR__ . '/layouts/header.php';
 
 /* ------- Helpers ------- */
@@ -118,7 +118,7 @@ $order_id = (int)($order['order_id'] ?? ($_SESSION['order_id'] ?? 0));
     <div class="card">
       <div class="head">Payment</div>
       <div class="body">
-        <form method="POST" action="server/complete_payment.php" novalidate>
+  <form method="POST" action="server/complete_payment.php" id="payment-form">
           <input type="hidden" name="order_id" value="<?= $order_id ?>">
           <div class="row">
             <div>
@@ -126,18 +126,18 @@ $order_id = (int)($order['order_id'] ?? ($_SESSION['order_id'] ?? 0));
               <input type="text" name="card_name" required>
             </div>
             <div>
-              <label>Credit card number</label>
-              <input type="text" name="card_number" inputmode="numeric" autocomplete="off" placeholder="4111 1111 1111 1111" required>
+              <label for="card-number">Credit Card Number</label>
+              <input type="text" id="card-number" name="card_number" placeholder="1234 5678 9012 3456" required pattern="^[0-9 ]{13,19}$" title="Please enter a valid credit card number (13-19 digits)" maxlength="19" />
             </div>
           </div>
           <div class="row">
             <div>
               <label>Expiration (MM/YY)</label>
-              <input type="text" name="card_exp" placeholder="MM/YY" required>
+              <input type="text" name="card_exp" id="card-exp" placeholder="MM/YY" required pattern="^(0[1-9]|1[0-2])\/(\d{2})$" title="Please enter a valid expiration date (MM/YY)" maxlength="5" />
             </div>
             <div>
-              <label>CVV</label>
-              <input type="text" name="card_cvv" inputmode="numeric" autocomplete="off" required>
+              <label for="card-cvv">CVV</label>
+              <input type="text" id="card-cvv" name="card_cvv" placeholder="123" required pattern="^[0-9]{3,4}$" title="Please enter a valid CVV (3 or 4 digits)" maxlength="4" />
             </div>
           </div>
           <div class="row full">
@@ -182,3 +182,31 @@ $order_id = (int)($order['order_id'] ?? ($_SESSION['order_id'] ?? 0));
 </div>
 
 <?php require_once __DIR__ . '/layouts/footer.php'; ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Credit card: allow only numbers and spaces
+  var cardInput = document.getElementById('card-number');
+  if (cardInput) {
+    cardInput.addEventListener('input', function() {
+      this.value = this.value.replace(/[^0-9 ]/g, '');
+    });
+  }
+
+  // CVV: allow only numbers
+  var cvvInput = document.getElementById('card-cvv');
+  if (cvvInput) {
+    cvvInput.addEventListener('input', function() {
+      this.value = this.value.replace(/[^0-9]/g, '');
+    });
+  }
+
+  // Expiration: allow only numbers and slash
+  var expInput = document.getElementById('card-exp');
+  if (expInput) {
+    expInput.addEventListener('input', function(e) {
+      this.value = this.value.replace(/[^0-9\/]/g, '');
+      this.value = this.value.slice(0,5); // MMYY or MM/YY
+    });
+  }
+});
+</script>

@@ -24,7 +24,7 @@ function to_float($v) {
 if (isset($_POST['place_order'])) {
 
   // Basic form fields
-  $name    = trim($_POST['name']    ?? '');
+  $pickup_name = trim($_POST['name']    ?? '');
   $phone   = trim($_POST['phone']   ?? '');
   $address = trim($_POST['address'] ?? '');
 
@@ -32,7 +32,7 @@ if (isset($_POST['place_order'])) {
   $email   = trim($_POST['email']   ?? '');
   $city    = trim($_POST['city']    ?? '');
 
-  if ($name === '' || $phone === '' || $address === '') {
+  if ($pickup_name === '' || $phone === '' || $address === '') {
     header('Location: ../checkout.php?message=Please+fill+all+fields');
     exit;
   }
@@ -77,7 +77,7 @@ if (isset($_POST['place_order'])) {
   $_SESSION['subtotal'] = $computed_total;
   $_SESSION['total']    = $order_cost;
 
-  $order_status = 'not paid';
+  $order_status = 'Open';
   $user_id      = (int)($_SESSION['user_id'] ?? 0);
   $order_date   = date('Y-m-d H:i:s');
 
@@ -87,17 +87,18 @@ if (isset($_POST['place_order'])) {
     // Insert order (removed NOT NULL requirement for email/city)
     $stmt = $conn->prepare(
       "INSERT INTO orders
-        (order_cost, order_status, user_id, user_phone, user_city, user_address, order_date)
-       VALUES (?, ?, ?, ?, ?, ?, ?)"
+        (order_cost, order_status, user_id, user_phone, user_city, user_address, pickup_name, order_date)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
     );
     $stmt->bind_param(
-      'dsissss',
+      'dsisssss',
       $order_cost,      // d
       $order_status,    // s
       $user_id,         // i
       $phone,           // s
       $city,            // s (can be empty string)
       $address,         // s
+      $pickup_name,     // s
       $order_date       // s
     );
     if (!$stmt->execute()) {
@@ -137,7 +138,11 @@ if (isset($_POST['place_order'])) {
     $_SESSION['order_id']   = $order_id;
     $_SESSION['last_order'] = [
       'order_id'   => $order_id,
-      'customer'   => compact('name','phone','address'),
+      'customer'   => [
+        'name' => $pickup_name,
+        'phone' => $phone,
+        'address' => $address
+      ],
       'items'      => $items_snapshot,
       'subtotal'   => $computed_total,
       'discount'   => $discount,
@@ -145,8 +150,10 @@ if (isset($_POST['place_order'])) {
       'order_date' => $order_date,
     ];
 
-    header('Location: ../payment.php?order_status=Order+placed+successfully');
-    exit;
+  // unset($_SESSION['cart'], $_SESSION['promo_data'], $_SESSION['promo_discount'], $_SESSION['subtotal'], $_SESSION['total'], $_SESSION['quantity']);
+
+  header('Location: ../payment.php?order_status=Order+placed+successfully');
+  exit;
 
   } catch (Throwable $e) {
     $conn->rollback();

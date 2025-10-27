@@ -93,12 +93,21 @@ if ($stock <= 0): ?>
          
    
  <div class="price-box text-start">
-  <?php if ($promoPrice !== null): ?>
+  
+ <!-- Display price with promo code -->
+ <?php if ($promoPrice !== null): ?>
     <div class="promo-line mb-1">
       With promo <span class="code">$<?= number_format($promoPrice, 2) ?></span>
       <small>(<?= (int)$discountPercent ?>% off)</small>
     </div>
   <?php endif; ?>
+
+  <!-- Display market price if price is greater than price-main -->
+  <?php 
+     $marketPrice = isset($row['market_price']) && $row['market_price'] !== '' ? (float)$row['market_price'] : null;
+     if ($marketPrice !== null && $marketPrice > 0 && $marketPrice != $price): ?>
+     <div class="mb-1" style="color: #d32f2f; font-size: 1.5rem; font-weight: 500;">Market Price: $<?= number_format($marketPrice, 2) ?></div>
+   <?php endif; ?>
 
   <div class="price-main mb-1">$<?= number_format($price, 2) ?></div>
 

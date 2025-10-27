@@ -43,7 +43,8 @@ $adjacents = 2; // Number of adjacent pages on either side of the current page
 
 $total_no_of_pages = ceil($total_records / $total_records_per_page);
 
-$stmt2 = $conn->prepare("SELECT * FROM orders LIMIT $offset, $total_records_per_page");
+
+$stmt2 = $conn->prepare("SELECT o.*, u.user_name FROM orders o LEFT JOIN users u ON o.user_id = u.user_id ORDER BY o.order_date DESC LIMIT $offset, $total_records_per_page");
 $stmt2->execute();
 $orders = $stmt2->get_result();
 
@@ -57,7 +58,7 @@ $orders = $stmt2->get_result();
   <div class="row">
 
     <?php include('sidemenu.php'); ?>
-    
+
     <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
       <br>
       <h2>Orders</h2>
@@ -67,33 +68,45 @@ $orders = $stmt2->get_result();
             <tr>
               <th scope="col">Order ID</th>
               <th scope="col">Order Status</th>
+              <th scope="col">Ready for Pickup</th>
               <th scope="col">User ID</th>
+              <th scope="col">Name</th>
+              <th scope="col">Price</th>
               <th scope="col">Order Date</th>
-              <th scope="col">User Phone</th>
-              <th scope="col">User Address</th>
-              <th scope="col">Edit</th>
-              <th scope="col">Delete</th>
             </tr>
           </thead>
           <tbody>
 
-            <?php foreach($orders as $order) { ?>
-            <tr>
-              <td><?php echo $order['order_id']; ?></td>
-              <td><?php echo $order['order_status']; ?></td>
-              <td><?php echo $order['user_id']; ?></td>
-              <td><?php echo $order['order_date']; ?></td>
-              <td><?php echo $order['user_phone']; ?></td>
-              <td><?php echo $order['user_address']; ?></td>
-
-              <td><a class="btn btn-primary" href="">Edit</a></td>
-              <td><a class="btn btn-danger" href="">Delete</a></td>
-            </tr>
-
+            <?php foreach ($orders as $order) { ?>
+              <tr>
+                <td><?php echo '#USH' . str_pad($order['order_id'], 4, '0', STR_PAD_LEFT); ?></td>
+                <td>
+                  <select class="form-select order-status-dropdown" data-order-id="<?php echo $order['order_id']; ?>">
+                    <option value="Open" <?php if ($order['order_status'] === 'Open') echo 'selected'; ?>>Open</option>
+                    <option value="Closed" <?php if ($order['order_status'] === 'Closed') echo 'selected'; ?>>Closed</option>
+                  </select>
+                </td>
+                <td style="text-align:left;vertical-align:middle;">
+                  <input type="checkbox" class="ready-checkbox" data-order-id="<?php echo $order['order_id']; ?>" <?php if (!empty($order['ready_for_pickup'])) echo 'checked'; ?> <?php if (strtolower($order['order_status']) !== 'closed') echo 'disabled'; ?> />
+                </td>
+                <td><?php echo $order['user_id']; ?></td>
+                <td><?php echo htmlspecialchars($order['pickup_name'] ?? ''); ?></td>
+                <td>$<?php echo number_format($order['order_cost'], 2); ?></td>
+                <td><?php echo $order['order_date']; ?></td>
+              </tr>
             <?php } ?>
-            
+
           </tbody>
         </table>
+        <style>
+          .order-status-dropdown {
+            width: fit-content !important;
+            min-width: 90px;
+            display: inline-block;
+            padding-right: 24px;
+            /* ensures dropdown arrow is visible */
+          }
+        </style>
 
 
         <nav aria-label="Page navigation example" class="mx-auto">
@@ -109,25 +122,28 @@ $orders = $stmt2->get_result();
               } ?>">Previous</a>
             </li>
 
-            <!-- Page Numbers -->
-            <li class="page-item"><a class="page-link" href="?page_no=1">1</a></li>
-            <li class="page-item"><a class="page-link" href="?page_no=2">2</a></li>
-
-            <?php if ($page_no >= 3) { ?>
-              <li class="page-item"><a class="page-link" href="#">...</a></li>
-              <li class="page-item"><a class="page-link"
-                  href="<?php echo "?page_no=" . $page_no; ?>"><?php echo $page_no; ?></a></li>
-            <?php } ?>
+              <!-- Dynamic Page Numbers -->
+              <?php
+              if ($total_no_of_pages > 0) {
+                for ($i = 1; $i <= $total_no_of_pages; $i++) {
+                  $active = ($i == $page_no) ? 'active' : '';
+                  echo '<li class="page-item ' . $active . '"><a class="page-link" href="?page_no=' . $i . '">' . $i . '</a></li>';
+                }
+              }
+              ?>
 
             <!-- Next Button -->
-            <li class="page-item <?php if ($page_no >= $total_no_of_pages)
-              echo 'disabled'; ?>">
-              <a class="page-link" href="<?php if ($page_no >= $total_no_of_pages) {
-                echo '#';
-              } else {
-                echo "?page_no=" . ($page_no + 1);
-              } ?>">Next</a>
-            </li>
+              <?php
+              $next_offset = $page_no * $total_records_per_page;
+              $show_next = ($next_offset < $total_records);
+              ?>
+              <li class="page-item <?php if (!$show_next) echo 'disabled'; ?>">
+                <a class="page-link" href="<?php if (!$show_next) {
+                  echo '#';
+                } else {
+                  echo "?page_no=" . ($page_no + 1);
+                } ?>">Next</a>
+              </li>
 
           </ul>
         </nav>
@@ -150,3 +166,23 @@ $orders = $stmt2->get_result();
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"
   integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha" crossorigin="anonymous"></script>
 <script src="dashboard.js"></script>
+<script>
+document.querySelectorAll('.ready-checkbox').forEach(function(checkbox) {
+  checkbox.addEventListener('change', function() {
+    var orderId = this.getAttribute('data-order-id');
+    var ready = this.checked ? 1 : 0;
+    fetch('update_order_ready.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: 'order_id=' + encodeURIComponent(orderId) + '&ready=' + ready
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (!data.success) {
+        alert('Failed to update ready status.');
+        this.checked = !this.checked;
+      }
+    });
+  });
+});
+</script>

@@ -42,7 +42,7 @@ if ($conn->affected_rows) {
     </div>
 
     <div style="text-align: center; margin: 30px 0;">
-      <a href="http://localhost/UniversityStationaryHub/University-Stationary-Hub/reset_password.php?token=$token"
+      <a href="http://localhost/University-Stationery-Hub/reset_password.php?token=$token"
       style="display: inline-block; padding: 12px 24px; background: coral; color: #fff; text-decoration: none; border-radius: 5px; font-weight: bold;">
       Reset Password
       </a>

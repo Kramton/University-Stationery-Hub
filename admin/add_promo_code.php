@@ -12,25 +12,21 @@ if (isset($_POST['add_promo_code_btn'])) {
     $discount_type = $_POST['discount_type'];
     $discount_value = $_POST['discount_value'];
     $min_purchase = $_POST['min_purchase'];
-    $max_uses = $_POST['max_uses'];
-    
-    $start_date = !empty($_POST['start_date']) ? $_POST['start_date'] : null;
-    $end_date = !empty($_POST['end_date']) ? $_POST['end_date'] : null;
     $is_active = isset($_POST['is_active']) ? 1 : 0;
+    
+    $end_date = !empty($_POST['end_date']) ? $_POST['end_date'] : null;
 
-    $stmt = $conn->prepare("INSERT INTO promo_codes (code, description, discount_type, discount_value, min_purchase, start_date, end_date, max_uses, is_active) 
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO promo_codes (code, description, discount_type, discount_value, min_purchase, end_date, is_active) 
+                            VALUES (?, ?, ?, ?, ?, ?, ?)");
     
     $stmt->bind_param(
-        "sssddssii",
+        "sssddsi",
         $code,
         $description,
         $discount_type,
         $discount_value,
         $min_purchase,
-        $start_date,
         $end_date,
-        $max_uses,
         $is_active
     );
 
@@ -43,6 +39,54 @@ if (isset($_POST['add_promo_code_btn'])) {
     exit();
 }
 ?>
+
+<style>
+  /* Toggle Switch Styles */
+  .toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+  }
+
+  .toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 24px;
+  }
+
+  .toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+  }
+
+  input:checked + .toggle-slider {
+    background-color: #28a745;
+  }
+
+  input:checked + .toggle-slider:before {
+    transform: translateX(26px);
+  }
+</style>
 
 <div class="container-fluid">
     <div class="row">
@@ -77,30 +121,24 @@ if (isset($_POST['add_promo_code_btn'])) {
                         </div>
                     </div>
                     <div class="row mb-3">
-                         <div class="col-md-6">
+                         <div class="col-md-12">
                             <label for="min_purchase" class="form-label">Minimum Purchase ($)</label>
                             <input type="number" step="0.01" class="form-control" id="min_purchase" name="min_purchase" value="0.00" required>
                         </div>
-                        <div class="col-md-6">
-                            <label for="max_uses" class="form-label">Max Uses</label>
-                            <input type="number" class="form-control" id="max_uses" name="max_uses" value="1000" required>
-                        </div>
                     </div>
                      <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="start_date" class="form-label">Start Date (Optional)</label>
-                            <input type="datetime-local" class="form-control" id="start_date" name="start_date">
-                        </div>
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <label for="end_date" class="form-label">End Date (Optional)</label>
                             <input type="datetime-local" class="form-control" id="end_date" name="end_date">
                         </div>
                     </div>
-                    <div class="form-check mb-3">
-                        <input class="form-check-input" type="checkbox" id="is_active" name="is_active" value="1" checked>
-                        <label class="form-check-label" for="is_active">
-                            Active
+                    <div class="mb-3">
+                        <label class="form-label d-block">Status</label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="is_active" name="is_active" checked>
+                            <span class="toggle-slider"></span>
                         </label>
+                        <span class="ms-2">Active (Promo code will be immediately available for use)</span>
                     </div>
                     <div class="mb-3">
                         <button type="submit" class="btn btn-primary" name="add_promo_code_btn">Add Promo Code</button>
@@ -112,5 +150,9 @@ if (isset($_POST['add_promo_code_btn'])) {
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/feather-icons"></script>
+<script>
+  feather.replace();
+</script>
 </body>
 </html>

@@ -100,14 +100,9 @@ $_SESSION['total'] = $amount;
       <!-- Editable pickup address (prefilled, but user can change it) -->
       <div class="row">
         <label for="pickup-address">Address</label>
-        <input
-          type="text"
-          id="pickup-address"
-          name="address"
-          value="55 Wellesley Street East, Auckland Central, Auckland 1010"
-          placeholder="Enter pickup address"
-          required
-        />
+        <select id="pickup-address" name="address" required style="width:100%;padding:12px 14px;border:1px solid #e2e2e2;border-radius:10px">
+          <option value="55 Wellesley Street East, Auckland Central, Auckland 1010">55 Wellesley Street East, Auckland Central, Auckland 1010</option>
+        </select>
       </div>
 
       <p>Enter details of person collecting this order:</p>
@@ -119,7 +114,7 @@ $_SESSION['total'] = $amount;
 
       <div class="row">
         <label for="checkout-phone">Phone Number</label>
-        <input type="tel" id="checkout-phone" name="phone" placeholder="123 456 7890" required />
+        <input type="tel" id="checkout-phone" name="phone" placeholder="021 123 4567" required pattern="^(0[2-9]|\+64[2-9])[0-9]{1,2}[ ]?[0-9]{3}[ ]?[0-9]{3,4}$" title="Please enter a valid New Zealand phone number (e.g. 021 123 4567 or +64 21 123 4567)" />
       </div>
 
       <div class="row">
@@ -128,6 +123,8 @@ $_SESSION['total'] = $amount;
     </form>
   </div>
 </div>
+
+
 
 
 
