@@ -206,3 +206,53 @@ $sale_products = $sale_stmt->get_result();
             }
           }
 
+          $hasPromo = ($promoPrice !== null && $promoPrice > 0 && $promoPrice < $price);
+          $saveAmt = $hasPromo ? max(0, $price - $promoPrice) : 0;
+          ?>
+          <div class="col-lg-3 col-md-4 col-sm-6">
+            <div class="card product-card h-100 position-relative">
+              <?php if ($hasPromo): ?><span class="sale-badge">SALE</span><?php endif; ?>
+
+              <a href="<?php echo 'single_product.php?product_id=' . (int) $row['product_id']; ?>"
+                class="text-decoration-none text-dark">
+                <div class="img-wrap">
+                  <img src="assets/imgs/<?php echo htmlspecialchars($row['product_image'] ?: 'placeholder.png'); ?>"
+                    class="card-img-top" alt="<?php echo htmlspecialchars($row['product_name']); ?>" />
+                </div>
+
+                <div class="card-body">
+                  <h6 class="card-title mb-1 text-truncate" style="font-size:1.2rem;">
+                    <strong><?php echo htmlspecialchars($row['product_name']); ?></strong>
+                  </h6>
+
+                  <?php
+                  $marketPrice = isset($row['market_price']) && $row['market_price'] !== '' ? (float) $row['market_price'] : null;
+                  if ($marketPrice !== null && $marketPrice > 0 && $marketPrice != $price): ?>
+                    <div class="mb-1" style="color: #d32f2f; font-size: 1rem; font-weight: 500;">Market Price:
+                      $<?php echo number_format($marketPrice, 2); ?></div>
+                  <?php endif; ?>
+                  <?php if ($hasPromo): ?>
+                    <div class="price-wrap">
+                      <span class="new-price" style="font-size:1.5rem;">$<?php echo number_format($promoPrice, 2); ?></span>
+                      <span class="old-price" style="font-size:1.5rem;">$<?php echo number_format($price, 2); ?></span>
+                    </div>
+                    <div class="save-chip">You save $<?php echo number_format($saveAmt, 2); ?></div>
+                  <?php else: ?>
+                    <p class="card-text fw-bold mb-0" style="font-size:1.5rem;">
+                      $<?php echo number_format($price, 2); ?>
+                    </p>
+                  <?php endif; ?>
+                </div>
+              </a>
+            </div>
+          </div>
+        <?php endwhile; ?>
+      </div>
+    <?php else: ?>
+      <p class="text-muted mb-0">No promo items yet. Check back soon!</p>
+    <?php endif; ?>
+  </div>
+</section>
+
+
+<?php include('layouts/footer.php') ?>
