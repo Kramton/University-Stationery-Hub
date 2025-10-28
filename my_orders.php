@@ -131,3 +131,68 @@ $orders = $stmt->get_result();
 </style>
 
 
+<div class="container-account">
+    <h2 class="account-title">Account</h2>
+    <div class="row">
+        <!-- Sidebar -->
+        <aside class="col-md-3">
+            <!-- <div class="sidebar-title">Manage My Account</div> -->
+            <h4 class="sidebar-title">Manage My Account</h4>
+            <a class="navlink" href="my_profile.php">My Profile</a>
+            <a class="navlink active mb-5" href="my_orders.php">My Orders</a>
+        </aside>
+        <!-- Main -->
+        <main class="col-md-9">
+            <h4>My Orders</h4>
+            <div class="order-table-wrap" tabindex="0" aria-label="Scroll horizontally to view more columns">
+                <table class="order-table">
+                    <thead>
+                        <tr>
+                            <th>Order#</th>
+                            <th>Date</th>
+                            <th>Payment</th>
+                            <th>Status</th>
+                            <th>Ready for Pickup</th>
+                            <th style="text-align:left;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if ($orders->num_rows > 0): ?>
+                            <?php while ($row = $orders->fetch_assoc()): ?>
+                                <tr>
+                                    <td><?php echo '#USH' . str_pad($row['order_id'], 4, '0', STR_PAD_LEFT); ?></td>
+                                    <td><?php echo date('d-m-Y', strtotime($row['order_date'])); ?></td>
+                                    <td>$<?php echo number_format((float) $row['order_cost'], 2); ?></td>
+                                    <td><?php echo ucfirst($row['order_status']); ?></td>
+                                    <td>
+                                        <?php if (!empty($row['ready_for_pickup'])): ?>
+                                            <span
+                                                style="color: #fff; background: #28a745; padding: 4px 10px; border-radius: 4px; font-size: 13px;">Ready</span>
+                                        <?php else: ?>
+                                            <span
+                                                style="color: #fff; background: #aaa; padding: 4px 10px; border-radius: 4px; font-size: 13px;">Not
+                                                Ready</span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td style="text-align:left; vertical-align:middle;">
+                                        <a class="view-link" href="order_details.php?order_id=<?php echo $row['order_id']; ?>">
+                                            View Order
+                                        </a>
+                                    </td>
+                                </tr>
+                            <?php endwhile; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="6"
+                                    style="padding:32px 14px; text-align:center; vertical-align:middle; font-size:16px; color:#888;">
+                                    No orders found.</td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+</div>
+
+<?php include('layouts/footer.php'); ?>
