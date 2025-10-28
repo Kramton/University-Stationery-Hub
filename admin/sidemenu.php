@@ -69,3 +69,61 @@ function setActiveClass($page, $current_page)
     </div>
 </nav>
 
+<style>
+    #sidebarMenu {
+        background-color: #f1f1f1;
+        margin-top: 0;
+        padding-top: 10px;
+    }
+
+    .nav-link {
+        color: #000;
+        padding: 10px 15px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        background-color: #f1f1f1;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+    }
+
+    .nav-link:hover,
+    .nav-link:focus {
+        background-color: #FF9F7F;
+        text-decoration: none;
+        color: black;
+    }
+
+    .nav-link.disabled {
+        background-color: #f1f1f1;
+        color: #666;
+        cursor: not-allowed;
+    }
+
+    .nav-link.active {
+        background-color: #FF9F7F;
+        color: white;
+    }
+
+    /* User Info Section (above buttons) */
+    .user-info {
+        padding: 15px;
+        font-size: 1rem;
+        background-color: #f1f1f1;
+        margin-bottom: 10px;
+    }
+
+    .user-name {
+        font-weight: 600;
+        font-size: 1rem;
+    }
+
+    .user-email {
+        font-size: 0.875rem;
+        color: #666;
+    }
+
+    .nav-link.active {
+        background-color: #FF7F50;
+        color: white;
+    }
+</style>
